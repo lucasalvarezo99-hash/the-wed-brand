@@ -22,6 +22,8 @@ interface Props {
   noindex?: boolean;
   /** Datos estructurados adicionales (schema.org). */
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  /** false = sin pie (el inicio es una sola pantalla). */
+  footer?: boolean;
 }
 
 const {
@@ -32,6 +34,7 @@ const {
   type = 'website',
   noindex = false,
   jsonLd,
+  footer = true,
 } = Astro.props;
 
 // Sin dominio configurado (PUBLIC_SITE_URL) se omiten las URL absolutas.
@@ -95,7 +98,7 @@ const structured = [organization, ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd :
     <main id="contenido" tabindex="-1">
       <slot />
     </main>
-    <Footer />
+    {footer && <Footer />}
     <Analytics />
 
     <script>

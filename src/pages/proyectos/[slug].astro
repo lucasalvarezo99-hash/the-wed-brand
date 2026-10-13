@@ -50,7 +50,7 @@ const ld = {
       <div class="container">
         <nav class="crumbs mono-sm" aria-label="Ruta">
           <a href="/">Inicio</a> <span aria-hidden="true">/</span>
-          <a href="/#portfolio">Portfolio</a> <span aria-hidden="true">/</span>
+          <a href="/portfolio">Portfolio</a> <span aria-hidden="true">/</span>
           <span aria-current="page">{p.title}</span>
         </nav>
 
@@ -135,10 +135,10 @@ const ld = {
       <div class="container case-cta__inner">
         <p class="case-cta__title">¿Se imaginan algo así para su casamiento?</p>
         <div class="case-cta__actions">
-          <a class="btn btn--solid" href="/#contacto">Hablemos de su casamiento</a>
+          <a class="btn btn--solid" href="/contacto">Hablemos de su casamiento</a>
           {next
             ? <a class="paren-link" href={`/proyectos/${next.id}`}>siguiente proyecto: {next.data.title}</a>
-            : <a class="paren-link" href="/#servicios">ver servicios</a>}
+            : <a class="paren-link" href="/servicios">ver servicios</a>}
         </div>
       </div>
     </section>

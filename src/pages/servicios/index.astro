@@ -1,0 +1,83 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import SectionHead from '../../components/SectionHead.astro';
+import ArrowIcon from '../../components/ArrowIcon.astro';
+import { servicesIntro, servicePhotos, serviceGuide, brands } from '../../data/home';
+import '../../styles/sections.css';
+
+const servicios = (await getCollection('servicios')).sort((a, b) => a.data.order - b.data.order);
+const serviceTitle = (slug: string) => servicios.find((s) => s.id === slug)?.data.title ?? slug;
+---
+<Base title="Servicios" description="Branding & Wedding Design, Comunicación & Comunidad, Wedding Content y Full Experience: identidad, comunicación y contenido para su casamiento, juntos o por separado.">
+  <section class="section services" aria-labelledby="servicios-title">
+    <div class="container">
+      <div class="split-head">
+        <SectionHead title={servicesIntro.title} id="servicios-title" as="h1" />
+        <p class="reveal">{servicesIntro.lead}</p>
+      </div>
+
+      <ul class="svc-grid">
+        {servicios.map((s, i) => (
+          <li class="svc reveal" id={`servicio-${s.id}`} style={`--delay:${i * 0.08}s`}>
+            {servicePhotos[s.id] && (
+              <figure class="svc__photo">
+                <Image src={servicePhotos[s.id].src} alt={servicePhotos[s.id].alt} widths={[300, 460, 600]} sizes="(min-width: 1100px) 22vw, (min-width: 640px) 45vw, 90vw" loading="eager" />
+              </figure>
+            )}
+            <h2 class="svc__title tracked-title">{s.data.title}</h2>
+            <p class="svc__tagline">{s.data.tagline}</p>
+            <p class="svc__summary justify">{s.data.summary}</p>
+            <details class="svc__more">
+              <summary>(qué puede incluir)</summary>
+              <ul class="arrow-list">{s.data.includes.map((item) => <li>{item}</li>)}</ul>
+              <p class="tracked svc__sub">Para ustedes si…</p>
+              <ul class="arrow-list">{s.data.idealFor.map((item) => <li>{item}</li>)}</ul>
+              {s.data.note && <p class="svc__note">{s.data.note}</p>}
+            </details>
+            <div class="svc__links">
+              <a class="bracket-link" href={`/servicios/${s.id}`}>ver más</a>
+              <a class="bracket-link" href={`/contacto#servicio-${s.id}`}>consultar</a>
+            </div>
+          </li>
+        ))}
+      </ul>
+
+      <div class="services__extra">
+        <div class="custom reveal">
+          <h2 class="tracked-title">{servicesIntro.custom.title}</h2>
+          <p>{servicesIntro.custom.text}</p>
+          <a class="bracket-link" href="/contacto#servicio-no-se">cuéntennos su idea</a>
+        </div>
+        <div class="guide reveal">
+          <h2 class="tracked-title">{serviceGuide.title}</h2>
+          <ul class="guide__list">
+            {serviceGuide.items.map((g) => (
+              <li>
+                <span>{g.situation}</span>
+                <a href={`#servicio-${g.service}`}>{serviceTitle(g.service)} <ArrowIcon class="guide__arrow" /></a>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Branding y eventos para marcas (lámina verde) -->
+  <section class="section tone-oliva on-dark brands" id="marcas" aria-labelledby="marcas-title">
+    <div class="container brands__grid">
+      <div class="brands__photos reveal">
+        <figure><Image src={brands.photo.src} alt={brands.photo.alt} widths={[300, 460]} sizes="(min-width: 900px) 20vw, 45vw" /></figure>
+        <figure><Image src={brands.photo2.src} alt={brands.photo2.alt} widths={[300, 460]} sizes="(min-width: 900px) 20vw, 45vw" /></figure>
+      </div>
+      <div class="brands__text">
+        <SectionHead title={brands.title} id="marcas-title">
+          {brands.paragraphs.map((p) => <p class="justify">{p}</p>)}
+          <a class="btn btn--light" href={`/contacto#servicio-${brands.cta.service}`}>{brands.cta.label}</a>
+        </SectionHead>
+      </div>
+    </div>
+  </section>
+</Base>

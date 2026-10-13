@@ -1,0 +1,53 @@
+---
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { philosophy } from '../data/home';
+import equipo from '../data/equipo.json';
+import fotoEquipo from '../assets/nosotras/cande-y-casu.jpg';
+import '../styles/sections.css';
+---
+<Base title="Nosotras" description="Somos Casu y Cande, las dos personas detrás de The Wed Brand: comunicación, estrategia y contenido, y diseño y dirección visual para casamientos.">
+  <!-- Quiénes están detrás (lámina celeste) -->
+  <section class="section tone-celeste about" aria-labelledby="nosotras-title">
+    <div class="container about__grid">
+      <div class="about__text">
+        <SectionHead title={equipo.title} id="nosotras-title" as="h1">
+          {equipo.paragraphs.map((p) => <p class="justify">{p}</p>)}
+        </SectionHead>
+        <dl class="about__people reveal">
+          {equipo.people.map((person) => (
+            <div>
+              <dt class="tracked">{person.name} · {person.fullName}</dt>
+              <dd>{person.role}</dd>
+              {person.links.length > 0 && (
+                <dd>{(person.links as { label: string; href: string }[]).map((l) => <a class="bracket-link" href={l.href} target="_blank" rel="noopener">{l.label}</a>)}</dd>
+              )}
+            </div>
+          ))}
+        </dl>
+      </div>
+      <figure class="about__photo reveal">
+        <Image src={fotoEquipo} alt={equipo.photoAlt} widths={[420, 640]} sizes="(min-width: 900px) 45vw, 90vw" loading="eager" />
+      </figure>
+    </div>
+  </section>
+
+  <!-- Cómo pensamos -->
+  <section class="section note" aria-labelledby="filosofia-title">
+    <div class="container note__grid">
+      <figure class="note__photo reveal">
+        <Image src={philosophy.photo.src} alt={philosophy.photo.alt} widths={[320, 480, 640]} sizes="(min-width: 900px) 24vw, 80vw" />
+      </figure>
+      <div class="note__text">
+        <SectionHead title={philosophy.title} id="filosofia-title">
+          {philosophy.paragraphs.map((p) => <p class="justify">{p}</p>)}
+        </SectionHead>
+      </div>
+    </div>
+    <figure class="quote reveal">
+      <figcaption class="tracked">{philosophy.quoteLabel}</figcaption>
+      <blockquote><p class="script">«{philosophy.quote}»</p></blockquote>
+    </figure>
+  </section>
+</Base>

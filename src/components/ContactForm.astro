@@ -146,6 +146,13 @@ const options = [
     };
     const pre = new URLSearchParams(location.search).get('servicio');
     if (pre) check(pre);
+    // Desde otras páginas: /contacto#servicio-<clave>
+    const fromHash = () => {
+      const m = location.hash.match(/^#servicio-(.+)$/);
+      if (m) check(decodeURIComponent(m[1]));
+    };
+    fromHash();
+    window.addEventListener('hashchange', fromHash);
     document.querySelectorAll<HTMLAnchorElement>('a[data-preselect]').forEach((a) =>
       a.addEventListener('click', () => check(a.dataset.preselect!)),
     );

@@ -1,0 +1,104 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import { site } from '../config/site';
+import { portfolioIntro, applications, strip } from '../data/home';
+import testimonios from '../data/testimonios.json';
+import '../styles/sections.css';
+
+const proyectos = (await getCollection('proyectos', ({ data }) => data.published)).sort(
+  (a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.order - b.data.order,
+);
+const featured = proyectos.filter((p) => p.data.featured);
+const rest = proyectos.filter((p) => !p.data.featured);
+// Filtros solo cuando hay suficientes proyectos para que sean útiles.
+const categories = [...new Set(proyectos.flatMap((p) => p.data.categories))];
+const showFilters = proyectos.length >= 4 && categories.length > 1;
+const quotes = testimonios as { quote: string; author: string }[];
+---
+<Base title="Portfolio" description="Proyectos de The Wed Brand: identidades de casamiento, invitaciones, papelería, web para invitados y aplicaciones pensadas a partir de cada pareja.">
+  <section class="section portfolio" aria-labelledby="portfolio-title">
+    <div class="container">
+      <div class="split-head">
+        <SectionHead title={portfolioIntro.title} id="portfolio-title" as="h1" />
+        <p class="reveal">{portfolioIntro.lead}</p>
+      </div>
+
+      {showFilters && (
+        <div class="filters" role="group" aria-label="Filtrar proyectos" data-filters>
+          <button type="button" class="bracket-link" aria-pressed="true" data-filter="*">todos</button>
+          {categories.map((c) => <button type="button" class="bracket-link" aria-pressed="false" data-filter={c}>{c.toLowerCase()}</button>)}
+        </div>
+      )}
+
+      <div class="portfolio__featured">
+        {featured.map((p) => <div class="reveal"><ProjectCard project={p} featured /></div>)}
+      </div>
+      {rest.length > 0 && <div class="portfolio__grid">{rest.map((p) => <div class="reveal"><ProjectCard project={p} /></div>)}</div>}
+
+      <p class="portfolio__more reveal">
+        {portfolioIntro.more}{' '}
+        <a class="bracket-link" href={site.contact.instagram.url} target="_blank" rel="noopener">{site.contact.instagram.handle}</a>
+      </p>
+    </div>
+  </section>
+
+  {quotes.length > 0 && (
+    <section class="section testimonials" aria-labelledby="testimonios-title">
+      <div class="container">
+        <SectionHead title={['Lo que dicen', 'las parejas']} id="testimonios-title" />
+        <ul class="testimonials__list">
+          {quotes.map((t) => (
+            <li class="reveal"><figure><blockquote><p>«{t.quote}»</p></blockquote><figcaption class="tracked">{t.author}</figcaption></figure></li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <section class="section applications section-rule" aria-labelledby="aplicaciones-title">
+    <div class="container">
+      <div class="split-head">
+        <SectionHead title={applications.title} id="aplicaciones-title" />
+        <p class="reveal">{applications.lead}</p>
+      </div>
+      <ul class="apps">
+        {applications.items.map((it, i) => (
+          <li class="apps__item reveal" style={`--delay:${(i % 4) * 0.07}s`}>
+            <figure>
+              <div class="apps__img"><Image src={it.src} alt={it.alt} widths={[280, 420, 560]} sizes="(min-width: 1000px) 20vw, 45vw" /></div>
+              <figcaption class="tracked">{it.caption}</figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <section class="strip" aria-label="Fotografía">
+    <ul class="strip__list">
+      {strip.map((ph, i) => (
+        <li class="strip__item reveal" style={`--delay:${i * 0.08}s`}>
+          <Image src={ph.src} alt={ph.alt} widths={[300, 460, 600]} sizes="(min-width: 900px) 18vw, 60vw" />
+        </li>
+      ))}
+    </ul>
+  </section>
+</Base>
+
+{showFilters && (
+  <script>
+    const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-filters] [data-filter]')];
+    const cards = [...document.querySelectorAll<HTMLElement>('[data-categories]')];
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        const f = b.dataset.filter!;
+        buttons.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+        cards.forEach((c) => (c.parentElement!.hidden = !(f === '*' || c.dataset.categories!.split('|').includes(f))));
+      }),
+    );
+  </script>
+)}

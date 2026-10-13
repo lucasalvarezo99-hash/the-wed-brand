@@ -8,24 +8,27 @@
 import { site, primaryCta } from '../config/site';
 
 const left = [
-  { label: 'nosotras', href: '/#nosotras' },
-  { label: 'servicios', href: '/#servicios' },
+  { label: 'nosotras', href: '/nosotras' },
+  { label: 'servicios', href: '/servicios' },
 ];
 const right = [
-  { label: 'portfolio', href: '/#portfolio' },
-  { label: 'proceso', href: '/#proceso' },
-  { label: 'contacto', href: '/#contacto' },
+  { label: 'portfolio', href: '/portfolio' },
+  { label: 'proceso', href: '/proceso' },
+  { label: 'contacto', href: '/contacto' },
 ];
 /** Menú completo (se abre con [menú]). */
 const full = [
-  { label: 'Inicio', href: '/#inicio' },
-  { label: 'Nosotras', href: '/#nosotras' },
-  { label: 'Servicios', href: '/#servicios' },
-  { label: 'Portfolio', href: '/#portfolio' },
-  { label: 'Proceso', href: '/#proceso' },
-  { label: 'Preguntas frecuentes', href: '/#preguntas' },
-  { label: 'Contacto', href: '/#contacto' },
+  { label: 'Inicio', href: '/' },
+  { label: 'Nosotras', href: '/nosotras' },
+  { label: 'Servicios', href: '/servicios' },
+  { label: 'Portfolio', href: '/portfolio' },
+  { label: 'Proceso', href: '/proceso' },
+  { label: 'Preguntas frecuentes', href: '/proceso#preguntas' },
+  { label: 'Contacto', href: '/contacto' },
 ];
+// Página actual (para marcarla en la barra)
+const current = '/' + (Astro.url.pathname.split('/').filter(Boolean)[0] ?? '');
+const isCurrent = (href: string) => href === current;
 ---
 <header class="site-header" data-header>
   <nav class="bar" aria-label="Principal">
@@ -33,16 +36,16 @@ const full = [
       <button class="bracket-link bar__menu" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
         <span data-menu-label>menú</span>
       </button>
-      {left.map((item) => <a class="bracket-link bar__link" href={item.href} data-nav-link>{item.label}</a>)}
+      {left.map((item) => <a class="bracket-link bar__link" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>)}
     </div>
 
-    <a class="bar__brand" href="/#inicio" aria-label={`${site.name}, inicio`}>
+    <a class="bar__brand" href="/" aria-label={`${site.name}, inicio`}>
       <span class="bar__brand-full" aria-hidden="true">[The Wed Brand]</span>
       <span class="bar__brand-short" aria-hidden="true">[TWB]</span>
     </a>
 
     <div class="bar__side bar__side--right">
-      {right.map((item) => <a class="bracket-link bar__link" href={item.href} data-nav-link>{item.label}</a>)}
+      {right.map((item) => <a class="bracket-link bar__link" href={item.href} aria-current={isCurrent(item.href) ? 'page' : undefined}>{item.label}</a>)}
     </div>
   </nav>
 
@@ -95,24 +98,6 @@ const full = [
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  // Sección activa
-  const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]')];
-  const sections = links
-    .map((a) => document.getElementById(a.hash.slice(1)))
-    .filter((el): el is HTMLElement => !!el);
-  if (sections.length) {
-    const io = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((entry) => {
-          if (!entry.isIntersecting) return;
-          links.forEach((a) =>
-            a.hash === `#${entry.target.id}` ? a.setAttribute('aria-current', 'location') : a.removeAttribute('aria-current'),
-          );
-        }),
-      { rootMargin: '-45% 0px -50% 0px' },
-    );
-    sections.forEach((s) => io.observe(s));
-  }
 </script>
 
 <style>
@@ -138,7 +123,7 @@ const full = [
   .bar__side { display: flex; align-items: center; gap: clamp(0.9rem, 1.6vw, 1.8rem); }
   .bar__side--right { justify-content: flex-end; }
   .bar__menu { background: none; border: 0; padding: 0; min-height: 44px; font-size: inherit; }
-  .bar__link:global([aria-current='location']) { color: var(--vino); }
+  .bar__link[aria-current='page'] { color: var(--vino); text-decoration: underline; text-underline-offset: 0.35em; text-decoration-thickness: 1px; }
 
   .bar__brand {
     color: var(--vino);

@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { site } from '../config/site';
+import { contactIntro } from '../data/home';
+import '../styles/sections.css';
+
+const servicios = (await getCollection('servicios')).sort((a, b) => a.data.order - b.data.order);
+---
+<Base title="Contacto" description="Cuéntennos qué están imaginando. Completen el formulario y les enviamos una propuesta pensada para su casamiento.">
+  <section class="section contact" aria-labelledby="contacto-title">
+    <div class="container">
+      <h1 class="contact__title script reveal" id="contacto-title">{contactIntro.title}</h1>
+      <p class="contact__lead reveal">{contactIntro.lead}</p>
+      <ContactForm services={servicios.map((s) => ({ slug: s.id, title: s.data.title }))} />
+      <p class="contact__direct">
+        <span class="tracked">O directamente</span>
+        <a class="bracket-link" href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+        <a class="bracket-link" href={site.contact.instagram.url} target="_blank" rel="noopener">instagram {site.contact.instagram.handle}</a>
+        {site.contact.whatsapp && <a class="bracket-link" href={`https://wa.me/${site.contact.whatsapp}`} target="_blank" rel="noopener">whatsapp</a>}
+      </p>
+    </div>
+  </section>
+</Base>

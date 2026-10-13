@@ -1,93 +1,25 @@
 ---
-import Isotipo from './Isotipo.astro';
-import { nav, site, primaryCta } from '../config/site';
-
+/** Pie liviano: una línea con marca, contacto y privacidad. */
+import { site } from '../config/site';
 const year = new Date().getFullYear();
 const wa = site.contact.whatsapp;
 ---
 <footer class="site-footer">
-  <div class="container">
-    <div class="site-footer__top">
-      <p class="site-footer__wordmark" aria-hidden="true">[The Wed Brand]</p>
-      <Isotipo class="site-footer__symbol" />
-    </div>
-
-    <div class="site-footer__grid">
-      <div>
-        <p class="label">Navegación</p>
-        <ul>
-          {nav.map((item) => <li><a href={item.href}>{item.label}</a></li>)}
-        </ul>
-      </div>
-      <div>
-        <p class="label">Contacto</p>
-        <ul>
-          <li><a href={`mailto:${site.contact.email}`}>{site.contact.email}</a></li>
-          <li><a href={site.contact.instagram.url} target="_blank" rel="noopener">Instagram {site.contact.instagram.handle}</a></li>
-          {wa && <li><a href={`https://wa.me/${wa}`} target="_blank" rel="noopener">WhatsApp</a></li>}
-        </ul>
-      </div>
-      <div class="site-footer__cta">
-        <p class="label">{site.tagline}</p>
-        <a class="btn" href={primaryCta.href}>{primaryCta.label}</a>
-      </div>
-    </div>
-
-    <div class="site-footer__bottom mono-sm">
-      <span>© {year} {site.name} · {site.founders.join(' y ')}</span>
+  <div class="container site-footer__inner tracked">
+    <span>© {year} [The Wed Brand]</span>
+    <span class="site-footer__links">
+      <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+      <a href={site.contact.instagram.url} target="_blank" rel="noopener">{site.contact.instagram.handle}</a>
+      {wa && <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener">WhatsApp</a>}
       <a href="/privacidad">Privacidad</a>
-    </div>
+    </span>
   </div>
 </footer>
 
 <style>
-  .site-footer {
-    background: var(--bg);
-    color: var(--grafito);
-    border-top: 1px solid var(--line);
-    padding-block: clamp(3.5rem, 6vw, 6rem) 2rem;
-  }
-  .site-footer a { text-decoration: none; }
-  .site-footer a:not(.btn):hover { text-decoration: underline; }
-  .site-footer__top {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 2rem;
-    padding-bottom: 2.5rem;
-    border-bottom: 1px solid var(--line-soft);
-  }
-  .site-footer__wordmark {
-    color: var(--vino);
-    font-family: var(--font-display);
-    font-size: clamp(1.4rem, 3.5vw, 3rem);
-    letter-spacing: 0.08em;
-    line-height: 1;
-    text-transform: uppercase;
-    white-space: nowrap;
-    max-width: none;
-  }
-  .site-footer__symbol { width: clamp(3.5rem, 8vw, 7rem); flex: none; color: var(--vino); }
-  .site-footer__grid {
-    display: grid;
-    gap: 2rem;
-    padding-block: 2.5rem;
-  }
-  .site-footer__grid ul { list-style: none; padding: 0; margin-top: 0.8rem; display: grid; gap: 0.35rem; }
-  .site-footer__cta { display: grid; gap: 1rem; align-content: start; justify-items: start; }
-  @media (min-width: 760px) {
-    .site-footer__grid { grid-template-columns: 1fr 1fr 1.2fr; }
-  }
-  .site-footer__bottom {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 1rem;
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--line-soft);
-    opacity: 0.85;
-  }
-  @media (max-width: 560px) {
-    .site-footer__symbol { display: none; }
-  }
+  .site-footer { border-top: 1px solid var(--line-soft); padding-block: 1.6rem; background: var(--bg); }
+  .site-footer__inner { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.8rem 2rem; font-size: 0.66rem; }
+  .site-footer__links { display: flex; flex-wrap: wrap; gap: 0.6rem 1.6rem; }
+  .site-footer a { text-decoration: none; text-transform: none; letter-spacing: 0.08em; font-family: var(--font-body); font-size: 0.78rem; }
+  .site-footer a:hover { color: var(--vino); text-decoration: underline; }
 </style>

@@ -39,7 +39,7 @@ const ld = [
     '@type': 'BreadcrumbList',
     itemListElement: [
       { '@type': 'ListItem', position: 1, name: 'Inicio', ...(base ? { item: base.origin + '/' } : {}) },
-      { '@type': 'ListItem', position: 2, name: 'Servicios', ...(base ? { item: base.origin + '/#servicios' } : {}) },
+      { '@type': 'ListItem', position: 2, name: 'Servicios', ...(base ? { item: base.origin + '/servicios' } : {}) },
       { '@type': 'ListItem', position: 3, name: s.title },
     ],
   },
@@ -51,7 +51,7 @@ const ld = [
       <div class="container">
         <nav class="crumbs mono-sm" aria-label="Ruta">
           <a href="/">Inicio</a> <span aria-hidden="true">/</span>
-          <a href="/#servicios">Servicios</a> <span aria-hidden="true">/</span>
+          <a href="/servicios">Servicios</a> <span aria-hidden="true">/</span>
           <span aria-current="page">{s.title}</span>
         </nav>
         <div class="svc-hero__grid">
@@ -81,7 +81,7 @@ const ld = [
             <ul class="arrow-list">{s.idealFor.map((i) => <li>{i}</li>)}</ul>
           </div>
           {s.note && <p class="note">{s.note}</p>}
-          <a class="btn btn--solid" href={`/?servicio=${servicio.id}#contacto`}>Consultar por {s.title}</a>
+          <a class="btn btn--solid" href={`/contacto#servicio-${servicio.id}`}>Consultar por {s.title}</a>
         </aside>
       </div>
     </section>

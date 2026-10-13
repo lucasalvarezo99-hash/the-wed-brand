@@ -63,12 +63,13 @@ export type NavItem = { label: string; href: string };
 
 /** Navegación principal. Las anclas apuntan a secciones reales de la home. */
 export const nav: NavItem[] = [
-  { label: 'inicio', href: '/#inicio' },
-  { label: 'servicios', href: '/#servicios' },
-  { label: 'portfolio', href: '/#portfolio' },
-  { label: 'nosotras', href: '/#nosotras' },
-  { label: 'preguntas', href: '/#preguntas' },
-  { label: 'contacto', href: '/#contacto' },
+  { label: 'inicio', href: '/' },
+  { label: 'nosotras', href: '/nosotras' },
+  { label: 'servicios', href: '/servicios' },
+  { label: 'portfolio', href: '/portfolio' },
+  { label: 'proceso', href: '/proceso' },
+  { label: 'preguntas', href: '/proceso#preguntas' },
+  { label: 'contacto', href: '/contacto' },
 ];
 
-export const primaryCta = { label: 'Hablemos de su casamiento', href: '/#contacto' };
+export const primaryCta = { label: 'Hablemos de su casamiento', href: '/contacto' };
