@@ -120,7 +120,7 @@ const full = [
     position: sticky;
     top: 0;
     z-index: 50;
-    background: var(--crema);
+    background: var(--base);
     border-bottom: 1px solid transparent;
     transition: border-color 0.3s var(--ease);
   }
@@ -169,13 +169,13 @@ const full = [
     gap: 2rem;
     padding: 2rem var(--gutter) calc(2rem + env(safe-area-inset-bottom));
     background: var(--vino);
-    color: var(--crema);
+    color: var(--base);
     overflow-y: auto;
     animation: menu-in 0.4s var(--ease);
   }
   .menu[hidden] { display: none; }
   .menu__list { list-style: none; padding: 0; max-width: var(--max); width: 100%; margin-inline: auto; }
-  .menu__list li { border-bottom: 1px solid color-mix(in srgb, var(--crema) 25%, transparent); }
+  .menu__list li { border-bottom: 1px solid color-mix(in srgb, var(--base) 25%, transparent); }
   .menu__list a {
     display: flex;
     align-items: baseline;

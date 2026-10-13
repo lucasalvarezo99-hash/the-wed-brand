@@ -1,23 +1,13 @@
 {
-  "title": "Hola, somos Cande y Casu.",
-  "intro": "Las dos organizamos nuestro propio casamiento. Nos dedicamos a las redes y a la identidad de marca, y ahora lo hacemos para el de ustedes.",
-  "together": "Una piensa en cómo se cuenta; la otra, en cómo se ve. En el medio aparece lo que hacemos juntas: una identidad que se ve y se cuenta igual en cada pieza.",
+  "title": ["Quiénes están", "detrás de The Wed Brand"],
+  "paragraphs": [
+    "Somos Casu y Cande. Las dos organizamos nuestro propio casamiento, así que ya estuvimos del otro lado. Nos dedicamos a las redes y a la identidad de marca, y ahora lo hacemos para el casamiento de ustedes.",
+    "Casu es comunicadora: aporta la estrategia, el marketing y el contenido, y piensa qué contar, cómo y dónde. Cande es diseñadora: aporta el diseño y la dirección visual, y traduce esa historia en un lenguaje propio.",
+    "Nos encanta estar en cada detalle, conocerlos a fondo y que su historia se vea en cada pieza. Eso es The Wed Brand."
+  ],
   "photoAlt": "Cande y Casu, fundadoras de The Wed Brand, en blanco y negro.",
   "people": [
-    {
-      "name": "Casu",
-      "fullName": "Casiana Epper",
-      "role": "Comunicación, estrategia, marketing y contenido",
-      "text": "Piensa qué contar, cómo y dónde: la narrativa de la pareja, la estrategia y el contenido.",
-      "links": []
-    },
-    {
-      "name": "Cande",
-      "fullName": "Cande Peña",
-      "role": "Diseño y dirección visual",
-      "text": "Traduce esa historia en un lenguaje visual: concepto, identidad, sistema gráfico y piezas.",
-      "links": []
-    }
-  ],
-  "intersection": "The Wed Brand"
+    { "name": "Casu", "fullName": "Casiana Epper", "role": "Comunicación, estrategia, marketing y contenido", "links": [] },
+    { "name": "Cande", "fullName": "Cande Peña", "role": "Diseño y dirección visual", "links": [] }
+  ]
 }

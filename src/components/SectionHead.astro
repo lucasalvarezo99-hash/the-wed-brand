@@ -1,20 +1,17 @@
 ---
-/** Encabezado editorial numerado, como los títulos del Brand Book ("02. SERVICIOS"). */
+/**
+ * Título de sección minimalista: mayúsculas espaciadas en dos líneas
+ * (referencia Kennedy Collective) con texto opcional debajo.
+ */
 interface Props {
-  number: string;
-  label: string;
-  title: string;
+  title: string[];
   id?: string;
-  split?: boolean;
   as?: 'h1' | 'h2';
+  class?: string;
 }
-const { number, label, title, id, split = false, as: Tag = 'h2' } = Astro.props;
+const { title, id, as: Tag = 'h2', class: className } = Astro.props;
 ---
-<header class:list={['section-head', { 'section-head--split': split }]}>
-  <div class="section-head__meta mono-sm">
-    <span>{number}. {label}</span>
-    <span aria-hidden="true">The Wed Brand</span>
-  </div>
-  <Tag class="section-head__title reveal" id={id}>{title}</Tag>
-  {Astro.slots.has('default') && <div class="section-head__lead reveal" style="--delay:.1s"><slot /></div>}
+<header class:list={['head', className]}>
+  <Tag class="head__title reveal" id={id}>{title.map((line) => <span>{line}</span>)}</Tag>
+  {Astro.slots.has('default') && <div class="head__lead reveal" style="--delay:.1s"><slot /></div>}
 </header>

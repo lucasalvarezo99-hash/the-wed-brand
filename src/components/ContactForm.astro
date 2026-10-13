@@ -1,10 +1,9 @@
 ---
 /**
- * Formulario de consulta.
- * - Con PUBLIC_FORM_ENDPOINT configurado: envía por fetch (JSON) al servicio
- *   (Formspree, Web3Forms, Basin…) y muestra estados reales de envío/éxito/error.
- * - Sin endpoint: no simula nada. Valida y abre un mail prearmado en el
- *   programa de correo de la persona, avisándolo antes.
+ * Cuestionario de consulta (preguntas de referencia: Andina; estética: Kennedy).
+ * Envía la consulta por mail a la casilla de la marca (ver site.formEndpoint).
+ * - En vista previa (PUBLIC_PREVIEW=1) valida pero no envía.
+ * - Si no hay endpoint, abre un mail prearmado. Nunca simula un envío.
  */
 import { site } from '../config/site';
 
@@ -13,147 +12,168 @@ interface Props {
 }
 const { services } = Astro.props;
 const endpoint = site.formEndpoint;
-const preview = site.preview;
+
+const options = [
+  ...services.map((s) => ({ value: s.title, key: s.slug })),
+  { value: 'Branding para marcas', key: 'marcas' },
+  { value: 'Reunión inicial', key: 'reunion' },
+  { value: 'Todavía no sabemos', key: 'no-se' },
+];
 ---
 <form
-  class="contact-form"
+  class="cform"
   novalidate
   data-contact-form
   data-endpoint={endpoint}
   data-email={site.contact.email}
-  data-preview={preview ? '1' : undefined}
-  action={endpoint || `mailto:${site.contact.email}`}
-  method="post"
-  enctype={endpoint ? undefined : 'text/plain'}
+  data-preview={site.preview ? '1' : undefined}
 >
-  <div class="field">
-    <label for="cf-nombre">Nombre y apellido <span aria-hidden="true">*</span></label>
-    <input id="cf-nombre" name="nombre" type="text" autocomplete="name" required aria-describedby="cf-nombre-error" />
-    <p class="field__error" id="cf-nombre-error" data-error-for="nombre"></p>
+  <div class="cform__row">
+    <div class="field">
+      <label for="cf-nombre">Nombre *</label>
+      <input id="cf-nombre" name="nombre" type="text" autocomplete="given-name" placeholder="nombre" required aria-describedby="cf-nombre-error" />
+      <p class="field__error" id="cf-nombre-error" data-error-for="nombre"></p>
+    </div>
+    <div class="field">
+      <label for="cf-apellido">Apellido *</label>
+      <input id="cf-apellido" name="apellido" type="text" autocomplete="family-name" placeholder="apellido" required aria-describedby="cf-apellido-error" />
+      <p class="field__error" id="cf-apellido-error" data-error-for="apellido"></p>
+    </div>
   </div>
 
   <div class="field">
-    <label for="cf-email">Email <span aria-hidden="true">*</span></label>
-    <input id="cf-email" name="email" type="email" autocomplete="email" inputmode="email" required aria-describedby="cf-email-error" />
+    <label for="cf-pareja">Nombre de tu pareja *</label>
+    <input id="cf-pareja" name="pareja" type="text" placeholder="nombre y apellido" required aria-describedby="cf-pareja-error" />
+    <p class="field__error" id="cf-pareja-error" data-error-for="pareja"></p>
+  </div>
+
+  <div class="field">
+    <label for="cf-email">Email *</label>
+    <input id="cf-email" name="email" type="email" autocomplete="email" inputmode="email" placeholder="tuemail@email.com" required aria-describedby="cf-email-error" />
     <p class="field__error" id="cf-email-error" data-error-for="email"></p>
   </div>
 
-  <div class="field-row">
-    <div class="field">
-      <label for="cf-fecha">Fecha del casamiento <span class="optional">(opcional)</span></label>
-      <input id="cf-fecha" name="fecha" type="text" placeholder="Ej. marzo 2027 o 15/03/2027" />
-    </div>
-    <div class="field">
-      <label for="cf-lugar">Lugar del evento <span class="optional">(opcional)</span></label>
-      <input id="cf-lugar" name="lugar" type="text" autocomplete="address-level2" placeholder="Ciudad, salón o estancia" />
-    </div>
+  <div class="field">
+    <label for="cf-whatsapp">WhatsApp *</label>
+    <input id="cf-whatsapp" name="whatsapp" type="tel" autocomplete="tel" inputmode="tel" placeholder="+54 9 11 0000 0000" required aria-describedby="cf-whatsapp-error" />
+    <p class="field__error" id="cf-whatsapp-error" data-error-for="whatsapp"></p>
+  </div>
+
+  <div class="field">
+    <label for="cf-fecha">¿Cuándo es la fecha del casamiento? *</label>
+    <input id="cf-fecha" name="fecha" type="text" placeholder="ej. 15 de marzo de 2027, o «todavía no la tenemos»" required aria-describedby="cf-fecha-error" />
+    <p class="field__error" id="cf-fecha-error" data-error-for="fecha"></p>
   </div>
 
   <fieldset class="field" aria-describedby="cf-servicios-error">
-    <legend>Servicios que les interesan <span aria-hidden="true">*</span></legend>
+    <legend>¿Qué servicio les interesa? *</legend>
     <p class="field__hint">Pueden elegir más de uno.</p>
     <div class="checks">
-      {services.map((s) => (
+      {options.map((o) => (
         <label class="check">
-          <input type="checkbox" name="servicios" value={s.title} data-service={s.slug} />
-          <span>{s.title}</span>
+          <input type="checkbox" name="servicios" value={o.value} data-service={o.key} />
+          <span>{o.value}</span>
         </label>
       ))}
-      <label class="check">
-        <input type="checkbox" name="servicios" value="Propuesta a medida" data-service="a-medida" />
-        <span>Propuesta a medida</span>
-      </label>
-      <label class="check">
-        <input type="checkbox" name="servicios" value="Todavía no sabemos" data-service="no-se" />
-        <span>Todavía no sabemos</span>
-      </label>
     </div>
     <p class="field__error" id="cf-servicios-error" data-error-for="servicios"></p>
   </fieldset>
 
   <div class="field">
-    <label for="cf-mensaje">Mensaje <span aria-hidden="true">*</span></label>
-    <textarea id="cf-mensaje" name="mensaje" rows="5" required aria-describedby="cf-mensaje-hint cf-mensaje-error" placeholder="Cuéntennos sobre ustedes y lo que imaginan."></textarea>
-    <p class="field__hint" id="cf-mensaje-hint">Lo que quieran contarnos: cómo son, qué les gusta, qué tienen en mente.</p>
+    <label for="cf-lugar">¿Dónde será el casamiento? *</label>
+    <input id="cf-lugar" name="lugar" type="text" placeholder="salón, estancia, ciudad" required aria-describedby="cf-lugar-error" />
+    <p class="field__error" id="cf-lugar-error" data-error-for="lugar"></p>
+  </div>
+
+  <div class="field">
+    <label for="cf-ciudad">¿En qué ciudad o país se encuentran? *</label>
+    <input id="cf-ciudad" name="ciudad" type="text" autocomplete="address-level2" placeholder="ciudad, país" required aria-describedby="cf-ciudad-error" />
+    <p class="field__error" id="cf-ciudad-error" data-error-for="ciudad"></p>
+  </div>
+
+  <div class="field">
+    <label for="cf-mensaje">Cuéntennos qué están imaginando *</label>
+    <textarea id="cf-mensaje" name="mensaje" rows="4" placeholder="cómo son, qué les gusta, qué tienen en mente" required aria-describedby="cf-mensaje-error"></textarea>
     <p class="field__error" id="cf-mensaje-error" data-error-for="mensaje"></p>
   </div>
 
-  <!-- Anti-spam: campo invisible para personas -->
-  <div class="hp" aria-hidden="true">
-    <label for="cf-web">No completar</label>
-    <input id="cf-web" name="_gotcha" type="text" tabindex="-1" autocomplete="off" />
+  <div class="field">
+    <label for="cf-origen">¿Cómo nos conocieron? *</label>
+    <input id="cf-origen" name="origen" type="text" placeholder="Instagram, Google, recomendación…" required aria-describedby="cf-origen-error" />
+    <p class="field__error" id="cf-origen-error" data-error-for="origen"></p>
   </div>
 
-  <div class="contact-form__submit">
-    <button type="submit" class="btn btn--solid" data-submit>
-      <span data-submit-label>Enviar consulta</span>
-    </button>
-    <p class="field__hint">
-      {endpoint
-        ? <>Usamos sus datos solo para responder su consulta. <a href="/privacidad">Privacidad</a>.</>
-        : <>Al enviar se abre su programa de correo con el mensaje listo para mandar a {site.contact.email}.</>}
-    </p>
+  <div class="hp" aria-hidden="true">
+    <label for="cf-web">No completar</label>
+    <input id="cf-web" name="_honey" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="cform__submit">
+    <button type="submit" class="btn btn--solid" data-submit><span data-submit-label>Enviar</span></button>
+    <p class="field__hint">Usamos sus datos solo para responder la consulta. <a href="/privacidad">Privacidad</a>.</p>
   </div>
 
   <div class="form-status" role="status" aria-live="polite" tabindex="-1" data-status hidden></div>
 </form>
 
 <script>
-  type FormEl = HTMLFormElement & { dataset: { endpoint: string; email: string } };
-
-  const form = document.querySelector<FormEl>('[data-contact-form]');
+  const form = document.querySelector<HTMLFormElement>('[data-contact-form]');
   if (form) {
     const status = form.querySelector<HTMLElement>('[data-status]')!;
     const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
     const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]')!;
-    const endpoint = form.dataset.endpoint;
-    const email = form.dataset.email;
+    const { endpoint, email } = form.dataset as { endpoint: string; email: string };
     const preview = form.dataset.preview === '1';
     const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+    const required: Record<string, string> = {
+      nombre: 'Escriban su nombre.',
+      apellido: 'Escriban su apellido.',
+      pareja: 'Escriban el nombre de su pareja.',
+      email: 'Necesitamos un email para responderles.',
+      whatsapp: 'Déjennos un WhatsApp para contactarlos.',
+      fecha: 'Cuéntennos la fecha, aunque sea aproximada.',
+      lugar: 'Cuéntennos dónde será el casamiento.',
+      ciudad: 'Cuéntennos dónde se encuentran.',
+      mensaje: 'Cuéntennos algo sobre su casamiento.',
+      origen: 'Cuéntennos cómo nos conocieron.',
+    };
+    const order = ['nombre', 'apellido', 'pareja', 'email', 'whatsapp', 'fecha', 'servicios', 'lugar', 'ciudad', 'mensaje', 'origen'];
 
-    // Preselección desde enlaces "consultar" (?servicio=slug#contacto)
-    const pre = new URLSearchParams(location.search).get('servicio');
-    if (pre) {
-      const box = form.querySelector<HTMLInputElement>(`input[data-service="${CSS.escape(pre)}"]`);
+    // Preselección desde botones de la página (data-preselect)
+    const check = (key: string) => {
+      const box = form.querySelector<HTMLInputElement>(`input[data-service="${CSS.escape(key)}"]`);
       if (box) box.checked = true;
-    }
+    };
+    const pre = new URLSearchParams(location.search).get('servicio');
+    if (pre) check(pre);
     document.querySelectorAll<HTMLAnchorElement>('a[data-preselect]').forEach((a) =>
-      a.addEventListener('click', () => {
-        const box = form.querySelector<HTMLInputElement>(`input[data-service="${CSS.escape(a.dataset.preselect!)}"]`);
-        if (box) box.checked = true;
-      }),
+      a.addEventListener('click', () => check(a.dataset.preselect!)),
     );
 
-    // "Todavía no sabemos" es excluyente con el resto
-    const checks = [...form.querySelectorAll<HTMLInputElement>('input[name="servicios"]')];
-    checks.forEach((c) =>
+    // «Todavía no sabemos» es excluyente
+    const boxes = [...form.querySelectorAll<HTMLInputElement>('input[name="servicios"]')];
+    boxes.forEach((c) =>
       c.addEventListener('change', () => {
         if (!c.checked) return;
-        if (c.dataset.service === 'no-se') checks.forEach((o) => o !== c && (o.checked = false));
-        else checks.forEach((o) => o.dataset.service === 'no-se' && (o.checked = false));
+        if (c.dataset.service === 'no-se') boxes.forEach((o) => o !== c && (o.checked = false));
+        else boxes.forEach((o) => o.dataset.service === 'no-se' && (o.checked = false));
       }),
     );
 
     function setError(name: string, message: string) {
       const el = form!.querySelector<HTMLElement>(`[data-error-for="${name}"]`);
-      const input = form!.querySelector<HTMLElement>(`[name="${name}"]`);
       if (el) el.textContent = message;
-      if (name === 'servicios') {
-        form!.querySelector('fieldset')?.toggleAttribute('data-invalid', !!message);
-      } else if (input) {
-        input.setAttribute('aria-invalid', message ? 'true' : 'false');
-      }
+      if (name === 'servicios') form!.querySelector('fieldset')?.toggleAttribute('data-invalid', !!message);
+      else form!.querySelector(`[name="${name}"]`)?.setAttribute('aria-invalid', message ? 'true' : 'false');
     }
 
     function validate(data: FormData) {
       const errors: Record<string, string> = {};
-      if (!String(data.get('nombre') ?? '').trim()) errors.nombre = 'Escriban su nombre y apellido.';
+      for (const [k, msg] of Object.entries(required)) if (!String(data.get(k) ?? '').trim()) errors[k] = msg;
       const mail = String(data.get('email') ?? '').trim();
-      if (!mail) errors.email = 'Necesitamos un email para responderles.';
-      else if (!emailRe.test(mail)) errors.email = 'Revisen el email: parece incompleto.';
+      if (mail && !emailRe.test(mail)) errors.email = 'Revisen el email: parece incompleto.';
       if (!data.getAll('servicios').length) errors.servicios = 'Elijan al menos una opción (puede ser «Todavía no sabemos»).';
-      if (!String(data.get('mensaje') ?? '').trim()) errors.mensaje = 'Cuéntennos algo sobre su casamiento.';
-      ['nombre', 'email', 'servicios', 'mensaje'].forEach((k) => setError(k, errors[k] ?? ''));
+      order.forEach((k) => setError(k, errors[k] ?? ''));
       return errors;
     }
 
@@ -163,7 +183,6 @@ const preview = site.preview;
       status.innerHTML = html;
     }
 
-    // Revalida un campo al corregirlo
     form.addEventListener('input', (e) => {
       const t = e.target as HTMLInputElement;
       if (t.getAttribute('aria-invalid') === 'true' || t.name === 'servicios') validate(new FormData(form));
@@ -173,52 +192,37 @@ const preview = site.preview;
       e.preventDefault();
       const data = new FormData(form);
       const errors = validate(data);
-      if (Object.keys(errors).length) {
-        const first = Object.keys(errors)[0];
-        const target = first === 'servicios'
-          ? form.querySelector<HTMLElement>('input[name="servicios"]')
-          : form.querySelector<HTMLElement>(`[name="${first}"]`);
-        target?.focus();
+      const first = order.find((k) => errors[k]);
+      if (first) {
+        form.querySelector<HTMLElement>(first === 'servicios' ? 'input[name="servicios"]' : `[name="${first}"]`)?.focus();
         showStatus('error', 'Faltan algunos datos. Revisen los campos marcados.');
         return;
       }
-      if (String(data.get('_gotcha') ?? '')) return; // bot
+      if (String(data.get('_honey') ?? '')) return;
 
+      const get = (k: string) => String(data.get(k) ?? '').trim();
       const payload = {
-        nombre: String(data.get('nombre')).trim(),
-        email: String(data.get('email')).trim(),
-        fecha: String(data.get('fecha') ?? '').trim(),
-        lugar: String(data.get('lugar') ?? '').trim(),
-        servicios: data.getAll('servicios').map(String),
-        mensaje: String(data.get('mensaje')).trim(),
+        Nombre: `${get('nombre')} ${get('apellido')}`,
+        Pareja: get('pareja'),
+        Email: get('email'),
+        WhatsApp: get('whatsapp'),
+        'Fecha del casamiento': get('fecha'),
+        Servicios: data.getAll('servicios').map(String).join(', '),
+        'Lugar del casamiento': get('lugar'),
+        'Ciudad o país': get('ciudad'),
+        Mensaje: get('mensaje'),
+        'Cómo nos conocieron': get('origen'),
       };
 
-      // Vista previa: no se envía nada.
       if (preview) {
-        showStatus(
-          'info',
-          'Vista previa: en el sitio publicado este botón envía la consulta por mail a ' + email + '. Acá el envío está desactivado.',
-        );
+        showStatus('info', `Vista previa: en el sitio publicado este botón envía la consulta por mail a ${email}. Acá el envío está desactivado.`);
         return;
       }
 
-      // Sin integración configurada: mail prearmado (acción real, no simulada)
       if (!endpoint) {
-        const body = [
-          `Nombre: ${payload.nombre}`,
-          `Email: ${payload.email}`,
-          payload.fecha ? `Fecha del casamiento: ${payload.fecha}` : null,
-          payload.lugar ? `Lugar: ${payload.lugar}` : null,
-          `Servicios: ${payload.servicios.join(', ')}`,
-          '',
-          payload.mensaje,
-        ].filter((l) => l !== null).join('\n');
-        const subject = `Consulta desde la web — ${payload.nombre}`;
-        window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-        showStatus(
-          'info',
-          `Abrimos su programa de correo con el mensaje listo. Si no se abrió, escríbannos a <a href="mailto:${email}">${email}</a>.`,
-        );
+        const body = Object.entries(payload).map(([k, v]) => `${k}: ${v}`).join('\n');
+        window.location.href = `mailto:${email}?subject=${encodeURIComponent(`Consulta desde la web — ${payload.Nombre}`)}&body=${encodeURIComponent(body)}`;
+        showStatus('info', `Abrimos su programa de correo con el mensaje listo. Si no se abrió, escríbannos a <a href="mailto:${email}">${email}</a>.`);
         return;
       }
 
@@ -226,16 +230,14 @@ const preview = site.preview;
       submit.setAttribute('aria-busy', 'true');
       submitLabel.textContent = 'Enviando…';
       showStatus('sending', 'Enviando su consulta…');
-
       try {
         const res = await fetch(endpoint, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
           body: JSON.stringify({
             ...payload,
-            servicios: payload.servicios.join(', '),
-            _subject: `Consulta desde la web — ${payload.nombre}`,
-            _replyto: payload.email,
+            _subject: `Consulta desde la web — ${payload.Nombre}`,
+            _replyto: payload.Email,
             _template: 'table',
             _captcha: 'false',
           }),
@@ -244,112 +246,73 @@ const preview = site.preview;
         const json = await res.json().catch(() => ({}));
         if (json && (json.success === false || json.success === 'false')) throw new Error('rejected');
         form.reset();
-        ['nombre', 'email', 'servicios', 'mensaje'].forEach((k) => setError(k, ''));
-        showStatus('success', '¡Gracias! Recibimos su consulta y les vamos a responder por email.');
+        order.forEach((k) => setError(k, ''));
+        showStatus('success', '¡Gracias! Recibimos su consulta y les vamos a responder pronto.');
         status.focus();
       } catch {
-        showStatus(
-          'error',
-          `No pudimos enviar el mensaje. Prueben de nuevo en un momento o escríbannos a <a href="mailto:${email}">${email}</a>.`,
-        );
+        showStatus('error', `No pudimos enviar el mensaje. Prueben de nuevo en un momento o escríbannos a <a href="mailto:${email}">${email}</a>.`);
       } finally {
         submit.disabled = false;
         submit.removeAttribute('aria-busy');
-        submitLabel.textContent = 'Enviar consulta';
+        submitLabel.textContent = 'Enviar';
       }
     });
   }
 </script>
 
 <style>
-  .contact-form { display: grid; gap: 1.6rem; }
-  .field { display: grid; gap: 0.45rem; border: 0; padding: 0; min-width: 0; }
-  .field-row { display: grid; gap: 1.6rem; }
-  @media (min-width: 640px) { .field-row { grid-template-columns: 1fr 1fr; } }
-  label, legend {
-    font-family: var(--font-display);
-    font-size: var(--step--1);
-    font-weight: 500;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-  }
-  legend { padding: 0; margin-bottom: 0.2rem; }
-  .optional { letter-spacing: 0.05em; text-transform: none; opacity: 0.8; font-family: var(--font-body); }
-  input[type='text'], input[type='email'], textarea {
+  .cform { display: grid; gap: 2.2rem; width: min(100%, 680px); margin-inline: auto; }
+  .cform__row { display: grid; gap: 2.2rem; }
+  @media (min-width: 640px) { .cform__row { grid-template-columns: 1fr 1fr; } }
+  .field { display: grid; gap: 0.35rem; border: 0; padding: 0; min-width: 0; }
+  label, legend { font-family: var(--font-body); font-size: 0.9rem; color: var(--grafito); padding: 0; }
+  input[type='text'], input[type='email'], input[type='tel'], textarea {
     width: 100%;
-    min-height: 48px;
-    padding: 0.7rem 0;
+    min-height: 44px;
+    padding: 0.5rem 0;
     background: transparent;
     border: 0;
-    border-bottom: 1px solid color-mix(in srgb, var(--crema) 55%, transparent);
+    border-bottom: 1px solid color-mix(in srgb, var(--grafito) 45%, transparent);
     border-radius: 0;
-    color: var(--crema);
+    color: var(--grafito);
     font-family: var(--font-body);
-    font-size: 1rem;
+    font-size: 0.95rem;
     transition: border-color 0.2s;
   }
-  textarea { resize: vertical; min-height: 8rem; border: 1px solid color-mix(in srgb, var(--crema) 55%, transparent); padding: 0.8rem; }
-  input::placeholder, textarea::placeholder { color: color-mix(in srgb, var(--crema) 62%, transparent); }
-  input:focus-visible, textarea:focus-visible { outline: 2px solid var(--crema); outline-offset: 2px; border-color: var(--crema); }
-  [aria-invalid='true'] { border-color: #ffc9c2 !important; }
-  .field__hint { font-size: var(--step--1); opacity: 0.85; }
-  .field__error { font-size: var(--step--1); color: #ffd7d1; min-height: 0; }
+  textarea { resize: vertical; min-height: 6rem; }
+  input::placeholder, textarea::placeholder { color: color-mix(in srgb, var(--grafito) 50%, transparent); }
+  input:focus-visible, textarea:focus-visible { outline: none; border-bottom-color: var(--vino); box-shadow: 0 1px 0 var(--vino); }
+  [aria-invalid='true'] { border-bottom-color: var(--vino) !important; }
+  .field__hint { font-size: 0.8rem; color: color-mix(in srgb, var(--grafito) 75%, transparent); }
+  .field__error { font-size: 0.8rem; color: var(--vino); }
   .field__error:empty { display: none; }
   .field__error::before { content: '× '; }
-  fieldset[data-invalid] .check { border-color: #ffc9c2; }
 
-  .checks { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.4rem; }
-  .check {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.55rem;
-    min-height: 44px;
-    padding: 0.45rem 0.9rem;
-    border: 1px solid color-mix(in srgb, var(--crema) 55%, transparent);
-    font-family: var(--font-body);
-    font-size: 0.92rem;
-    letter-spacing: 0.02em;
-    text-transform: none;
-    cursor: pointer;
-    transition: background-color 0.2s, color 0.2s;
-  }
+  .checks { display: grid; gap: 0.3rem; margin-top: 0.4rem; }
+  .check { display: inline-flex; align-items: center; gap: 0.7rem; min-height: 36px; cursor: pointer; font-size: 0.92rem; }
   .check input {
     appearance: none;
     flex: none;
-    width: 0.9rem;
-    height: 0.9rem;
+    width: 0.95rem;
+    height: 0.95rem;
     margin: 0;
-    border: 1px solid currentColor;
+    border: 1px solid var(--grafito);
     border-radius: 50%;
     display: grid;
     place-content: center;
   }
-  .check input::before {
-    content: '';
-    width: 0.5rem;
-    height: 0.5rem;
-    border-radius: 50%;
-    background: currentColor;
-    transform: scale(0);
-    transition: transform 0.15s var(--ease);
-  }
+  .check input::before { content: ''; width: 0.5rem; height: 0.5rem; border-radius: 50%; background: var(--vino); transform: scale(0); transition: transform 0.15s var(--ease); }
   .check input:checked::before { transform: scale(1); }
-  .check:has(input:checked) { background: var(--crema); color: var(--vino); border-color: var(--crema); }
-  .check:has(input:focus-visible) { outline: 2px solid var(--crema); outline-offset: 2px; }
-  .check input:focus-visible { outline: none; }
+  .check input:focus-visible { outline: 2px solid var(--vino); outline-offset: 2px; }
+  fieldset[data-invalid] .check input { border-color: var(--vino); }
 
   .hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
-  .contact-form__submit { display: grid; gap: 0.8rem; justify-items: start; }
-  .contact-form__submit .btn[disabled] { opacity: 0.7; cursor: progress; }
-
-  .form-status {
-    padding: 1rem 1.1rem;
-    border: 1px solid color-mix(in srgb, var(--crema) 55%, transparent);
-    font-size: 0.95rem;
-  }
+  .cform__submit { display: grid; gap: 0.8rem; justify-items: center; text-align: center; margin-top: 0.5rem; }
+  .cform__submit .btn { min-width: 12rem; }
+  .cform__submit .btn[disabled] { opacity: 0.7; cursor: progress; }
+  .form-status { padding: 1rem 1.1rem; border: 1px solid var(--line); font-size: 0.92rem; text-align: center; }
   .form-status[hidden] { display: none; }
-  .form-status[data-kind='success'] { background: var(--crema); color: var(--vino); border-color: var(--crema); }
-  .form-status[data-kind='error'] { border-color: #ffc9c2; }
+  .form-status[data-kind='success'] { background: var(--vino); color: var(--base); border-color: var(--vino); }
+  .form-status[data-kind='error'] { border-color: var(--vino); color: var(--vino); }
   .form-status a { color: inherit; }
 </style>

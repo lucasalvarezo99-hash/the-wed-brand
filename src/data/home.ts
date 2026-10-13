@@ -1,6 +1,6 @@
 /**
- * Textos de la home. Editar acá cambia la web sin tocar el diseño.
- * Tono (brand book): cercanas, claras, cálidas, simples. Frases cortas.
+ * Textos e imágenes de la home. Editar acá cambia la web sin tocar el diseño.
+ * Tono (Brand Book): cercanas, claras, cálidas, simples. Frases cortas.
  */
 import type { ImageMetadata } from 'astro';
 import veloColor from '../assets/fotos/velo-color.jpg';
@@ -24,88 +24,66 @@ import gorras from '../assets/aplicaciones/gorras.jpg';
 import servilletas from '../assets/aplicaciones/servilletas.jpg';
 import cintaRamo from '../assets/aplicaciones/cinta-ramo.jpg';
 import encendedores from '../assets/aplicaciones/encendedores.jpg';
+import invitacionFrente from '../assets/proyectos/casu-y-lucas/invitacion-frente.jpg';
+import invitacionDigital from '../assets/proyectos/casu-y-lucas/invitacion-digital.jpg';
 
+type Photo = { src: ImageMetadata; alt: string };
+
+/* ------------------------------------------------------------------ INICIO */
 export const hero = {
-  eyebrow: 'Branding & identidad para casamientos',
-  title: 'Un casamiento que se sienta tan suyo como su historia.',
-  lead: 'Creamos identidades, diseñamos experiencias y contamos historias para que cada detalle de su casamiento hable de ustedes.',
+  /** Texto en mayúsculas debajo de la marca (como Solamente). */
+  manifesto:
+    'Un casamiento que se sienta tan suyo como su historia. Diseñamos la identidad de su casamiento a partir de quiénes son como pareja y la llevamos a cada detalle: invitaciones, papelería, cotillón, web, redes y el contenido del gran día. Nada parte de una plantilla: parte de ustedes. Ya estuvimos del otro lado, las dos organizamos nuestro propio casamiento. Que cuando alguien vea el suyo, piense: «esto es muy ellos».',
   primary: { label: 'Conozcan nuestros servicios', href: '#servicios' },
-  secondary: { label: 'Exploren nuestros proyectos', href: '#portfolio' },
+  secondary: { label: 'Hablemos de su casamiento', href: '#contacto' },
 };
 
-/** Fotos del Brand Book usadas en la home. */
-export const photos = {
-  /** Pila de fotos junto a "Dos personas, una identidad". */
-  philosophyStack: [
-    { src: veloColor, alt: 'Novios abrazados bajo el velo, ella sonríe con un ramo de flores de colores.' },
-    { src: veloRisaBn, alt: 'Novios bajo el velo, en blanco y negro, riéndose.' },
-    { src: parejaCampo, alt: 'Novios caminando en un campo verde, el velo al viento.' },
-  ],
-  /** Franja de fotos entre secciones. */
-  strip: [
-    { src: besoBn, alt: 'Novio levanta a la novia en un beso, blanco y negro.' },
-    { src: ramoCielo, alt: 'Brazo con manga de encaje sostiene un ramo contra el cielo.' },
-    { src: manosRamoBn, alt: 'Manos que se estiran para atrapar el ramo, blanco y negro.' },
-    { src: veloMovido, alt: 'Novia de espaldas con el velo en movimiento.' },
-    { src: fiestaBn, alt: 'Novios bailando en la fiesta, blanco y negro.' },
-  ],
-  /** Una foto por servicio (slug del servicio → foto). */
-  services: {
-    'branding-wedding-design': { src: menuLetterpress, alt: 'Menú impreso en letterpress con ilustración botánica verde.' },
-    'comunicacion-comunidad': { src: ramoVestido, alt: 'Detalle de la novia sosteniendo el ramo junto al vestido.' },
-    'wedding-content': { src: novia, alt: 'Novia corriendo sobre el pasto, foto movida.' },
-    'full-experience': { src: parejaAerea, alt: 'Vista aérea de los novios corriendo de la mano sobre el pasto.' },
-  } as Record<string, { src: ImageMetadata; alt: string }>,
-  contact: { src: vestidoViento, alt: 'Vestido de novia movido por el viento, blanco y negro.' },
-};
+/**
+ * Tira de fotos que se desliza de derecha a izquierda.
+ * `tag` va arriba a la izquierda entre corchetes; `note` arriba a la derecha.
+ */
+export const heroReel: (Photo & { tag: string; note: string })[] = [
+  { src: invitacionFrente, alt: 'Invitación ilustrada a mano del casamiento de Casu y Lucas.', tag: 'Invitación', note: 'Casu & Lucas' },
+  { src: menuLetterpress, alt: 'Menú impreso en letterpress con ilustración botánica verde.', tag: 'Papelería', note: 'Menú' },
+  { src: veloColor, alt: 'Novios abrazados bajo el velo, ella sonríe con un ramo de colores.', tag: 'Wedding content', note: 'El gran día' },
+  { src: servilletas, alt: 'Servilleta con monograma y fecha.', tag: 'Cotillón', note: 'Monograma' },
+  { src: invitacionDigital, alt: 'Invitación digital con el recorrido del día, regalos y confirmación de asistencia.', tag: 'Web para invitados', note: 'RSVP' },
+  { src: portadaBotanica, alt: 'Portada vino con marco botánico ilustrado.', tag: 'Dirección de arte', note: 'Portada' },
+  { src: abanicos, alt: 'Novia con un abanico bordado.', tag: 'Merch', note: 'Abanicos' },
+  { src: parejaCampo, alt: 'Novios caminando en un campo verde con el velo al viento.', tag: 'Wedding content', note: 'Retrato' },
+  { src: menuPincel, alt: 'Menú con títulos escritos a pincel.', tag: 'Papelería', note: 'Minuta' },
+  { src: cintaRamo, alt: 'Cinta bordada con la fecha atada al ramo.', tag: 'Detalles', note: 'Ramo' },
+];
 
-/** Aplicaciones: papelería, cotillón y merch (Brand Book · Aplicaciones). */
-export const applications = {
-  label: 'Aplicaciones',
-  title: 'Cada pieza lleva la identidad de la pareja.',
-  lead: 'Papelería, cartelería, cotillón y merch. Algunas ideas de dónde puede vivir una identidad.',
-  items: [
-    { src: portadaBotanica, alt: 'Portada vino con marco botánico ilustrado.', caption: 'Portada con marco botánico' },
-    { src: abanicos, alt: 'Novia con un abanico bordado.', caption: 'Abanicos bordados' },
-    { src: menuPincel, alt: 'Menú con títulos escritos a pincel.', caption: 'Menú con títulos a pincel' },
-    { src: cuelloBordado, alt: 'Invitado con el cuello de la camisa bordado con fecha e iniciales.', caption: 'Cuello bordado con fecha e iniciales' },
-    { src: servilletas, alt: 'Servilleta con monograma y fecha.', caption: 'Servilletas con monograma' },
-    { src: gorras, alt: 'Novia e invitados con gorras en la fiesta.', caption: 'Gorras para la fiesta' },
-    { src: cintaRamo, alt: 'Cinta bordada con la fecha atada al ramo.', caption: 'Cinta bordada para el ramo' },
-    { src: encendedores, alt: 'Encendedores personalizados sobre un plato de puntilla.', caption: 'Encendedores personalizados' },
-  ],
-};
-
+/* ------------------------------------------------------------------ CÓMO PENSAMOS */
 export const philosophy = {
-  label: 'Cómo pensamos',
-  problem: 'Muchos casamientos responden a tendencias, no a la pareja.',
-  problems: [
-    { title: 'Decisiones sueltas', text: 'Invitaciones, paleta, papelería, cartelería, fotos y redes se resuelven por separado.' },
-    { title: 'Referencias prestadas', text: 'El punto de partida suele ser una estética de Pinterest adaptada, no la pareja.' },
-    { title: 'Lindo, pero ajeno', text: 'El casamiento puede verse bien y aun así no contar quiénes son.' },
-    { title: 'El día se termina', text: 'El contenido del evento rara vez sigue la misma identidad.' },
-  ],
-  answerTitle: 'Dos personas, una identidad. Hecha a mano.',
-  answer:
-    'Cada pareja tiene una historia, una personalidad y una manera propia de celebrar. Nuestro trabajo es traducir eso en decisiones visuales y de comunicación que se sostengan en cada punto de contacto.',
-  symbol: [
-    { title: 'Círculo izquierdo', text: 'Una persona, con su historia.' },
-    { title: 'Círculo derecho', text: 'La otra persona, con la suya.' },
-    { title: 'Intersección', text: 'Lo que es de los dos. Lo que diseñamos.' },
-    { title: 'Círculos abiertos', text: 'Una identidad que sigue: redes, contenido, recuerdo.' },
+  photo: { src: veloRisaBn, alt: 'Novios bajo el velo, en blanco y negro, riéndose.' } as Photo,
+  title: ['Una nota sobre', 'cómo pensamos'],
+  paragraphs: [
+    'Muchos casamientos responden a tendencias, no a la pareja. Las invitaciones, la paleta, la papelería, la cartelería, las fotos y las redes se resuelven por separado, y el punto de partida suele ser una estética de Pinterest adaptada. El casamiento puede verse bien y aun así no contar quiénes son.',
+    'Nosotras empezamos al revés: por ustedes. Cada pareja tiene una historia, una personalidad y una manera propia de celebrar. Nuestro trabajo es traducir eso en una sola idea, y llevarla a cada pieza, del save the date al último video.',
+    'Nuestro logo lo cuenta: dos círculos dibujados a mano. Cada uno es una persona; donde se cruzan aparece lo que es de los dos. Eso es lo que diseñamos.',
   ],
   quoteLabel: 'Lo que queremos que piensen sus invitados',
   quote: 'Esto es muy ellos.',
 };
 
+/* ------------------------------------------------------------------ SERVICIOS */
 export const servicesIntro = {
-  label: 'Servicios',
-  title: 'Eligen qué contratar.',
-  lead: 'Los servicios se pueden contratar juntos o por separado. No hace falta tomar todo: se arma según lo que necesiten.',
+  title: ['Servicios', 'para su casamiento'],
+  lead: 'Se pueden contratar juntos o por separado. No hace falta tomar todo: se arma según lo que necesiten.',
   custom: {
     title: 'Propuesta a medida',
     text: 'Si lo que imaginan no entra en ninguno de estos formatos, lo pensamos juntas. Partimos de un «¿qué quieren hacer?» y lo llevamos a la identidad.',
   },
+};
+
+/** Foto de cada servicio (slug → foto). */
+export const servicePhotos: Record<string, Photo> = {
+  'branding-wedding-design': { src: menuLetterpress, alt: 'Menú impreso en letterpress con ilustración botánica verde.' },
+  'comunicacion-comunidad': { src: ramoVestido, alt: 'Detalle de la novia sosteniendo el ramo junto al vestido.' },
+  'wedding-content': { src: novia, alt: 'Novia corriendo sobre el pasto, foto movida.' },
+  'full-experience': { src: parejaAerea, alt: 'Vista aérea de los novios corriendo de la mano sobre el pasto.' },
 };
 
 /** Ayuda para elegir: situación → servicio sugerido (slug). */
@@ -120,15 +98,63 @@ export const serviceGuide = {
   ],
 };
 
+/* ------------------------------------------------------------------ MARCAS */
+export const brands = {
+  title: ['Branding y eventos', 'para marcas'],
+  photo: { src: encendedores, alt: 'Encendedores personalizados sobre un plato de puntilla.' } as Photo,
+  photo2: { src: cuelloBordado, alt: 'Invitado con el cuello de la camisa bordado con fecha e iniciales.' } as Photo,
+  paragraphs: [
+    'También trabajamos con marcas: salones de eventos, bodegas, hoteles, restaurantes y proyectos del mundo de los casamientos que buscan diferenciarse con una estética cuidada, sensible y con carácter.',
+    'Desde la identidad visual completa de un espacio o de un evento hasta piezas puntuales —tarjetas de bienvenida, menús, cartelería, packaging, merch o contenido para redes—, diseñamos cada pieza a medida.',
+  ],
+  cta: { label: 'Pedir presupuesto', service: 'marcas' },
+};
+
+/* ------------------------------------------------------------------ APLICACIONES */
+export const applications = {
+  title: ['Cada pieza lleva', 'la identidad de la pareja'],
+  lead: 'Papelería, cartelería, cotillón y merch. Algunas ideas de dónde puede vivir una identidad.',
+  items: [
+    { src: portadaBotanica, alt: 'Portada vino con marco botánico ilustrado.', caption: 'Portada con marco botánico' },
+    { src: abanicos, alt: 'Novia con un abanico bordado.', caption: 'Abanicos bordados' },
+    { src: menuPincel, alt: 'Menú con títulos escritos a pincel.', caption: 'Menú con títulos a pincel' },
+    { src: cuelloBordado, alt: 'Invitado con el cuello de la camisa bordado con fecha e iniciales.', caption: 'Cuello bordado con fecha e iniciales' },
+    { src: servilletas, alt: 'Servilleta con monograma y fecha.', caption: 'Servilletas con monograma' },
+    { src: gorras, alt: 'Novia e invitados con gorras en la fiesta.', caption: 'Gorras para la fiesta' },
+    { src: cintaRamo, alt: 'Cinta bordada con la fecha atada al ramo.', caption: 'Cinta bordada para el ramo' },
+    { src: encendedores, alt: 'Encendedores personalizados sobre un plato de puntilla.', caption: 'Encendedores personalizados' },
+  ],
+};
+
+/** Franja de fotos en blanco y negro / color. */
+export const strip: Photo[] = [
+  { src: besoBn, alt: 'Novio levanta a la novia en un beso, blanco y negro.' },
+  { src: ramoCielo, alt: 'Brazo con manga de encaje sostiene un ramo contra el cielo.' },
+  { src: manosRamoBn, alt: 'Manos que se estiran para atrapar el ramo, blanco y negro.' },
+  { src: veloMovido, alt: 'Novia de espaldas con el velo en movimiento.' },
+  { src: fiestaBn, alt: 'Novios bailando en la fiesta, blanco y negro.' },
+];
+
+/* ------------------------------------------------------------------ PORTFOLIO */
 export const portfolioIntro = {
-  label: 'Portfolio',
-  title: 'Proyectos',
+  title: ['Proyectos', 'y casamientos'],
   lead: 'Cada proyecto empieza por conocer a la pareja. Acá mostramos cómo una historia se vuelve identidad.',
   more: 'Estamos sumando nuevos casamientos. Mientras tanto, en Instagram compartimos procesos y detalles.',
 };
 
+/* ------------------------------------------------------------------ REUNIÓN INICIAL */
+export const meeting = {
+  title: 'Agenden una reunión inicial',
+  /** CONFIRMAR: duración y que sea sin costo. */
+  text: 'Coordinemos una videollamada breve de 20 minutos para conocernos, conversar sobre su casamiento y resolver todas sus dudas. Es un espacio sin compromiso, pensado para que entiendan cómo trabajamos, qué ofrecemos y si somos el equipo para acompañarlos.',
+  badge: 'Sin costo',
+  note: 'Ustedes eligen el día y el horario que mejor les quede.',
+  cta: 'Agendar reunión',
+  photo: { src: vestidoViento, alt: 'Vestido de novia movido por el viento, blanco y negro.' } as Photo,
+};
+
+/* ------------------------------------------------------------------ CONTACTO */
 export const contactIntro = {
-  label: 'Contacto',
   title: 'Cuéntennos qué están imaginando.',
-  lead: 'Queremos conocer su historia, qué tienen en mente y cómo les gustaría vivir su casamiento. A partir de eso, podemos pensar juntas una propuesta para ustedes.',
+  lead: 'Cuéntennos un poco sobre ustedes y su casamiento completando este formulario. Con lo que nos compartan vamos a poder enviarles una propuesta pensada para ustedes y mantenernos en contacto para lo que necesiten.',
 };

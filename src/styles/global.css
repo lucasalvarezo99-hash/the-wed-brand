@@ -25,8 +25,11 @@
   --grafito-900: #282725;
   --grafito-500: #7b7a77;
 
+  /* Base del sitio: crema muy claro (casi blanco). */
+  --base: #f9f8f3;
+
   /* Roles */
-  --bg: var(--crema);
+  --bg: var(--base);
   --fg: var(--grafito);
   --accent: var(--vino);
   --line: color-mix(in srgb, var(--grafito) 55%, transparent);
@@ -41,7 +44,7 @@
 
   /* Escala */
   --step--1: clamp(0.78rem, 0.76rem + 0.1vw, 0.84rem);
-  --step-0: clamp(0.95rem, 0.92rem + 0.15vw, 1.05rem);
+  --step-0: clamp(0.88rem, 0.86rem + 0.12vw, 0.96rem);
   --step-1: clamp(1.15rem, 1.08rem + 0.35vw, 1.4rem);
   --step-2: clamp(1.45rem, 1.3rem + 0.75vw, 2rem);
   --step-3: clamp(1.9rem, 1.55rem + 1.6vw, 3rem);
@@ -83,7 +86,7 @@ body {
   color: var(--fg);
   font-family: var(--font-body);
   font-size: var(--step-0);
-  line-height: 1.7;
+  line-height: 1.85;
   letter-spacing: 0.01em;
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
@@ -95,13 +98,13 @@ a { color: inherit; text-decoration-thickness: 1px; text-underline-offset: 0.25e
 p, li, dd { text-wrap: pretty; }
 p { max-width: 68ch; }
 h1, h2, h3, h4 { text-wrap: balance; }
-::selection { background: var(--vino); color: var(--crema); }
+::selection { background: var(--vino); color: var(--base); }
 
 :focus-visible {
   outline: 2px solid var(--vino);
   outline-offset: 3px;
 }
-.on-dark :focus-visible { outline-color: var(--crema); }
+.on-dark :focus-visible { outline-color: var(--base); }
 
 .skip-link {
   position: absolute;
@@ -110,7 +113,7 @@ h1, h2, h3, h4 { text-wrap: balance; }
   z-index: 100;
   padding: 0.6rem 1rem;
   background: var(--vino);
-  color: var(--crema);
+  color: var(--base);
   font-family: var(--font-body);
 }
 .skip-link:focus { top: 1rem; }
@@ -168,7 +171,7 @@ h3 { font-size: var(--step-2); line-height: 1.12; }
   position: relative;
   padding-block: var(--section-y);
 }
-.section:not(.tone-vino, .tone-celeste, .tone-grafito) + .section:not(.tone-vino, .tone-celeste, .tone-grafito)::before {
+.section-rule::before {
   content: '';
   position: absolute;
   inset: 0 var(--gutter) auto;
@@ -178,9 +181,10 @@ h3 { font-size: var(--step-2); line-height: 1.12; }
 }
 
 /* Láminas de color: oscuras a sangre, claras con marco (Brand Book). */
-.tone-vino { background: var(--vino); color: var(--crema); --line: color-mix(in srgb, var(--crema) 40%, transparent); --line-soft: color-mix(in srgb, var(--crema) 20%, transparent); --accent: var(--crema); }
+.tone-vino { background: var(--vino); color: var(--base); --line: color-mix(in srgb, var(--base) 40%, transparent); --line-soft: color-mix(in srgb, var(--base) 20%, transparent); --accent: var(--base); }
 .tone-celeste { background: var(--celeste); color: var(--grafito); --line: color-mix(in srgb, var(--grafito) 50%, transparent); --accent: var(--vino); }
-.tone-grafito { background: var(--grafito); color: var(--crema); --line: color-mix(in srgb, var(--crema) 35%, transparent); --accent: var(--crema); }
+.tone-oliva { background: var(--oliva); color: var(--base); --line: color-mix(in srgb, var(--base) 45%, transparent); --line-soft: color-mix(in srgb, var(--base) 22%, transparent); --accent: var(--base); }
+.tone-grafito { background: var(--grafito); color: var(--base); --line: color-mix(in srgb, var(--base) 35%, transparent); --accent: var(--base); }
 
 /* Encabezado de sección numerado: "02. SERVICIOS" */
 .section-head {
@@ -256,12 +260,12 @@ h3 { font-size: var(--step-2); line-height: 1.12; }
   text-decoration: none;
   transition: background-color 0.25s var(--ease), color 0.25s var(--ease);
 }
-.btn:hover { background: var(--vino); color: var(--crema); border-color: var(--vino); }
-.btn--solid { background: var(--vino); color: var(--crema); border-color: var(--vino); }
+.btn:hover { background: var(--vino); color: var(--base); border-color: var(--vino); }
+.btn--solid { background: var(--vino); color: var(--base); border-color: var(--vino); }
 .btn--solid:hover { background: var(--vino-900); }
 .tone-vino .btn:hover,
-.tone-vino .btn--solid { background: var(--crema); color: var(--vino); border-color: var(--crema); }
-.tone-vino .btn--solid:hover { background: var(--crema-100); }
+.tone-vino .btn--solid { background: var(--base); color: var(--vino); border-color: var(--base); }
+.tone-vino .btn--solid:hover { background: var(--base); }
 
 /* Viñeta: flecha en círculo (Brand Book · Iconografía) */
 .arrow-dot {
@@ -272,7 +276,7 @@ h3 { font-size: var(--step-2); line-height: 1.12; }
   height: 1.6em;
   border-radius: 50%;
   background: var(--vino);
-  color: var(--crema);
+  color: var(--base);
 }
 .arrow-dot svg { width: 55%; height: 55%; }
 .arrow-dot--celeste { background: var(--celeste); color: var(--grafito); }
@@ -312,3 +316,29 @@ h3 { font-size: var(--step-2); line-height: 1.12; }
 .prose h2 { font-size: var(--step-2); margin-top: 2em; color: var(--accent); }
 .prose h3 { font-size: var(--step-1); margin-top: 1.8em; }
 .prose ul { padding-left: 1.2em; }
+
+/* -------------------------------------------------------------- títulos minimalistas */
+/* Título de sección: mayúsculas espaciadas, chico, en dos líneas. */
+.head { display: grid; gap: 1.6rem; align-content: start; }
+.head__title {
+  font-family: var(--font-display);
+  font-weight: 400;
+  font-size: clamp(1.05rem, 0.9rem + 0.55vw, 1.4rem);
+  line-height: 1.55;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: inherit;
+}
+.head__title span { display: block; }
+.justify { text-align: justify; hyphens: auto; }
+.tracked {
+  font-family: var(--font-display);
+  font-size: 0.78rem;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+}
+
+/* Botón claro para láminas de color (verde, bordó, celeste) */
+.btn--light { background: var(--base); color: var(--vino); border-color: var(--base); }
+.btn--light:hover { background: transparent; color: var(--base); border-color: var(--base); }
+.tone-celeste .btn--light:hover { color: var(--vino); border-color: var(--vino); }

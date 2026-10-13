@@ -6,4 +6,5 @@ interface ImportMetaEnv {
   readonly PUBLIC_GA_ID?: string;
   readonly PUBLIC_WHATSAPP?: string;
   readonly PUBLIC_PREVIEW?: string;
+  readonly PUBLIC_BOOKING_URL?: string;
 }

@@ -3,19 +3,22 @@ import { Image } from 'astro:assets';
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import SectionHead from '../components/SectionHead.astro';
-import Isotipo from '../components/Isotipo.astro';
 import ArrowIcon from '../components/ArrowIcon.astro';
 import ProjectCard from '../components/ProjectCard.astro';
 import ContactForm from '../components/ContactForm.astro';
 import { site } from '../config/site';
 import {
   hero,
-  photos,
-  applications,
+  heroReel,
   philosophy,
   servicesIntro,
+  servicePhotos,
   serviceGuide,
+  brands,
+  applications,
+  strip,
   portfolioIntro,
+  meeting,
   contactIntro,
 } from '../data/home';
 import faq from '../data/faq.json';
@@ -36,167 +39,160 @@ const rest = proyectos.filter((p) => !p.data.featured);
 const categories = [...new Set(proyectos.flatMap((p) => p.data.categories))];
 const showFilters = proyectos.length >= 4 && categories.length > 1;
 
-type Testimonio = { quote: string; author: string; project?: string };
+type Testimonio = { quote: string; author: string };
 const quotes = testimonios as Testimonio[];
 
-// Numeración editorial de secciones (se ajusta si alguna se oculta).
-let n = 0;
-const num = () => String(++n).padStart(2, '0');
+// Marca grande del inicio, letra por letra para repartirla de lado a lado.
+const wordmark = [...'THE WED BRAND'];
+
+const bookingHref = site.bookingUrl || '#contacto';
 
 const faqLd = {
   '@context': 'https://schema.org',
   '@type': 'FAQPage',
-  mainEntity: faq.map((f) => ({
-    '@type': 'Question',
-    name: f.q,
-    acceptedAnswer: { '@type': 'Answer', text: f.a },
-  })),
+  mainEntity: faq.map((f) => ({ '@type': 'Question', name: f.q, acceptedAnswer: { '@type': 'Answer', text: f.a } })),
 };
 ---
 <Base jsonLd={faqLd}>
-  <!-- ============================================================ HERO -->
+  <!-- ============================================================ INICIO -->
   <section class="hero" id="inicio" aria-labelledby="hero-title">
     <div class="container">
-      <div class="hero__meta mono-sm">
-        <span>{hero.eyebrow}</span>
-        <span aria-hidden="true">Est. {site.foundingYear}</span>
-      </div>
-
-      <h1 class="hero__title" id="hero-title">{hero.title}</h1>
-
-      <div class="hero__intro">
-        <p class="lead">{hero.lead}</p>
-        <div class="hero__actions">
-          <a class="btn btn--solid" href={hero.primary.href}>{hero.primary.label}</a>
-          <a class="paren-link" href={hero.secondary.href}>{hero.secondary.label.toLowerCase()}</a>
-        </div>
+      <h1 class="wordmark" id="hero-title">
+        <span class="visually-hidden">The Wed Brand — branding e identidad para casamientos</span>
+        <span class="wordmark__letters" aria-hidden="true">
+          {wordmark.map((ch, i) => (
+            <span class:list={['wordmark__ch', { 'wordmark__sp': ch === ' ' }]} style={`--i:${i}`}>{ch === ' ' ? '' : ch}</span>
+          ))}
+        </span>
+      </h1>
+      <p class="hero__manifesto justify">{hero.manifesto}</p>
+      <div class="hero__actions">
+        <a class="bracket-link" href={hero.primary.href}>{hero.primary.label.toLowerCase()}</a>
+        <a class="bracket-link" href={hero.secondary.href}>{hero.secondary.label.toLowerCase()}</a>
       </div>
     </div>
 
+    <div class="reel" aria-label="Algunos trabajos y aplicaciones">
+      <ul class="reel__track">
+        {[0, 1].map((copy) =>
+          heroReel.map((item, i) => (
+            <li class="reel__item" aria-hidden={copy === 1 ? 'true' : undefined}>
+              <p class="reel__meta tracked">
+                <span>[ {item.tag}</span>
+                <span>{String(i + 1).padStart(2, '0')} ]</span>
+              </p>
+              <div class="reel__img">
+                <Image
+                  src={item.src}
+                  alt={copy === 1 ? '' : item.alt}
+                  widths={[220, 340, 460]}
+                  sizes="(min-width: 900px) 16vw, 42vw"
+                  loading={copy === 0 && i < 6 ? 'eager' : 'lazy'}
+                />
+              </div>
+            </li>
+          )),
+        )}
+      </ul>
+    </div>
   </section>
 
-  <!-- ============================================================ FILOSOFÍA -->
-  <section class="section philosophy" id="filosofia" aria-labelledby="filosofia-title">
-    <div class="container">
-      <SectionHead number={num()} label={philosophy.label} title={philosophy.problem} id="filosofia-title" />
+  <!-- ============================================================ CÓMO PENSAMOS -->
+  <section class="section note" id="filosofia" aria-labelledby="filosofia-title">
+    <div class="container note__grid">
+      <figure class="note__photo reveal">
+        <Image src={philosophy.photo.src} alt={philosophy.photo.alt} widths={[320, 480, 640]} sizes="(min-width: 900px) 24vw, 80vw" />
+      </figure>
+      <div class="note__text">
+        <SectionHead title={philosophy.title} id="filosofia-title">
+          {philosophy.paragraphs.map((p) => <p class="justify">{p}</p>)}
+        </SectionHead>
+      </div>
+    </div>
+    <figure class="quote reveal">
+      <figcaption class="tracked">{philosophy.quoteLabel}</figcaption>
+      <blockquote><p class="script">«{philosophy.quote}»</p></blockquote>
+    </figure>
+  </section>
 
-      <ul class="cells cells--4">
-        {philosophy.problems.map((p, i) => (
-          <li class="cell reveal" style={`--delay:${i * 0.08}s`}>
-            <h3 class="cell__title">{p.title}</h3>
-            <p>{p.text}</p>
+  <!-- ============================================================ SERVICIOS -->
+  <section class="section services" id="servicios" aria-labelledby="servicios-title">
+    <div class="container">
+      <div class="split-head">
+        <SectionHead title={servicesIntro.title} id="servicios-title" />
+        <p class="reveal">{servicesIntro.lead}</p>
+      </div>
+
+      <ul class="svc-grid">
+        {servicios.map((s, i) => (
+          <li class="svc reveal" id={`servicio-${s.id}`} style={`--delay:${i * 0.08}s`}>
+            {servicePhotos[s.id] && (
+              <figure class="svc__photo">
+                <Image src={servicePhotos[s.id].src} alt={servicePhotos[s.id].alt} widths={[300, 460, 600]} sizes="(min-width: 1100px) 22vw, (min-width: 640px) 45vw, 90vw" />
+              </figure>
+            )}
+            <h3 class="svc__title tracked-title">{s.data.title}</h3>
+            <p class="svc__tagline">{s.data.tagline}</p>
+            <p class="svc__summary justify">{s.data.summary}</p>
+            <details class="svc__more">
+              <summary>(qué puede incluir)</summary>
+              <ul class="arrow-list">{s.data.includes.map((item) => <li>{item}</li>)}</ul>
+              <p class="tracked svc__sub">Para ustedes si…</p>
+              <ul class="arrow-list">{s.data.idealFor.map((item) => <li>{item}</li>)}</ul>
+              {s.data.note && <p class="svc__note">{s.data.note}</p>}
+            </details>
+            <div class="svc__links">
+              <a class="bracket-link" href={`/servicios/${s.id}`}>ver más</a>
+              <a class="bracket-link" href={`/?servicio=${s.id}#contacto`} data-preselect={s.id}>consultar</a>
+            </div>
           </li>
         ))}
       </ul>
 
-      <div class="philosophy__answer">
-        <div class="stack reveal">
-          {photos.philosophyStack.map((ph, i) => (
-            <figure class:list={['stack__photo', `stack__photo--${i + 1}`]}>
-              <Image src={ph.src} alt={ph.alt} widths={[360, 560, 760]} sizes="(min-width: 900px) 32vw, 70vw" />
-            </figure>
-          ))}
+      <div class="services__extra">
+        <div class="custom reveal">
+          <h3 class="tracked-title">{servicesIntro.custom.title}</h3>
+          <p>{servicesIntro.custom.text}</p>
+          <a class="bracket-link" href="/?servicio=no-se#contacto" data-preselect="no-se">cuéntennos su idea</a>
         </div>
-        <div class="philosophy__text">
-          <h3 class="philosophy__answer-title reveal">{philosophy.answerTitle}</h3>
-          <p class="lead reveal">{philosophy.answer}</p>
-          <dl class="symbol-list">
-            {philosophy.symbol.map((s) => (
-              <div class="symbol-list__row reveal">
-                <span class="arrow-dot"><ArrowIcon /></span>
-                <dt>{s.title}</dt>
-                <dd>{s.text}</dd>
-              </div>
+        <div class="guide reveal">
+          <h3 class="tracked-title">{serviceGuide.title}</h3>
+          <ul class="guide__list">
+            {serviceGuide.items.map((g) => (
+              <li>
+                <span>{g.situation}</span>
+                <a href={`#servicio-${g.service}`}>{serviceTitle(g.service)} <ArrowIcon class="guide__arrow" /></a>
+              </li>
             ))}
-          </dl>
+          </ul>
         </div>
       </div>
-
-      <figure class="quote reveal">
-        <figcaption class="label">{philosophy.quoteLabel}</figcaption>
-        <blockquote><p>«{philosophy.quote}»</p></blockquote>
-      </figure>
     </div>
   </section>
 
   <!-- ============================================================ FRANJA DE FOTOS -->
   <section class="strip" aria-label="Fotografía">
     <ul class="strip__list">
-      {photos.strip.map((ph, i) => (
+      {strip.map((ph, i) => (
         <li class="strip__item reveal" style={`--delay:${i * 0.08}s`}>
-          <Image src={ph.src} alt={ph.alt} widths={[300, 460, 600]} sizes="(min-width: 900px) 20vw, 60vw" />
+          <Image src={ph.src} alt={ph.alt} widths={[300, 460, 600]} sizes="(min-width: 900px) 18vw, 60vw" />
         </li>
       ))}
     </ul>
   </section>
 
-  <!-- ============================================================ SERVICIOS -->
-  <section class="section tone-vino on-dark services" id="servicios" aria-labelledby="servicios-title">
-    <div class="container">
-      <SectionHead number={num()} label={servicesIntro.label} title={servicesIntro.title} id="servicios-title" split>
-        <p class="lead">{servicesIntro.lead}</p>
-      </SectionHead>
-
-      <ol class="service-list">
-        {servicios.map((s, i) => (
-          <li class="service reveal" id={`servicio-${s.id}`}>
-            <div class="service__head">
-              <span class="service__num mono-sm">{String(i + 1).padStart(2, '0')}</span>
-              <h3 class="service__title">{s.data.title}</h3>
-              <p class="service__tagline">{s.data.tagline}</p>
-              {photos.services[s.id] && (
-                <figure class="service__photo">
-                  <Image src={photos.services[s.id].src} alt={photos.services[s.id].alt} widths={[320, 520]} sizes="(min-width: 1000px) 22vw, 80vw" />
-                </figure>
-              )}
-            </div>
-            <div class="service__body">
-              <p>{s.data.summary}</p>
-              <p class="label service__sub">Puede incluir</p>
-              <ul class="arrow-list">
-                {s.data.includes.map((item) => <li>{item}</li>)}
-              </ul>
-            </div>
-            <div class="service__side">
-              <p class="label service__sub">Para ustedes si…</p>
-              <ul class="arrow-list">
-                {s.data.idealFor.map((item) => <li>{item}</li>)}
-              </ul>
-              {s.data.note && <p class="service__note">{s.data.note}</p>}
-              <div class="service__links">
-                <a class="paren-link" href={`/servicios/${s.id}`}>ver el servicio<span class="visually-hidden"> {s.data.title}</span></a>
-                <a class="paren-link" href={`/?servicio=${s.id}#contacto`} data-preselect={s.id}>consultar</a>
-              </div>
-            </div>
-          </li>
-        ))}
-        <li class="service service--custom reveal">
-          <div class="service__head">
-            <span class="service__num mono-sm">+</span>
-            <h3 class="service__title">{servicesIntro.custom.title}</h3>
-          </div>
-          <div class="service__body"><p>{servicesIntro.custom.text}</p></div>
-          <div class="service__side">
-            <div class="service__links">
-              <a class="paren-link" href="/?servicio=a-medida#contacto" data-preselect="a-medida">cuéntennos su idea</a>
-            </div>
-          </div>
-        </li>
-      </ol>
-
-      <div class="guide reveal">
-        <h3 class="guide__title">{serviceGuide.title}</h3>
-        <ul class="guide__list">
-          {serviceGuide.items.map((g) => (
-            <li>
-              <span>{g.situation}</span>
-              <a href={`#servicio-${g.service}`}>
-                <span class="arrow-dot"><ArrowIcon /></span>
-                {serviceTitle(g.service)}
-              </a>
-            </li>
-          ))}
-        </ul>
+  <!-- ============================================================ MARCAS (lámina verde) -->
+  <section class="section tone-oliva on-dark brands" id="marcas" aria-labelledby="marcas-title">
+    <div class="container brands__grid">
+      <div class="brands__photos reveal">
+        <figure><Image src={brands.photo.src} alt={brands.photo.alt} widths={[300, 460]} sizes="(min-width: 900px) 20vw, 45vw" /></figure>
+        <figure><Image src={brands.photo2.src} alt={brands.photo2.alt} widths={[300, 460]} sizes="(min-width: 900px) 20vw, 45vw" /></figure>
+      </div>
+      <div class="brands__text">
+        <SectionHead title={brands.title} id="marcas-title">
+          {brands.paragraphs.map((p) => <p class="justify">{p}</p>)}
+          <a class="btn btn--light" href={`/?servicio=${brands.cta.service}#contacto`} data-preselect={brands.cta.service}>{brands.cta.label}</a>
+        </SectionHead>
       </div>
     </div>
   </section>
@@ -204,15 +200,16 @@ const faqLd = {
   <!-- ============================================================ APLICACIONES -->
   <section class="section applications" id="aplicaciones" aria-labelledby="aplicaciones-title">
     <div class="container">
-      <SectionHead number={num()} label={applications.label} title={applications.title} id="aplicaciones-title" split>
-        <p class="lead">{applications.lead}</p>
-      </SectionHead>
+      <div class="split-head">
+        <SectionHead title={applications.title} id="aplicaciones-title" />
+        <p class="reveal">{applications.lead}</p>
+      </div>
       <ul class="apps">
         {applications.items.map((it, i) => (
           <li class="apps__item reveal" style={`--delay:${(i % 4) * 0.07}s`}>
             <figure>
-              <div class="apps__img"><Image src={it.src} alt={it.alt} widths={[300, 460, 620]} sizes="(min-width: 1000px) 23vw, (min-width: 640px) 45vw, 90vw" /></div>
-              <figcaption class="mono-sm">{it.caption}</figcaption>
+              <div class="apps__img"><Image src={it.src} alt={it.alt} widths={[280, 420, 560]} sizes="(min-width: 1000px) 20vw, 45vw" /></div>
+              <figcaption class="tracked">{it.caption}</figcaption>
             </figure>
           </li>
         ))}
@@ -221,88 +218,69 @@ const faqLd = {
   </section>
 
   <!-- ============================================================ PORTFOLIO -->
-  <section class="section portfolio" id="portfolio" aria-labelledby="portfolio-title">
+  <section class="section portfolio section-rule" id="portfolio" aria-labelledby="portfolio-title">
     <div class="container">
-      <SectionHead number={num()} label={portfolioIntro.label} title={portfolioIntro.title} id="portfolio-title" split>
-        <p class="lead">{portfolioIntro.lead}</p>
-      </SectionHead>
+      <div class="split-head">
+        <SectionHead title={portfolioIntro.title} id="portfolio-title" />
+        <p class="reveal">{portfolioIntro.lead}</p>
+      </div>
 
       {showFilters && (
         <div class="filters" role="group" aria-label="Filtrar proyectos" data-filters>
           <button type="button" class="bracket-link" aria-pressed="true" data-filter="*">todos</button>
-          {categories.map((c) => (
-            <button type="button" class="bracket-link" aria-pressed="false" data-filter={c}>{c.toLowerCase()}</button>
-          ))}
+          {categories.map((c) => <button type="button" class="bracket-link" aria-pressed="false" data-filter={c}>{c.toLowerCase()}</button>)}
         </div>
       )}
 
       <div class="portfolio__featured">
         {featured.map((p) => <div class="reveal"><ProjectCard project={p} featured /></div>)}
       </div>
-
-      {rest.length > 0 && (
-        <div class="portfolio__grid">
-          {rest.map((p) => <div class="reveal"><ProjectCard project={p} /></div>)}
-        </div>
-      )}
+      {rest.length > 0 && <div class="portfolio__grid">{rest.map((p) => <div class="reveal"><ProjectCard project={p} /></div>)}</div>}
 
       <p class="portfolio__more reveal">
         {portfolioIntro.more}{' '}
-        <a class="paren-link" href={site.contact.instagram.url} target="_blank" rel="noopener">{site.contact.instagram.handle}</a>
+        <a class="bracket-link" href={site.contact.instagram.url} target="_blank" rel="noopener">{site.contact.instagram.handle}</a>
       </p>
     </div>
   </section>
 
-  <!-- ============================================================ NOSOTRAS -->
+  <!-- ============================================================ QUIÉNES ESTÁN DETRÁS (lámina celeste) -->
   <section class="section tone-celeste about" id="nosotras" aria-labelledby="nosotras-title">
-    <div class="container">
-      <SectionHead number={num()} label="Nosotras" title={equipo.title} id="nosotras-title" />
-
-      <div class="about__grid">
-        <figure class="about__photo reveal">
-          <Image src={fotoEquipo} alt={equipo.photoAlt} widths={[420, 640]} sizes="(min-width: 900px) 40vw, 90vw" />
-        </figure>
-        <div class="about__text">
-          <p class="lead reveal">{equipo.intro}</p>
-          <p class="reveal">{equipo.together}</p>
-        </div>
-      </div>
-
-      <div class="venn reveal" aria-label="Cómo se complementan">
-        <div class="venn__figure" aria-hidden="true"><Isotipo /></div>
-        <div class="venn__people">
-          {equipo.people.map((person, i) => (
-            <div class:list={['venn__person', `venn__person--${i === 0 ? 'left' : 'right'}`]}>
-              <p class="venn__name">{person.name}</p>
-              <p class="mono-sm venn__full">{person.fullName}</p>
-              <p class="venn__role">{person.role}</p>
-              <p class="venn__desc">{person.text}</p>
+    <div class="container about__grid">
+      <div class="about__text">
+        <SectionHead title={equipo.title} id="nosotras-title">
+          {equipo.paragraphs.map((p) => <p class="justify">{p}</p>)}
+        </SectionHead>
+        <dl class="about__people reveal">
+          {equipo.people.map((person) => (
+            <div>
+              <dt class="tracked">{person.name} · {person.fullName}</dt>
+              <dd>{person.role}</dd>
               {person.links.length > 0 && (
-                <ul class="venn__links">
-                  {(person.links as { label: string; href: string }[]).map((l) => (
-                    <li><a class="paren-link" href={l.href} target="_blank" rel="noopener">{l.label}</a></li>
-                  ))}
-                </ul>
+                <dd>{(person.links as { label: string; href: string }[]).map((l) => <a class="bracket-link" href={l.href} target="_blank" rel="noopener">{l.label}</a>)}</dd>
               )}
             </div>
           ))}
-        </div>
-        <p class="venn__center label"><span aria-hidden="true">∩ </span>{equipo.intersection}</p>
+        </dl>
       </div>
+      <figure class="about__photo reveal">
+        <Image src={fotoEquipo} alt={equipo.photoAlt} widths={[420, 640]} sizes="(min-width: 900px) 45vw, 90vw" />
+      </figure>
     </div>
   </section>
 
   <!-- ============================================================ PROCESO -->
   <section class="section process" id="proceso" aria-labelledby="proceso-title">
     <div class="container">
-      <SectionHead number={num()} label="Proceso" title="Cómo trabajamos" id="proceso-title" split>
-        <p class="lead">{proceso.note}</p>
-      </SectionHead>
-      <ol class="cells cells--5">
+      <div class="split-head">
+        <SectionHead title={['Cómo', 'trabajamos']} id="proceso-title" />
+        <p class="reveal">{proceso.note}</p>
+      </div>
+      <ol class="steps">
         {proceso.steps.map((s, i) => (
-          <li class="cell reveal" style={`--delay:${i * 0.07}s`}>
-            <span class="mono-sm">{String(i + 1).padStart(2, '0')}</span>
-            <h3 class="cell__title">{s.title}</h3>
+          <li class="reveal" style={`--delay:${i * 0.07}s`}>
+            <span class="tracked">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="tracked-title">{s.title}</h3>
             <p>{s.text}</p>
           </li>
         ))}
@@ -310,19 +288,29 @@ const faqLd = {
     </div>
   </section>
 
+  <!-- ============================================================ REUNIÓN INICIAL (lámina bordó) -->
+  <section class="section tone-vino on-dark meeting" id="reunion" aria-labelledby="reunion-title">
+    <div class="container meeting__inner">
+      <h2 class="head__title reveal" id="reunion-title"><span>{meeting.title}</span></h2>
+      <p class="meeting__text reveal">{meeting.text}</p>
+      <p class="tracked meeting__badge reveal">• {meeting.badge} •</p>
+      <p class="reveal">{meeting.note}</p>
+      <a
+        class="btn btn--light reveal"
+        href={bookingHref}
+        {...(site.bookingUrl ? { target: '_blank', rel: 'noopener' } : { 'data-preselect': 'reunion' })}
+      >{meeting.cta}</a>
+    </div>
+  </section>
+
   <!-- ============================================================ TESTIMONIOS (se oculta si no hay) -->
   {quotes.length > 0 && (
     <section class="section testimonials" id="testimonios" aria-labelledby="testimonios-title">
       <div class="container">
-        <SectionHead number={num()} label="Testimonios" title="Lo que dicen las parejas" id="testimonios-title" />
+        <SectionHead title={['Lo que dicen', 'las parejas']} id="testimonios-title" />
         <ul class="testimonials__list">
           {quotes.map((t) => (
-            <li class="reveal">
-              <figure>
-                <blockquote><p>«{t.quote}»</p></blockquote>
-                <figcaption class="mono-sm">— {t.author}</figcaption>
-              </figure>
-            </li>
+            <li class="reveal"><figure><blockquote><p>«{t.quote}»</p></blockquote><figcaption class="tracked">{t.author}</figcaption></figure></li>
           ))}
         </ul>
       </div>
@@ -332,16 +320,13 @@ const faqLd = {
   <!-- ============================================================ FAQ -->
   <section class="section faq" id="preguntas" aria-labelledby="preguntas-title">
     <div class="container faq__grid">
-      <SectionHead number={num()} label="Preguntas frecuentes" title="Antes de escribirnos" id="preguntas-title">
-        <p>¿Les queda alguna duda? <a class="paren-link" href="#contacto">pregúntennos</a></p>
+      <SectionHead title={['Preguntas', 'frecuentes']} id="preguntas-title">
+        <p>¿Les queda alguna duda? <a class="bracket-link" href="#contacto">escríbannos</a></p>
       </SectionHead>
       <div class="faq__list">
         {faq.map((f) => (
           <details class="faq__item">
-            <summary>
-              <span>{f.q}</span>
-              <span class="faq__icon" aria-hidden="true"></span>
-            </summary>
+            <summary><span>{f.q}</span><span class="faq__icon" aria-hidden="true"></span></summary>
             <div class="faq__answer"><p>{f.a}</p></div>
           </details>
         ))}
@@ -350,378 +335,237 @@ const faqLd = {
   </section>
 
   <!-- ============================================================ CONTACTO -->
-  <section class="section tone-vino on-dark contact" id="contacto" aria-labelledby="contacto-title">
-    <div class="container contact__grid">
-      <div class="contact__intro">
-        <SectionHead number={num()} label={contactIntro.label} title={contactIntro.title} id="contacto-title">
-          <p class="lead">{contactIntro.lead}</p>
-        </SectionHead>
-        <figure class="contact__photo reveal">
-          <Image src={photos.contact.src} alt={photos.contact.alt} widths={[360, 560]} sizes="(min-width: 1000px) 30vw, 80vw" />
-        </figure>
-        <div class="contact__channels">
-          <p class="label">O directamente</p>
-          <ul>
-            <li>
-              <a href={`mailto:${site.contact.email}`}>
-                <span class="arrow-dot"><ArrowIcon /></span>{site.contact.email}
-              </a>
-            </li>
-            <li>
-              <a href={site.contact.instagram.url} target="_blank" rel="noopener">
-                <span class="arrow-dot"><ArrowIcon /></span>Instagram {site.contact.instagram.handle}
-              </a>
-            </li>
-            {site.contact.whatsapp && (
-              <li>
-                <a href={`https://wa.me/${site.contact.whatsapp}`} target="_blank" rel="noopener">
-                  <span class="arrow-dot"><ArrowIcon /></span>WhatsApp
-                </a>
-              </li>
-            )}
-          </ul>
-        </div>
-      </div>
+  <section class="section contact section-rule" id="contacto" aria-labelledby="contacto-title">
+    <div class="container">
+      <h2 class="contact__title script reveal" id="contacto-title">{contactIntro.title}</h2>
+      <p class="contact__lead reveal">{contactIntro.lead}</p>
       <ContactForm services={servicios.map((s) => ({ slug: s.id, title: s.data.title }))} />
+      <p class="contact__direct">
+        <span class="tracked">O directamente</span>
+        <a class="bracket-link" href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+        <a class="bracket-link" href={site.contact.instagram.url} target="_blank" rel="noopener">instagram {site.contact.instagram.handle}</a>
+        {site.contact.whatsapp && <a class="bracket-link" href={`https://wa.me/${site.contact.whatsapp}`} target="_blank" rel="noopener">whatsapp</a>}
+      </p>
     </div>
   </section>
 </Base>
 
 {showFilters && (
   <script>
-    const group = document.querySelector('[data-filters]');
-    const buttons = [...(group?.querySelectorAll<HTMLButtonElement>('[data-filter]') ?? [])];
+    const buttons = [...document.querySelectorAll<HTMLButtonElement>('[data-filters] [data-filter]')];
     const cards = [...document.querySelectorAll<HTMLElement>('#portfolio [data-categories]')];
     buttons.forEach((b) =>
       b.addEventListener('click', () => {
         const f = b.dataset.filter!;
         buttons.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
-        cards.forEach((c) => {
-          const show = f === '*' || c.dataset.categories!.split('|').includes(f);
-          c.parentElement!.hidden = !show;
-        });
+        cards.forEach((c) => (c.parentElement!.hidden = !(f === '*' || c.dataset.categories!.split('|').includes(f))));
       }),
     );
   </script>
 )}
 
 <style>
-  /* ------------------------------------------------ hero */
-  .hero { padding-top: clamp(1.5rem, 3vw, 3rem); overflow: hidden; }
-  .hero__meta {
+  /* Títulos de bloque chicos, mayúsculas espaciadas */
+  .tracked-title {
+    font-family: var(--font-display);
+    font-weight: 400;
+    font-size: 1rem;
+    line-height: 1.5;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+  .split-head {
+    display: grid;
+    gap: 1.5rem;
+    margin-bottom: clamp(2.5rem, 5vw, 4.5rem);
+  }
+  @media (min-width: 900px) {
+    .split-head { grid-template-columns: 1fr 1fr; align-items: end; column-gap: var(--gutter); }
+    .split-head > p { max-width: 46ch; justify-self: end; }
+  }
+
+  /* ------------------------------------------------ inicio (ref. Solamente) */
+  .hero { padding-top: clamp(1.5rem, 4vw, 3.5rem); padding-bottom: clamp(3rem, 6vw, 5rem); overflow: hidden; }
+  .wordmark { margin: 0; color: var(--vino); }
+  .wordmark__letters {
     display: flex;
     justify-content: space-between;
-    gap: 1rem;
-    padding-bottom: 0.9rem;
-    border-bottom: 1px solid var(--line);
+    align-items: baseline;
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(2.2rem, 11.2vw, 15rem);
+    line-height: 0.9;
+    text-transform: uppercase;
   }
-  .hero__title {
-    margin: clamp(2rem, 5vw, 4.5rem) auto 0;
-    max-width: 15ch;
-    text-align: center;
-    color: var(--vino);
-    font-size: clamp(2.35rem, 1.2rem + 5.4vw, 6.6rem);
-    line-height: 1;
-  }
-  .hero__intro {
-    display: grid;
-    justify-items: center;
-    gap: 1.6rem;
-    margin: clamp(1.5rem, 3vw, 2.5rem) auto 0;
-    text-align: center;
-  }
-  .hero__intro .lead { max-width: 46ch; }
-  .hero__actions {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    align-items: center;
-    gap: 0.75rem 1.75rem;
-  }
+  .wordmark__ch { display: inline-block; animation: letter-in 1s var(--ease) both; animation-delay: calc(var(--i) * 0.045s); }
+  .wordmark__sp { width: 0.15em; }
+  @keyframes letter-in { from { opacity: 0; transform: translateY(0.25em); } }
 
-  .hero { padding-bottom: clamp(3.5rem, 7vw, 6rem); }
-  /* ------------------------------------------------ celdas (grilla del brand book) */
-  .cells {
+  .hero__manifesto {
+    max-width: none;
+    margin-top: clamp(1.5rem, 3vw, 2.5rem);
+    font-family: var(--font-display);
+    font-size: clamp(0.72rem, 0.66rem + 0.25vw, 0.92rem);
+    line-height: 2;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    animation: fade-in 1.2s var(--ease) 0.5s both;
+  }
+  .hero__actions { display: flex; flex-wrap: wrap; gap: 0.5rem 2rem; margin-top: 1.5rem; animation: fade-in 1.2s var(--ease) 0.7s both; }
+  @keyframes fade-in { from { opacity: 0; } }
+
+  /* Tira de fotos que se desliza de derecha a izquierda */
+  .reel { margin-top: clamp(2.5rem, 5vw, 4rem); overflow: hidden; }
+  .reel__track {
     list-style: none;
     padding: 0;
-    display: grid;
-    border-top: 1px solid var(--line);
-    border-left: 1px solid var(--line);
+    display: flex;
+    gap: clamp(0.9rem, 1.6vw, 1.5rem);
+    width: max-content;
+    animation: reel 70s linear infinite;
   }
-  .cell {
-    display: grid;
-    align-content: start;
-    gap: 0.7rem;
-    padding: clamp(1.2rem, 2vw, 1.8rem);
-    border-right: 1px solid var(--line);
-    border-bottom: 1px solid var(--line);
-  }
-  .cell__title { font-size: var(--step-1); color: var(--accent); }
-  @media (min-width: 640px) { .cells--4, .cells--5 { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1000px) {
-    .cells--4 { grid-template-columns: repeat(4, 1fr); }
-    .cells--5 { grid-template-columns: repeat(5, 1fr); }
+  .reel:hover .reel__track { animation-play-state: paused; }
+  @keyframes reel { to { transform: translateX(calc(-50% - clamp(0.9rem, 1.6vw, 1.5rem) / 2)); } }
+  .reel__item { width: clamp(150px, 15vw, 240px); flex: none; display: grid; gap: 0.6rem; }
+  .reel__meta { display: flex; justify-content: space-between; gap: 0.5rem; font-size: 0.66rem; white-space: nowrap; overflow: hidden; }
+  .reel__img { aspect-ratio: 3 / 4; overflow: hidden; background: var(--line-soft); }
+  .reel__img :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+  .reel__item:hover .reel__img :global(img) { transform: scale(1.04); }
+  @media (prefers-reduced-motion: reduce) {
+    .reel { overflow-x: auto; }
+    .reel__track { animation: none; padding-inline: var(--gutter); }
   }
 
-  /* ------------------------------------------------ filosofía */
-  .philosophy__answer {
-    display: grid;
-    gap: clamp(2rem, 5vw, 5rem);
-    align-items: center;
-    margin-top: var(--section-y);
+  /* ------------------------------------------------ nota (ref. Kennedy) */
+  .note__grid { display: grid; gap: clamp(2.5rem, 5vw, 4rem); }
+  .note__photo { margin: 0; max-width: 360px; }
+  .note__photo :global(img) { width: 100%; }
+  .note__text { max-width: 440px; }
+  .note__text :global(.head__lead) { display: grid; gap: 1.2rem; }
+  @media (min-width: 900px) {
+    .note__grid { grid-template-columns: 1fr 1fr; }
+    .note__text { justify-self: end; margin-top: clamp(4rem, 9vw, 9rem); margin-right: 6vw; }
   }
-  /* Pila de fotos con marco blanco (Brand Book · portadillas) */
-  .stack { position: relative; aspect-ratio: 5 / 6; max-width: 520px; width: 100%; justify-self: center; }
-  .stack__photo {
-    position: absolute;
-    margin: 0;
-    width: 68%;
-    aspect-ratio: 3 / 4;
-    background: #fff;
-    padding: clamp(6px, 0.9vw, 12px);
-    transition: transform 0.8s var(--ease);
-  }
-  .stack__photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
-  .stack__photo--1 { z-index: 3; left: 16%; top: 8%; transform: rotate(-2deg); }
-  .stack__photo--2 { z-index: 2; left: 2%; top: 4%; transform: rotate(-7deg); }
-  .stack__photo--3 { z-index: 1; left: 30%; top: 2%; transform: rotate(6deg); }
-  .stack:hover .stack__photo--2 { transform: rotate(-11deg) translateX(-12px); }
-  .stack:hover .stack__photo--3 { transform: rotate(10deg) translateX(12px); }
+  .quote { margin: var(--section-y) auto 0; text-align: center; display: grid; gap: 1rem; padding-inline: var(--gutter); }
+  .quote blockquote p { max-width: none; color: var(--vino); font-size: clamp(3rem, 1.5rem + 6vw, 7.5rem); line-height: 1.1; }
 
-  /* Franja de fotos */
-  .strip { padding-bottom: var(--section-y); }
-  .strip__list {
-    list-style: none;
-    padding: 0 var(--gutter);
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    gap: clamp(0.5rem, 1.2vw, 1.2rem);
-    max-width: 1600px;
-    margin-inline: auto;
-  }
+  /* ------------------------------------------------ servicios */
+  .svc-grid { list-style: none; padding: 0; display: grid; gap: clamp(3rem, 5vw, 4rem) var(--gutter); }
+  @media (min-width: 640px) { .svc-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+  @media (min-width: 1100px) { .svc-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+  .svc { display: grid; gap: 0.9rem; align-content: start; scroll-margin-top: calc(var(--header-h) + 1rem); }
+  .svc__photo { margin: 0 0 0.6rem; aspect-ratio: 4 / 5; overflow: hidden; }
+  .svc__photo :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+  .svc:hover .svc__photo :global(img) { transform: scale(1.03); }
+  .svc__title { min-height: 3em; }
+  .svc__tagline { color: var(--vino); }
+  .svc__summary { font-size: 0.86rem; }
+  .svc__more summary { cursor: pointer; list-style: none; font-size: 0.86rem; color: var(--vino); }
+  .svc__more summary::-webkit-details-marker { display: none; }
+  .svc__more[open] summary { margin-bottom: 0.8rem; }
+  .svc__more .arrow-list { font-size: 0.82rem; gap: 0.35rem; }
+  .svc__sub { margin: 1rem 0 0.5rem; }
+  .svc__note { margin-top: 0.9rem; font-size: 0.78rem; padding-top: 0.8rem; border-top: 1px solid var(--line-soft); }
+  .svc__links { display: flex; flex-wrap: wrap; gap: 0.3rem 1.4rem; font-size: 0.86rem; }
+
+  .services__extra { display: grid; gap: 3rem; margin-top: clamp(4rem, 7vw, 6rem); padding-top: 3rem; border-top: 1px solid var(--line-soft); }
+  @media (min-width: 900px) { .services__extra { grid-template-columns: 1fr 1.6fr; gap: var(--gutter); } }
+  .custom { display: grid; gap: 1rem; align-content: start; max-width: 38ch; }
+  .guide { display: grid; gap: 1rem; }
+  .guide__list { list-style: none; padding: 0; }
+  .guide__list li { display: grid; gap: 0.3rem 2rem; padding: 0.8rem 0; border-top: 1px solid var(--line-soft); font-size: 0.86rem; }
+  .guide__list a { display: inline-flex; align-items: center; gap: 0.5rem; color: var(--vino); text-decoration: none; font-family: var(--font-display); font-size: 0.78rem; letter-spacing: 0.16em; text-transform: uppercase; }
+  .guide__list a:hover { text-decoration: underline; }
+  .guide__list :global(.guide__arrow) { width: 0.9rem; }
+  @media (min-width: 700px) { .guide__list li { grid-template-columns: 1.5fr 1fr; align-items: center; } }
+
+  /* ------------------------------------------------ franja */
+  .strip { padding-block: 0 var(--section-y); }
+  .strip__list { list-style: none; padding: 0 var(--gutter); display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: clamp(0.5rem, 1.2vw, 1.2rem); max-width: 1600px; margin-inline: auto; }
   .strip__item { aspect-ratio: 3 / 4; overflow: hidden; }
   .strip__item:nth-child(even) { margin-top: clamp(1.5rem, 4vw, 4rem); }
-  .strip__item :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
-  .strip__item:hover :global(img) { transform: scale(1.04); }
+  .strip__item :global(img) { width: 100%; height: 100%; object-fit: cover; }
   @media (max-width: 760px) {
     .strip__list { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 58%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
     .strip__list::-webkit-scrollbar { display: none; }
     .strip__item { scroll-snap-align: center; }
   }
 
-  /* Aplicaciones */
+  /* ------------------------------------------------ marcas */
+  .brands__grid { display: grid; gap: clamp(2.5rem, 5vw, 5rem); align-items: center; }
+  .brands__photos { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; max-width: 520px; }
+  .brands__photos figure { margin: 0; aspect-ratio: 3 / 4; overflow: hidden; }
+  .brands__photos figure:last-child { margin-top: 3rem; }
+  .brands__photos :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .brands__text { max-width: 460px; }
+  .brands__text :global(.head__lead) { display: grid; gap: 1.2rem; justify-items: start; }
+  @media (min-width: 900px) { .brands__grid { grid-template-columns: 1fr 1fr; } .brands__text { justify-self: end; margin-right: 4vw; } }
+
+  /* ------------------------------------------------ aplicaciones */
   .apps { list-style: none; padding: 0; display: grid; gap: clamp(1.5rem, 3vw, 2.5rem) var(--gutter); grid-template-columns: repeat(2, minmax(0, 1fr)); }
   @media (min-width: 1000px) { .apps { grid-template-columns: repeat(4, minmax(0, 1fr)); } .apps__item:nth-child(4n+2), .apps__item:nth-child(4n+4) { margin-top: 3rem; } }
   .apps figure { margin: 0; display: grid; gap: 0.7rem; }
-  .apps__img { aspect-ratio: 4 / 5; overflow: hidden; border: 1px solid var(--line-soft); }
+  .apps__img { aspect-ratio: 4 / 5; overflow: hidden; }
   .apps__img :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
   .apps__item:hover .apps__img :global(img) { transform: scale(1.04); }
-  .philosophy__text { display: grid; gap: 1.4rem; }
-  .philosophy__answer-title { font-size: var(--step-3); color: var(--vino); max-width: 16ch; }
-  .symbol-list { display: grid; margin-top: 0.5rem; border-top: 1px solid var(--line-soft); }
-  .symbol-list__row {
-    display: grid;
-    grid-template-columns: auto 1fr;
-    column-gap: 1rem;
-    padding: 0.9rem 0;
-    border-bottom: 1px solid var(--line-soft);
-  }
-  .symbol-list__row .arrow-dot { grid-row: span 2; margin-top: 0.15rem; }
-  .symbol-list dt { font-family: var(--font-display); text-transform: uppercase; color: var(--vino); font-size: var(--step-1); line-height: 1.2; }
-  .symbol-list dd { margin: 0.2rem 0 0; }
-  @media (min-width: 900px) {
-    .philosophy__answer { grid-template-columns: 0.9fr 1fr; }
-  }
-
-  .quote {
-    margin-top: var(--section-y);
-    display: grid;
-    justify-items: center;
-    gap: 1.2rem;
-    text-align: center;
-  }
-  .quote blockquote p {
-    max-width: none;
-    font-family: var(--font-display);
-    font-weight: 600;
-    font-size: clamp(2.2rem, 1rem + 6vw, 7rem);
-    line-height: 1;
-    text-transform: uppercase;
-    color: var(--vino);
-  }
-
-  /* ------------------------------------------------ servicios */
-  .service-list { list-style: none; padding: 0; border-top: 1px solid var(--line); }
-  .service {
-    display: grid;
-    gap: 1.5rem;
-    padding-block: clamp(2rem, 4vw, 3.5rem);
-    border-bottom: 1px solid var(--line);
-    scroll-margin-top: calc(var(--header-h) + 1rem);
-  }
-  .service__head { display: grid; gap: 0.6rem; align-content: start; }
-  .service__num { opacity: 0.85; }
-  .service__title { font-size: var(--step-3); line-height: 1; }
-  .service__tagline { font-size: var(--step-1); }
-  .service__photo { margin: 0.8rem 0 0; aspect-ratio: 4 / 5; max-width: 300px; overflow: hidden; }
-  .service__photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
-  .service__body, .service__side { display: grid; gap: 1rem; align-content: start; }
-  .service__sub { margin-top: 0.4rem; opacity: 0.9; }
-  .service__note {
-    font-size: var(--step--1);
-    padding: 0.8rem 1rem;
-    border: 1px solid var(--line);
-  }
-  .service__links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.4rem; }
-  @media (min-width: 1000px) {
-    .service { grid-template-columns: 1fr 1.15fr 0.95fr; column-gap: clamp(2rem, 3vw, 3.5rem); }
-  }
-  .service--custom .service__title { font-size: var(--step-2); }
-
-  .guide {
-    margin-top: clamp(3rem, 6vw, 5rem);
-    padding: clamp(1.4rem, 3vw, 2.5rem);
-    background: var(--vino-900);
-  }
-  .guide__title { font-size: var(--step-2); margin-bottom: 1.5rem; }
-  .guide__list { list-style: none; padding: 0; }
-  .guide__list li {
-    display: grid;
-    gap: 0.4rem 2rem;
-    padding: 0.9rem 0;
-    border-top: 1px solid var(--line-soft);
-  }
-  .guide__list a {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.6rem;
-    font-family: var(--font-display);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    text-decoration: none;
-  }
-  .guide__list a:hover { text-decoration: underline; }
-  @media (min-width: 800px) {
-    .guide__list li { grid-template-columns: 1.4fr 1fr; align-items: center; }
-  }
+  .apps figcaption { font-size: 0.66rem; }
 
   /* ------------------------------------------------ portfolio */
   .filters { display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem; margin-bottom: 2.5rem; }
   .filters button { background: none; border: 0; padding: 0.4rem 0; min-height: 44px; }
   .filters [aria-pressed='true'] { color: var(--vino); text-decoration: underline; text-underline-offset: 0.3em; }
   .portfolio__featured { display: grid; gap: clamp(3rem, 6vw, 6rem); }
-  .portfolio__grid {
-    display: grid;
-    gap: 3rem var(--gutter);
-    margin-top: clamp(3rem, 6vw, 6rem);
-  }
+  .portfolio__grid { display: grid; gap: 3rem var(--gutter); margin-top: clamp(3rem, 6vw, 6rem); }
   @media (min-width: 760px) { .portfolio__grid { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1100px) { .portfolio__grid { grid-template-columns: repeat(3, 1fr); } }
-  .portfolio__more {
-    margin-top: clamp(3rem, 6vw, 5rem);
-    padding-top: 1.5rem;
-    border-top: 1px solid var(--line);
-    max-width: none;
-  }
+  .portfolio__more { margin-top: clamp(3rem, 6vw, 5rem); max-width: none; font-size: 0.86rem; }
 
-  /* ------------------------------------------------ nosotras */
-  .about__grid { display: grid; gap: clamp(2rem, 5vw, 5rem); align-items: center; }
-  .about__photo { margin: 0; background: #fff; padding: clamp(6px, 0.8vw, 12px); transform: rotate(-1.2deg); max-width: 640px; }
+  /* ------------------------------------------------ quiénes (ref. Kennedy about) */
+  .about__grid { display: grid; gap: clamp(2.5rem, 5vw, 5rem); }
+  .about__text { display: grid; gap: 2.5rem; align-content: end; max-width: 470px; }
+  .about__text :global(.head__lead) { display: grid; gap: 1.2rem; }
+  .about__people { display: grid; gap: 1rem; }
+  .about__people dd { margin: 0.2rem 0 0; font-size: 0.86rem; }
+  .about__photo { margin: 0; }
   .about__photo :global(img) { width: 100%; filter: grayscale(1); }
-  .about__text { display: grid; gap: 1.2rem; }
-  @media (min-width: 900px) { .about__grid { grid-template-columns: 1fr 1fr; } }
-
-  .venn {
-    position: relative;
-    margin-top: clamp(4rem, 8vw, 7rem);
-    display: grid;
-    justify-items: center;
-    gap: 2rem;
+  @media (min-width: 900px) {
+    .about__grid { grid-template-columns: 1fr 1.1fr; align-items: end; }
+    .about__text { margin-left: 6vw; }
   }
-  .venn__figure { width: 100%; max-width: 920px; color: var(--vino); }
-  .venn__people { display: grid; gap: 2rem; width: 100%; }
-  .venn__person { display: grid; gap: 0.35rem; }
-  .venn__name { font-family: var(--font-display); font-size: var(--step-3); text-transform: uppercase; color: var(--vino); line-height: 1; }
-  .venn__full { opacity: 0.85; }
-  .venn__role { font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.08em; }
-  .venn__desc { font-size: var(--step--1); }
-  .venn__links { list-style: none; padding: 0; display: flex; gap: 1rem; }
-  .venn__center { color: var(--vino); text-align: center; }
 
-  /* En pantallas grandes, cada persona vive dentro de su círculo. */
-  @media (min-width: 960px) {
-    .venn { display: block; max-width: 920px; margin-inline: auto; }
-    .venn__figure { position: relative; }
-    .venn__people {
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      aspect-ratio: 838 / 527;
-      grid-template-columns: 1fr 1fr;
-      gap: 0;
-    }
-    .venn__person {
-      align-content: center;
-      text-align: center;
-      justify-items: center;
-      padding: 0 23% 0 9%;
-    }
-    .venn__person--right { padding: 0 9% 0 23%; }
-    .venn__desc { max-width: 24ch; }
-    .venn__center { margin-top: 1.5rem; }
-  }
+  /* ------------------------------------------------ proceso */
+  .steps { list-style: none; padding: 0; display: grid; gap: 2rem var(--gutter); }
+  .steps li { display: grid; gap: 0.6rem; align-content: start; padding-top: 1rem; border-top: 1px solid var(--line); }
+  .steps p { font-size: 0.86rem; }
+  @media (min-width: 640px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .steps { grid-template-columns: repeat(5, 1fr); } }
+
+  /* ------------------------------------------------ reunión */
+  .meeting__inner { display: grid; gap: 1.4rem; justify-items: center; text-align: center; max-width: 620px; }
+  .meeting__badge { letter-spacing: 0.3em; }
 
   /* ------------------------------------------------ testimonios */
-  .testimonials__list { list-style: none; padding: 0; display: grid; gap: 2rem; }
-  .testimonials__list blockquote p { font-size: var(--step-2); font-family: var(--font-display); text-transform: uppercase; color: var(--vino); line-height: 1.15; }
-  .testimonials__list figcaption { margin-top: 1rem; }
+  .testimonials__list { list-style: none; padding: 0; display: grid; gap: 2rem; margin-top: 2rem; }
   @media (min-width: 900px) { .testimonials__list { grid-template-columns: repeat(2, 1fr); } }
 
   /* ------------------------------------------------ faq */
-  .faq__grid { display: grid; gap: 2rem; }
+  .faq__grid { display: grid; gap: 2.5rem; }
   @media (min-width: 1000px) {
     .faq__grid { grid-template-columns: 0.8fr 1.2fr; gap: clamp(2rem, 5vw, 6rem); align-items: start; }
-    .faq__grid :global(.section-head) { position: sticky; top: calc(var(--header-h) + 2rem); }
+    .faq__grid :global(.head) { position: sticky; top: calc(var(--header-h) + 2rem); }
   }
   .faq__list { border-top: 1px solid var(--line); }
   .faq__item { border-bottom: 1px solid var(--line); }
-  .faq__item summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1.5rem;
-    min-height: 44px;
-    padding: 1.3rem 0;
-    cursor: pointer;
-    list-style: none;
-    font-family: var(--font-display);
-    font-size: var(--step-1);
-    line-height: 1.3;
-    color: var(--vino);
-  }
+  .faq__item summary { display: flex; justify-content: space-between; align-items: center; gap: 1.5rem; min-height: 44px; padding: 1.1rem 0; cursor: pointer; list-style: none; font-size: 0.95rem; }
   .faq__item summary::-webkit-details-marker { display: none; }
-  .faq__item summary:hover span:first-child { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.25em; }
-  .faq__icon { position: relative; flex: none; width: 1.1rem; height: 1.1rem; }
-  .faq__icon::before, .faq__icon::after {
-    content: '';
-    position: absolute;
-    inset: 50% 0 auto;
-    height: 1px;
-    background: currentColor;
-    transition: transform 0.3s var(--ease);
-  }
+  .faq__item summary:hover span:first-child { color: var(--vino); }
+  .faq__icon { position: relative; flex: none; width: 0.9rem; height: 0.9rem; }
+  .faq__icon::before, .faq__icon::after { content: ''; position: absolute; inset: 50% 0 auto; height: 1px; background: currentColor; transition: transform 0.3s var(--ease); }
   .faq__icon::after { transform: rotate(90deg); }
   .faq__item[open] .faq__icon::after { transform: rotate(0); }
-  .faq__answer { padding: 0 2.5rem 1.6rem 0; }
+  .faq__answer { padding: 0 2.5rem 1.4rem 0; font-size: 0.88rem; }
 
-  /* ------------------------------------------------ contacto */
-  .contact__grid { display: grid; gap: clamp(3rem, 6vw, 6rem); }
-  @media (min-width: 1000px) { .contact__grid { grid-template-columns: 1fr 1.1fr; } }
-  .contact__intro :global(.section-head__title) { color: var(--crema); }
-  .contact__photo { margin: 2.5rem 0; max-width: 320px; background: #fff; padding: 8px; transform: rotate(-2deg); }
-  .contact__photo :global(img) { width: 100%; }
-  .contact__channels ul { list-style: none; padding: 0; display: grid; gap: 0.8rem; margin-top: 1rem; }
-  .contact__channels a { display: inline-flex; align-items: center; gap: 0.75rem; text-decoration: none; font-size: var(--step-1); }
-  .contact__channels a:hover { text-decoration: underline; }
+  /* ------------------------------------------------ contacto (ref. Kennedy) */
+  .contact__title { text-align: center; color: var(--vino); font-size: clamp(2.6rem, 1.2rem + 5.5vw, 6.5rem); line-height: 1.1; margin-bottom: 1.5rem; text-wrap: balance; }
+  .contact__lead { text-align: center; margin: 0 auto clamp(2.5rem, 5vw, 4rem); max-width: 60ch; }
+  .contact__direct { display: flex; flex-wrap: wrap; justify-content: center; gap: 0.5rem 1.6rem; margin: clamp(3rem, 6vw, 4.5rem) auto 0; max-width: none; font-size: 0.86rem; align-items: baseline; }
 </style>

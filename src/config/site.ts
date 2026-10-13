@@ -46,6 +46,12 @@ export const site = {
    */
   formEndpoint: env.PUBLIC_FORM_ENDPOINT || 'https://formsubmit.co/ajax/thewedbrand@gmail.com',
 
+  /**
+   * Enlace para agendar la reunión inicial (Calendly, Google Calendar, etc.).
+   * Vacío = el botón lleva al formulario con «Reunión inicial» marcada.
+   */
+  bookingUrl: env.PUBLIC_BOOKING_URL || '',
+
   /** Vista previa: el formulario valida pero no envía (PUBLIC_PREVIEW=1). */
   preview: env.PUBLIC_PREVIEW === '1',
 

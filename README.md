@@ -75,6 +75,7 @@ Todas se configuran con variables de entorno públicas (no hay claves secretas e
 | `PUBLIC_FORM_ENDPOINT` | Otro servicio de recepción (Formspree, Web3Forms…) | Usa **FormSubmit**: cada consulta llega por mail a thewedbrand@gmail.com |
 | `PUBLIC_PREVIEW` | `1` = vista previa, el formulario no envía | Envío normal |
 | `PUBLIC_GA_ID` | Google Analytics 4 | No se carga analítica ni aparece aviso de cookies |
+| `PUBLIC_BOOKING_URL` | Enlace de Calendly / Google Calendar para «Agendar reunión» | El botón lleva al formulario con «Reunión inicial» marcada |
 | `PUBLIC_WHATSAPP` | Botón de WhatsApp en contacto y footer | No se muestra |
 
 ### Formulario
@@ -100,6 +101,8 @@ Con `PUBLIC_GA_ID` el sitio muestra un aviso discreto y carga Google Analytics *
 - [ ] **Caso Casu & Lucas**: revisar los textos de `src/content/proyectos/casu-y-lucas.md` (concepto, historia, solución) y sumar fotos del día si quieren.
 - [ ] **Cande**: si su casamiento también va como caso, crear el proyecto desde la plantilla.
 - [ ] **FAQ y servicios**: revisar que las respuestas reflejen cómo trabajan hoy. No se incluyeron precios, plazos ni rondas de revisión porque no están definidos.
+- [ ] **Reunión inicial**: confirmar duración (20 min) y «sin costo», y cargar `PUBLIC_BOOKING_URL`.
+- [ ] **Branding para marcas**: revisar el texto de esa sección (`src/data/home.ts` → `brands`).
 - [ ] **Privacidad**: revisar `/privacidad` y adaptarla si suman otros servicios.
 
 ## Publicación
