@@ -96,7 +96,7 @@ Con `PUBLIC_GA_ID` el sitio muestra un aviso discreto y carga Google Analytics *
 - [ ] **WhatsApp** (opcional): el brand book muestra 11 6514 4751. Para mostrarlo, cargar `PUBLIC_WHATSAPP=5491165144751`.
 - [ ] **Tipografía Garet**: hoy se usa *Urbanist* como reemplazo (muy similar). Si tienen licencia web de Garet, agregar los archivos `.woff2` en `public/fonts/` y declarar `@font-face { font-family: 'Garet'; … }` en `src/styles/global.css`: se toma automáticamente porque ya es la primera opción de `--font-display`.
 - [ ] **Tipografía Vintage Goods** (nombres en script): reemplazada por *Mrs Saint Delafield*. Mismo procedimiento con `font-family: 'Vintage Goods'`.
-- [ ] **Fotos**: el hero combina piezas reales (invitación de Casu & Lucas) con láminas de color de la marca. Cuando tengan fotos propias de casamientos, reemplazar las láminas en `src/data/home.ts` (`heroTiles`). La foto de Nosotras es la del brand book (baja resolución): conviene una en mejor calidad en `src/assets/nosotras/cande-y-casu.jpg`.
+- [ ] **Foto de Nosotras**: la actual sale del brand book y tiene baja resolución; si tienen una mejor, reemplazar `src/assets/nosotras/cande-y-casu.jpg`.
 - [ ] **Caso Casu & Lucas**: revisar los textos de `src/content/proyectos/casu-y-lucas.md` (concepto, historia, solución) y sumar fotos del día si quieren.
 - [ ] **Cande**: si su casamiento también va como caso, crear el proyecto desde la plantilla.
 - [ ] **FAQ y servicios**: revisar que las respuestas reflejen cómo trabajan hoy. No se incluyeron precios, plazos ni rondas de revisión porque no están definidos.
