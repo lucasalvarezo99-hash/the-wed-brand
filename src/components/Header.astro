@@ -1,46 +1,63 @@
 ---
-import Logo from './Logo.astro';
-import { nav, primaryCta, site } from '../config/site';
+/**
+ * Barra superior como el mockup del Brand Book (26. Sitio web):
+ * navegación entre corchetes y la marca centrada entre corchetes.
+ * Desktop: [menú] [nosotras] [servicios]   [THE WED BRAND]   [portfolio] [proceso] [contacto]
+ * Mobile:  [menú]                                            [TWB]
+ */
+import { site, primaryCta } from '../config/site';
+
+const left = [
+  { label: 'nosotras', href: '/#nosotras' },
+  { label: 'servicios', href: '/#servicios' },
+];
+const right = [
+  { label: 'portfolio', href: '/#portfolio' },
+  { label: 'proceso', href: '/#proceso' },
+  { label: 'contacto', href: '/#contacto' },
+];
+/** Menú completo (se abre con [menú]). */
+const full = [
+  { label: 'Inicio', href: '/#inicio' },
+  { label: 'Nosotras', href: '/#nosotras' },
+  { label: 'Servicios', href: '/#servicios' },
+  { label: 'Portfolio', href: '/#portfolio' },
+  { label: 'Proceso', href: '/#proceso' },
+  { label: 'Preguntas frecuentes', href: '/#preguntas' },
+  { label: 'Contacto', href: '/#contacto' },
+];
 ---
 <header class="site-header" data-header>
-  <div class="site-header__inner">
-    <Logo class="site-header__logo" />
+  <nav class="bar" aria-label="Principal">
+    <div class="bar__side bar__side--left">
+      <button class="bracket-link bar__menu" type="button" aria-expanded="false" aria-controls="menu" data-menu-toggle>
+        <span data-menu-label>menú</span>
+      </button>
+      {left.map((item) => <a class="bracket-link bar__link" href={item.href} data-nav-link>{item.label}</a>)}
+    </div>
 
-    <nav class="site-header__nav" aria-label="Principal">
-      <ul>
-        {nav.map((item) => (
-          <li><a class="bracket-link" href={item.href} data-nav-link>{item.label}</a></li>
-        ))}
-      </ul>
-    </nav>
+    <a class="bar__brand" href="/#inicio" aria-label={`${site.name}, inicio`}>
+      <span class="bar__brand-full" aria-hidden="true">[The Wed Brand]</span>
+      <span class="bar__brand-short" aria-hidden="true">[TWB]</span>
+    </a>
 
-    <a class="btn btn--solid site-header__cta" href={primaryCta.href}>{primaryCta.label}</a>
+    <div class="bar__side bar__side--right">
+      {right.map((item) => <a class="bracket-link bar__link" href={item.href} data-nav-link>{item.label}</a>)}
+    </div>
+  </nav>
 
-    <button
-      class="site-header__toggle bracket-link"
-      type="button"
-      aria-expanded="false"
-      aria-controls="mobile-menu"
-      data-menu-toggle
-    >
-      <span data-menu-label>menú</span>
-    </button>
-  </div>
-
-  <div class="mobile-menu on-dark" id="mobile-menu" hidden data-menu>
-    <nav aria-label="Principal (móvil)">
-      <ul>
-        {nav.map((item, i) => (
-          <li>
-            <a href={item.href} data-menu-link>
-              <span class="mono-sm" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
-              {item.label}
-            </a>
-          </li>
-        ))}
-      </ul>
-    </nav>
-    <div class="mobile-menu__foot">
+  <div class="menu on-dark" id="menu" hidden data-menu>
+    <ul class="menu__list">
+      {full.map((item, i) => (
+        <li>
+          <a href={item.href} data-menu-link>
+            <span class="mono-sm" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+            <span>{item.label}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <div class="menu__foot">
       <a class="btn btn--solid" href={primaryCta.href} data-menu-link>{primaryCta.label}</a>
       <p class="mono-sm">
         <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a><br />
@@ -73,28 +90,25 @@ import { nav, primaryCta, site } from '../config/site';
       toggle.focus();
     }
   });
-  window.matchMedia('(min-width: 1100px)').addEventListener('change', (e) => e.matches && setOpen(false));
 
-  // Línea inferior del header al hacer scroll
   const onScroll = () => header?.classList.toggle('is-scrolled', window.scrollY > 8);
   onScroll();
   window.addEventListener('scroll', onScroll, { passive: true });
 
-  // Sección activa en la navegación (solo en la home)
+  // Sección activa
   const links = [...document.querySelectorAll<HTMLAnchorElement>('[data-nav-link]')];
   const sections = links
     .map((a) => document.getElementById(a.hash.slice(1)))
     .filter((el): el is HTMLElement => !!el);
-  if (sections.length && location.pathname === '/') {
+  if (sections.length) {
     const io = new IntersectionObserver(
-      (entries) => {
+      (entries) =>
         entries.forEach((entry) => {
           if (!entry.isIntersecting) return;
           links.forEach((a) =>
             a.hash === `#${entry.target.id}` ? a.setAttribute('aria-current', 'location') : a.removeAttribute('aria-current'),
           );
-        });
-      },
+        }),
       { rootMargin: '-45% 0px -50% 0px' },
     );
     sections.forEach((s) => io.observe(s));
@@ -111,40 +125,41 @@ import { nav, primaryCta, site } from '../config/site';
     transition: border-color 0.3s var(--ease);
   }
   .site-header.is-scrolled { border-bottom-color: var(--line); }
-  .site-header__inner {
-    display: flex;
+  .bar {
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
     align-items: center;
-    justify-content: space-between;
-    gap: 1.5rem;
+    gap: 1rem;
     height: var(--header-h);
     width: min(100% - 2 * var(--gutter), var(--max));
     margin-inline: auto;
-  }
-  .site-header__nav ul {
-    display: flex;
-    gap: clamp(0.8rem, 1.4vw, 1.6rem);
-    list-style: none;
-    padding: 0;
     font-size: 0.92rem;
   }
-  .site-header__nav :global([aria-current='location']) { color: var(--vino); }
-  .site-header__cta { min-height: 40px; padding: 0.5rem 1rem; font-size: 0.72rem; }
-  .site-header__toggle {
-    display: none;
-    background: none;
-    border: 0;
-    min-height: 44px;
-    padding: 0 0.25rem;
-    font-size: 0.95rem;
+  .bar__side { display: flex; align-items: center; gap: clamp(0.9rem, 1.6vw, 1.8rem); }
+  .bar__side--right { justify-content: flex-end; }
+  .bar__menu { background: none; border: 0; padding: 0; min-height: 44px; font-size: inherit; }
+  .bar__link:global([aria-current='location']) { color: var(--vino); }
+
+  .bar__brand {
+    color: var(--vino);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-weight: 500;
+    text-transform: uppercase;
+    white-space: nowrap;
+  }
+  .bar__brand-full { font-size: 1.05rem; letter-spacing: 0.24em; margin-right: -0.24em; }
+  .bar__brand-short { display: none; font-size: 1rem; letter-spacing: 0.12em; }
+
+  @media (max-width: 900px) {
+    .bar { grid-template-columns: auto 1fr; }
+    .bar__link, .bar__side--right { display: none; }
+    .bar__brand { justify-self: end; }
+    .bar__brand-full { display: none; }
+    .bar__brand-short { display: inline; }
   }
 
-  @media (max-width: 1099px) {
-    .site-header__nav,
-    .site-header__cta { display: none; }
-    .site-header__toggle { display: inline-block; }
-  }
-
-  .mobile-menu {
+  .menu {
     position: fixed;
     inset: var(--header-h) 0 0;
     z-index: 49;
@@ -156,26 +171,26 @@ import { nav, primaryCta, site } from '../config/site';
     background: var(--vino);
     color: var(--crema);
     overflow-y: auto;
-    animation: menu-in 0.35s var(--ease);
+    animation: menu-in 0.4s var(--ease);
   }
-  .mobile-menu[hidden] { display: none; }
-  .mobile-menu ul { list-style: none; padding: 0; }
-  .mobile-menu li { border-bottom: 1px solid color-mix(in srgb, var(--crema) 25%, transparent); }
-  .mobile-menu li a {
+  .menu[hidden] { display: none; }
+  .menu__list { list-style: none; padding: 0; max-width: var(--max); width: 100%; margin-inline: auto; }
+  .menu__list li { border-bottom: 1px solid color-mix(in srgb, var(--crema) 25%, transparent); }
+  .menu__list a {
     display: flex;
     align-items: baseline;
-    gap: 1rem;
-    padding: 0.85rem 0;
+    gap: 1.2rem;
+    padding: 0.8rem 0;
     font-family: var(--font-display);
-    font-size: clamp(1.6rem, 7vw, 2.4rem);
+    font-size: clamp(1.6rem, 5vw, 3.2rem);
     text-transform: uppercase;
     text-decoration: none;
     line-height: 1.1;
+    transition: padding-left 0.35s var(--ease);
   }
-  .mobile-menu__foot { display: grid; gap: 1.5rem; }
-  .mobile-menu__foot a:not(.btn) { text-decoration: none; }
+  .menu__list a:hover { padding-left: 0.6rem; }
+  .menu__foot { display: grid; gap: 1.5rem; max-width: var(--max); width: 100%; margin-inline: auto; justify-items: start; }
+  .menu__foot a:not(.btn) { text-decoration: none; }
   :global(html.menu-open) { overflow: hidden; }
-  @keyframes menu-in {
-    from { opacity: 0; transform: translateY(-8px); }
-  }
+  @keyframes menu-in { from { opacity: 0; transform: translateY(-10px); } }
 </style>

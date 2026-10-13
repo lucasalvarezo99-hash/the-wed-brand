@@ -10,7 +10,8 @@ import ContactForm from '../components/ContactForm.astro';
 import { site } from '../config/site';
 import {
   hero,
-  heroTiles,
+  photos,
+  applications,
   philosophy,
   servicesIntro,
   serviceGuide,
@@ -72,23 +73,6 @@ const faqLd = {
       </div>
     </div>
 
-    <ul class="cascade" aria-label="Puntos de contacto de una identidad">
-      {heroTiles.map((tile, i) => (
-        <li class:list={['cascade__item', `cascade__item--${i + 1}`]}>
-          {tile.type === 'image' ? (
-            <a class="cascade__photo" href={tile.href ?? '#portfolio'}>
-              <Image src={tile.src} alt={tile.alt} widths={[240, 360, 480]} sizes="(min-width: 900px) 17vw, 46vw" loading={i < 3 ? 'eager' : 'lazy'} />
-            </a>
-          ) : (
-            <div class:list={['cascade__plate', `plate--${tile.tone}`]}>
-              <Isotipo class="cascade__iso" />
-              <span class="cascade__word">{tile.word}</span>
-            </div>
-          )}
-          <span class="cascade__label mono-sm">{tile.label}</span>
-        </li>
-      ))}
-    </ul>
   </section>
 
   <!-- ============================================================ FILOSOFÍA -->
@@ -106,8 +90,12 @@ const faqLd = {
       </ul>
 
       <div class="philosophy__answer">
-        <div class="philosophy__symbol reveal" aria-hidden="true">
-          <Isotipo />
+        <div class="stack reveal">
+          {photos.philosophyStack.map((ph, i) => (
+            <figure class:list={['stack__photo', `stack__photo--${i + 1}`]}>
+              <Image src={ph.src} alt={ph.alt} widths={[360, 560, 760]} sizes="(min-width: 900px) 32vw, 70vw" />
+            </figure>
+          ))}
         </div>
         <div class="philosophy__text">
           <h3 class="philosophy__answer-title reveal">{philosophy.answerTitle}</h3>
@@ -131,6 +119,17 @@ const faqLd = {
     </div>
   </section>
 
+  <!-- ============================================================ FRANJA DE FOTOS -->
+  <section class="strip" aria-label="Fotografía">
+    <ul class="strip__list">
+      {photos.strip.map((ph, i) => (
+        <li class="strip__item reveal" style={`--delay:${i * 0.08}s`}>
+          <Image src={ph.src} alt={ph.alt} widths={[300, 460, 600]} sizes="(min-width: 900px) 20vw, 60vw" />
+        </li>
+      ))}
+    </ul>
+  </section>
+
   <!-- ============================================================ SERVICIOS -->
   <section class="section tone-vino on-dark services" id="servicios" aria-labelledby="servicios-title">
     <div class="container">
@@ -145,6 +144,11 @@ const faqLd = {
               <span class="service__num mono-sm">{String(i + 1).padStart(2, '0')}</span>
               <h3 class="service__title">{s.data.title}</h3>
               <p class="service__tagline">{s.data.tagline}</p>
+              {photos.services[s.id] && (
+                <figure class="service__photo">
+                  <Image src={photos.services[s.id].src} alt={photos.services[s.id].alt} widths={[320, 520]} sizes="(min-width: 1000px) 22vw, 80vw" />
+                </figure>
+              )}
             </div>
             <div class="service__body">
               <p>{s.data.summary}</p>
@@ -194,6 +198,25 @@ const faqLd = {
           ))}
         </ul>
       </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ APLICACIONES -->
+  <section class="section applications" id="aplicaciones" aria-labelledby="aplicaciones-title">
+    <div class="container">
+      <SectionHead number={num()} label={applications.label} title={applications.title} id="aplicaciones-title" split>
+        <p class="lead">{applications.lead}</p>
+      </SectionHead>
+      <ul class="apps">
+        {applications.items.map((it, i) => (
+          <li class="apps__item reveal" style={`--delay:${(i % 4) * 0.07}s`}>
+            <figure>
+              <div class="apps__img"><Image src={it.src} alt={it.alt} widths={[300, 460, 620]} sizes="(min-width: 1000px) 23vw, (min-width: 640px) 45vw, 90vw" /></div>
+              <figcaption class="mono-sm">{it.caption}</figcaption>
+            </figure>
+          </li>
+        ))}
+      </ul>
     </div>
   </section>
 
@@ -333,6 +356,9 @@ const faqLd = {
         <SectionHead number={num()} label={contactIntro.label} title={contactIntro.title} id="contacto-title">
           <p class="lead">{contactIntro.lead}</p>
         </SectionHead>
+        <figure class="contact__photo reveal">
+          <Image src={photos.contact.src} alt={photos.contact.alt} widths={[360, 560]} sizes="(min-width: 1000px) 30vw, 80vw" />
+        </figure>
         <div class="contact__channels">
           <p class="label">O directamente</p>
           <ul>
@@ -413,80 +439,7 @@ const faqLd = {
     gap: 0.75rem 1.75rem;
   }
 
-  .cascade {
-    list-style: none;
-    display: grid;
-    grid-template-columns: repeat(5, minmax(0, 1fr));
-    align-items: start;
-    gap: clamp(0.75rem, 1.6vw, 1.75rem);
-    width: min(100% - 2 * var(--gutter), 1180px);
-    margin: clamp(3rem, 6vw, 5rem) auto 0;
-    padding: 0 0 clamp(1rem, 3vw, 2.5rem);
-  }
-  .cascade__item { display: grid; gap: 0.6rem; animation: rise 1s var(--ease) both; }
-  .cascade__item--1 { margin-top: 2.5rem; animation-delay: 0.05s; }
-  .cascade__item--2 { margin-top: 4.5rem; animation-delay: 0.15s; }
-  .cascade__item--3 { margin-top: 0.5rem; animation-delay: 0.25s; }
-  .cascade__item--4 { margin-top: 5.5rem; animation-delay: 0.35s; }
-  .cascade__item--5 { margin-top: 2rem; animation-delay: 0.45s; }
-  @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
-
-  .cascade__photo,
-  .cascade__plate {
-    position: relative;
-    display: block;
-    aspect-ratio: 3 / 4;
-    overflow: hidden;
-  }
-  .cascade__photo {
-    background: #fff;
-    padding: clamp(5px, 0.6vw, 9px);
-    transition: transform 0.6s var(--ease);
-  }
-  .cascade__photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
-  .cascade__item--2 .cascade__photo { transform: rotate(-1.5deg); }
-  .cascade__item--4 .cascade__photo { transform: rotate(1.5deg); }
-  .cascade__photo:hover { transform: rotate(0) translateY(-6px) !important; }
-
-  .cascade__plate {
-    display: grid;
-    align-content: space-between;
-    padding: clamp(0.8rem, 1.4vw, 1.3rem);
-  }
-  .plate--vino { background: var(--vino); color: var(--crema); }
-  .plate--celeste { background: var(--celeste); color: var(--grafito); }
-  .plate--oliva { background: var(--oliva); color: var(--crema); }
-  .plate--grafito { background: var(--grafito); color: var(--crema); }
-  .cascade__iso { width: 46%; }
-  .cascade__word {
-    font-family: var(--font-display);
-    font-size: clamp(0.95rem, 0.6rem + 1vw, 1.6rem);
-    text-transform: uppercase;
-    line-height: 1.05;
-  }
-  .cascade__label { color: var(--grafito-500); color: color-mix(in srgb, var(--grafito) 80%, transparent); }
-
-  @media (max-width: 760px) {
-    .hero__title { text-align: left; margin-left: 0; }
-    .hero__intro { justify-items: start; text-align: left; }
-    .hero__actions { justify-content: flex-start; }
-    .cascade {
-      grid-template-columns: none;
-      grid-auto-flow: column;
-      grid-auto-columns: 44%;
-      width: 100%;
-      padding-inline: var(--gutter);
-      overflow-x: auto;
-      scroll-snap-type: x mandatory;
-      scroll-padding-inline: var(--gutter);
-      scrollbar-width: none;
-    }
-    .cascade::-webkit-scrollbar { display: none; }
-    .cascade__item { scroll-snap-align: start; }
-    .cascade__item--1, .cascade__item--3, .cascade__item--5 { margin-top: 0; }
-    .cascade__item--2, .cascade__item--4 { margin-top: 1.5rem; }
-  }
-
+  .hero { padding-bottom: clamp(3.5rem, 7vw, 6rem); }
   /* ------------------------------------------------ celdas (grilla del brand book) */
   .cells {
     list-style: none;
@@ -517,16 +470,52 @@ const faqLd = {
     align-items: center;
     margin-top: var(--section-y);
   }
-  .philosophy__symbol {
-    display: grid;
-    place-items: center;
-    aspect-ratio: 5 / 6;
-    background: var(--vino);
-    color: var(--crema);
-    max-width: 520px;
-    width: 100%;
+  /* Pila de fotos con marco blanco (Brand Book · portadillas) */
+  .stack { position: relative; aspect-ratio: 5 / 6; max-width: 520px; width: 100%; justify-self: center; }
+  .stack__photo {
+    position: absolute;
+    margin: 0;
+    width: 68%;
+    aspect-ratio: 3 / 4;
+    background: #fff;
+    padding: clamp(6px, 0.9vw, 12px);
+    transition: transform 0.8s var(--ease);
   }
-  .philosophy__symbol :global(svg) { width: 62%; }
+  .stack__photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .stack__photo--1 { z-index: 3; left: 16%; top: 8%; transform: rotate(-2deg); }
+  .stack__photo--2 { z-index: 2; left: 2%; top: 4%; transform: rotate(-7deg); }
+  .stack__photo--3 { z-index: 1; left: 30%; top: 2%; transform: rotate(6deg); }
+  .stack:hover .stack__photo--2 { transform: rotate(-11deg) translateX(-12px); }
+  .stack:hover .stack__photo--3 { transform: rotate(10deg) translateX(12px); }
+
+  /* Franja de fotos */
+  .strip { padding-bottom: var(--section-y); }
+  .strip__list {
+    list-style: none;
+    padding: 0 var(--gutter);
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: clamp(0.5rem, 1.2vw, 1.2rem);
+    max-width: 1600px;
+    margin-inline: auto;
+  }
+  .strip__item { aspect-ratio: 3 / 4; overflow: hidden; }
+  .strip__item:nth-child(even) { margin-top: clamp(1.5rem, 4vw, 4rem); }
+  .strip__item :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+  .strip__item:hover :global(img) { transform: scale(1.04); }
+  @media (max-width: 760px) {
+    .strip__list { grid-auto-flow: column; grid-template-columns: none; grid-auto-columns: 58%; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; }
+    .strip__list::-webkit-scrollbar { display: none; }
+    .strip__item { scroll-snap-align: center; }
+  }
+
+  /* Aplicaciones */
+  .apps { list-style: none; padding: 0; display: grid; gap: clamp(1.5rem, 3vw, 2.5rem) var(--gutter); grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  @media (min-width: 1000px) { .apps { grid-template-columns: repeat(4, minmax(0, 1fr)); } .apps__item:nth-child(4n+2), .apps__item:nth-child(4n+4) { margin-top: 3rem; } }
+  .apps figure { margin: 0; display: grid; gap: 0.7rem; }
+  .apps__img { aspect-ratio: 4 / 5; overflow: hidden; border: 1px solid var(--line-soft); }
+  .apps__img :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+  .apps__item:hover .apps__img :global(img) { transform: scale(1.04); }
   .philosophy__text { display: grid; gap: 1.4rem; }
   .philosophy__answer-title { font-size: var(--step-3); color: var(--vino); max-width: 16ch; }
   .symbol-list { display: grid; margin-top: 0.5rem; border-top: 1px solid var(--line-soft); }
@@ -574,6 +563,8 @@ const faqLd = {
   .service__num { opacity: 0.85; }
   .service__title { font-size: var(--step-3); line-height: 1; }
   .service__tagline { font-size: var(--step-1); }
+  .service__photo { margin: 0.8rem 0 0; aspect-ratio: 4 / 5; max-width: 300px; overflow: hidden; }
+  .service__photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
   .service__body, .service__side { display: grid; gap: 1rem; align-content: start; }
   .service__sub { margin-top: 0.4rem; opacity: 0.9; }
   .service__note {
@@ -728,6 +719,8 @@ const faqLd = {
   .contact__grid { display: grid; gap: clamp(3rem, 6vw, 6rem); }
   @media (min-width: 1000px) { .contact__grid { grid-template-columns: 1fr 1.1fr; } }
   .contact__intro :global(.section-head__title) { color: var(--crema); }
+  .contact__photo { margin: 2.5rem 0; max-width: 320px; background: #fff; padding: 8px; transform: rotate(-2deg); }
+  .contact__photo :global(img) { width: 100%; }
   .contact__channels ul { list-style: none; padding: 0; display: grid; gap: 0.8rem; margin-top: 1rem; }
   .contact__channels a { display: inline-flex; align-items: center; gap: 0.75rem; text-decoration: none; font-size: var(--step-1); }
   .contact__channels a:hover { text-decoration: underline; }

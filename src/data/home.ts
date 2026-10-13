@@ -2,9 +2,28 @@
  * Textos de la home. Editar acá cambia la web sin tocar el diseño.
  * Tono (brand book): cercanas, claras, cálidas, simples. Frases cortas.
  */
-import invitacionFrente from '../assets/proyectos/casu-y-lucas/invitacion-frente.jpg';
-import invitacionDigital from '../assets/proyectos/casu-y-lucas/invitacion-digital.jpg';
 import type { ImageMetadata } from 'astro';
+import veloColor from '../assets/fotos/velo-color.jpg';
+import veloRisaBn from '../assets/fotos/velo-risa-bn.jpg';
+import parejaCampo from '../assets/fotos/pareja-campo.jpg';
+import parejaAerea from '../assets/fotos/pareja-aerea.jpg';
+import besoBn from '../assets/fotos/beso-bn.jpg';
+import ramoCielo from '../assets/fotos/ramo-cielo.jpg';
+import ramoVestido from '../assets/fotos/ramo-vestido.jpg';
+import manosRamoBn from '../assets/fotos/manos-ramo-bn.jpg';
+import veloMovido from '../assets/fotos/velo-movido.jpg';
+import fiestaBn from '../assets/fotos/fiesta-bn.jpg';
+import novia from '../assets/fotos/novia-corriendo.jpg';
+import vestidoViento from '../assets/fotos/vestido-viento-bn.jpg';
+import portadaBotanica from '../assets/aplicaciones/portada-botanica.jpg';
+import menuLetterpress from '../assets/aplicaciones/menu-letterpress.jpg';
+import menuPincel from '../assets/aplicaciones/menu-pincel.jpg';
+import abanicos from '../assets/aplicaciones/abanicos.jpg';
+import cuelloBordado from '../assets/aplicaciones/cuello-bordado.jpg';
+import gorras from '../assets/aplicaciones/gorras.jpg';
+import servilletas from '../assets/aplicaciones/servilletas.jpg';
+import cintaRamo from '../assets/aplicaciones/cinta-ramo.jpg';
+import encendedores from '../assets/aplicaciones/encendedores.jpg';
 
 export const hero = {
   eyebrow: 'Branding & identidad para casamientos',
@@ -14,35 +33,48 @@ export const hero = {
   secondary: { label: 'Exploren nuestros proyectos', href: '#portfolio' },
 };
 
-/**
- * Composición en cascada del hero.
- * - type 'image': fotografía o pieza real (con alt obligatorio).
- * - type 'plate': lámina de color de la marca con un punto de contacto.
- * Cuando haya fotos definitivas, reemplazar láminas por imágenes.
- */
-export type HeroTile =
-  | { type: 'image'; src: ImageMetadata; alt: string; label: string; href?: string }
-  | { type: 'plate'; tone: 'vino' | 'celeste' | 'oliva' | 'grafito'; label: string; word: string };
+/** Fotos del Brand Book usadas en la home. */
+export const photos = {
+  /** Pila de fotos junto a "Dos personas, una identidad". */
+  philosophyStack: [
+    { src: veloColor, alt: 'Novios abrazados bajo el velo, ella sonríe con un ramo de flores de colores.' },
+    { src: veloRisaBn, alt: 'Novios bajo el velo, en blanco y negro, riéndose.' },
+    { src: parejaCampo, alt: 'Novios caminando en un campo verde, el velo al viento.' },
+  ],
+  /** Franja de fotos entre secciones. */
+  strip: [
+    { src: besoBn, alt: 'Novio levanta a la novia en un beso, blanco y negro.' },
+    { src: ramoCielo, alt: 'Brazo con manga de encaje sostiene un ramo contra el cielo.' },
+    { src: manosRamoBn, alt: 'Manos que se estiran para atrapar el ramo, blanco y negro.' },
+    { src: veloMovido, alt: 'Novia de espaldas con el velo en movimiento.' },
+    { src: fiestaBn, alt: 'Novios bailando en la fiesta, blanco y negro.' },
+  ],
+  /** Una foto por servicio (slug del servicio → foto). */
+  services: {
+    'branding-wedding-design': { src: menuLetterpress, alt: 'Menú impreso en letterpress con ilustración botánica verde.' },
+    'comunicacion-comunidad': { src: ramoVestido, alt: 'Detalle de la novia sosteniendo el ramo junto al vestido.' },
+    'wedding-content': { src: novia, alt: 'Novia corriendo sobre el pasto, foto movida.' },
+    'full-experience': { src: parejaAerea, alt: 'Vista aérea de los novios corriendo de la mano sobre el pasto.' },
+  } as Record<string, { src: ImageMetadata; alt: string }>,
+  contact: { src: vestidoViento, alt: 'Vestido de novia movido por el viento, blanco y negro.' },
+};
 
-export const heroTiles: HeroTile[] = [
-  { type: 'plate', tone: 'vino', word: 'Identidad', label: '01 · Concepto' },
-  {
-    type: 'image',
-    src: invitacionFrente,
-    alt: 'Invitación ilustrada a mano del casamiento de Casu y Lucas',
-    label: '02 · Invitación',
-    href: '/proyectos/casu-y-lucas',
-  },
-  { type: 'plate', tone: 'celeste', word: 'Redes', label: '03 · Comunidad' },
-  {
-    type: 'image',
-    src: invitacionDigital,
-    alt: 'Invitación digital con el recorrido del día, regalos y confirmación de asistencia',
-    label: '04 · Web para invitados',
-    href: '/proyectos/casu-y-lucas',
-  },
-  { type: 'plate', tone: 'oliva', word: 'El gran día', label: '05 · Contenido' },
-];
+/** Aplicaciones: papelería, cotillón y merch (Brand Book · Aplicaciones). */
+export const applications = {
+  label: 'Aplicaciones',
+  title: 'Cada pieza lleva la identidad de la pareja.',
+  lead: 'Papelería, cartelería, cotillón y merch. Algunas ideas de dónde puede vivir una identidad.',
+  items: [
+    { src: portadaBotanica, alt: 'Portada vino con marco botánico ilustrado.', caption: 'Portada con marco botánico' },
+    { src: abanicos, alt: 'Novia con un abanico bordado.', caption: 'Abanicos bordados' },
+    { src: menuPincel, alt: 'Menú con títulos escritos a pincel.', caption: 'Menú con títulos a pincel' },
+    { src: cuelloBordado, alt: 'Invitado con el cuello de la camisa bordado con fecha e iniciales.', caption: 'Cuello bordado con fecha e iniciales' },
+    { src: servilletas, alt: 'Servilleta con monograma y fecha.', caption: 'Servilletas con monograma' },
+    { src: gorras, alt: 'Novia e invitados con gorras en la fiesta.', caption: 'Gorras para la fiesta' },
+    { src: cintaRamo, alt: 'Cinta bordada con la fecha atada al ramo.', caption: 'Cinta bordada para el ramo' },
+    { src: encendedores, alt: 'Encendedores personalizados sobre un plato de puntilla.', caption: 'Encendedores personalizados' },
+  ],
+};
 
 export const philosophy = {
   label: 'Cómo pensamos',

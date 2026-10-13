@@ -10,8 +10,11 @@ const env = import.meta.env;
 
 export const site = {
   name: 'The Wed Brand',
-  /** Dominio definitivo. Se usa para URLs canónicas, sitemap y Open Graph. */
-  url: env.PUBLIC_SITE_URL || 'https://thewedbrand.com.ar',
+  /**
+   * Dominio definitivo (PUBLIC_SITE_URL). Mientras esté vacío no se generan
+   * URL canónica ni sitemap; se activan solos al cargarlo.
+   */
+  url: env.PUBLIC_SITE_URL || '',
   locale: 'es_AR',
   lang: 'es-AR',
   tagline: 'Un casamiento con identidad propia.',
@@ -35,12 +38,16 @@ export const site = {
   },
 
   /**
-   * Endpoint del formulario de contacto (Formspree, Web3Forms, Basin, etc.).
-   * Es una URL pública: no contiene claves secretas.
-   * Si queda vacío, el formulario arma el mensaje y lo abre en el programa
-   * de correo de la persona (mailto) — nunca simula un envío.
+   * Endpoint del formulario de contacto. Por defecto usa FormSubmit, que
+   * reenvía cada consulta por mail a la casilla de la marca sin necesidad
+   * de cuenta ni claves. La primera consulta dispara un mail de activación
+   * a esa casilla: hay que confirmarlo una sola vez.
+   * Se puede reemplazar por Formspree, Web3Forms, etc. con PUBLIC_FORM_ENDPOINT.
    */
-  formEndpoint: env.PUBLIC_FORM_ENDPOINT || '',
+  formEndpoint: env.PUBLIC_FORM_ENDPOINT || 'https://formsubmit.co/ajax/thewedbrand@gmail.com',
+
+  /** Vista previa: el formulario valida pero no envía (PUBLIC_PREVIEW=1). */
+  preview: env.PUBLIC_PREVIEW === '1',
 
   /** Google Analytics 4 (opcional). Solo se carga si hay ID y la persona acepta. */
   analyticsId: env.PUBLIC_GA_ID || '',

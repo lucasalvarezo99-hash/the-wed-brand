@@ -22,7 +22,7 @@ const s = servicio.data;
 const others = all.filter((o) => o.id !== servicio.id);
 const proyectos = await getCollection('proyectos', ({ data }) => data.published && data.services.includes(servicio.id));
 
-const base = Astro.site ?? new URL(site.url);
+const base = Astro.site;
 const ld = [
   {
     '@context': 'https://schema.org',
@@ -30,16 +30,16 @@ const ld = [
     name: s.title,
     description: s.summary,
     serviceType: s.seoTitle ?? s.title,
-    provider: { '@id': `${base.origin}/#organizacion` },
+    provider: { '@id': '#organizacion' },
     areaServed: site.areaServed,
-    url: new URL(Astro.url.pathname, base).href,
+    ...(base ? { url: new URL(Astro.url.pathname, base).href } : {}),
   },
   {
     '@context': 'https://schema.org',
     '@type': 'BreadcrumbList',
     itemListElement: [
-      { '@type': 'ListItem', position: 1, name: 'Inicio', item: base.origin + '/' },
-      { '@type': 'ListItem', position: 2, name: 'Servicios', item: base.origin + '/#servicios' },
+      { '@type': 'ListItem', position: 1, name: 'Inicio', ...(base ? { item: base.origin + '/' } : {}) },
+      { '@type': 'ListItem', position: 2, name: 'Servicios', ...(base ? { item: base.origin + '/#servicios' } : {}) },
       { '@type': 'ListItem', position: 3, name: s.title },
     ],
   },

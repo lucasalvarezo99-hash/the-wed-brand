@@ -13,6 +13,7 @@ interface Props {
 }
 const { services } = Astro.props;
 const endpoint = site.formEndpoint;
+const preview = site.preview;
 ---
 <form
   class="contact-form"
@@ -20,6 +21,7 @@ const endpoint = site.formEndpoint;
   data-contact-form
   data-endpoint={endpoint}
   data-email={site.contact.email}
+  data-preview={preview ? '1' : undefined}
   action={endpoint || `mailto:${site.contact.email}`}
   method="post"
   enctype={endpoint ? undefined : 'text/plain'}
@@ -106,6 +108,7 @@ const endpoint = site.formEndpoint;
     const submitLabel = form.querySelector<HTMLElement>('[data-submit-label]')!;
     const endpoint = form.dataset.endpoint;
     const email = form.dataset.email;
+    const preview = form.dataset.preview === '1';
     const emailRe = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
 
     // Preselección desde enlaces "consultar" (?servicio=slug#contacto)
@@ -190,6 +193,15 @@ const endpoint = site.formEndpoint;
         mensaje: String(data.get('mensaje')).trim(),
       };
 
+      // Vista previa: no se envía nada.
+      if (preview) {
+        showStatus(
+          'info',
+          'Vista previa: en el sitio publicado este botón envía la consulta por mail a ' + email + '. Acá el envío está desactivado.',
+        );
+        return;
+      }
+
       // Sin integración configurada: mail prearmado (acción real, no simulada)
       if (!endpoint) {
         const body = [
@@ -224,9 +236,13 @@ const endpoint = site.formEndpoint;
             servicios: payload.servicios.join(', '),
             _subject: `Consulta desde la web — ${payload.nombre}`,
             _replyto: payload.email,
+            _template: 'table',
+            _captcha: 'false',
           }),
         });
         if (!res.ok) throw new Error(String(res.status));
+        const json = await res.json().catch(() => ({}));
+        if (json && (json.success === false || json.success === 'false')) throw new Error('rejected');
         form.reset();
         ['nombre', 'email', 'servicios', 'mensaje'].forEach((k) => setError(k, ''));
         showStatus('success', '¡Gracias! Recibimos su consulta y les vamos a responder por email.');

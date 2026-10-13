@@ -71,18 +71,19 @@ Todas se configuran con variables de entorno públicas (no hay claves secretas e
 
 | Variable | Para qué | Si queda vacía |
 |---|---|---|
-| `PUBLIC_SITE_URL` | Dominio definitivo (canonical, sitemap, Open Graph) | Usa `https://thewedbrand.com.ar` |
-| `PUBLIC_FORM_ENDPOINT` | Recepción real de consultas (Formspree, Web3Forms, Basin…) | El formulario valida y **abre un mail prearmado** a thewedbrand@gmail.com. Nunca simula un envío. |
+| `PUBLIC_SITE_URL` | Dominio definitivo (canonical, sitemap, Open Graph) | No se generan sitemap ni URL canónica |
+| `PUBLIC_FORM_ENDPOINT` | Otro servicio de recepción (Formspree, Web3Forms…) | Usa **FormSubmit**: cada consulta llega por mail a thewedbrand@gmail.com |
+| `PUBLIC_PREVIEW` | `1` = vista previa, el formulario no envía | Envío normal |
 | `PUBLIC_GA_ID` | Google Analytics 4 | No se carga analítica ni aparece aviso de cookies |
 | `PUBLIC_WHATSAPP` | Botón de WhatsApp en contacto y footer | No se muestra |
 
-### Conectar el formulario (recomendado: Formspree, plan gratuito)
+### Formulario
 
-1. Crear cuenta en formspree.io con thewedbrand@gmail.com y crear un formulario.
-2. Copiar el endpoint (`https://formspree.io/f/xxxxxxx`) en `PUBLIC_FORM_ENDPOINT`.
-3. Volver a publicar. El formulario envía JSON con: nombre, email, fecha, lugar, servicios, mensaje. Incluye un campo anti-spam (`_gotcha`).
+El formulario está en la página y envía la consulta directo por mail a **thewedbrand@gmail.com** a través de [FormSubmit](https://formsubmit.co) (sin cuenta ni claves).
 
-Funciona igual con otros servicios que acepten POST JSON y respondan 2xx.
+**Activación (una sola vez):** después de publicar el sitio, hacer un envío de prueba. A thewedbrand@gmail.com llega un mail de FormSubmit para confirmar; al aceptarlo, todas las consultas siguientes llegan como mail con los datos en una tabla (nombre, email, fecha, lugar, servicios, mensaje). Responder ese mail le contesta directo a la pareja.
+
+Para usar otro servicio (Formspree, Web3Forms), cargar su endpoint en `PUBLIC_FORM_ENDPOINT`.
 
 ### Analítica
 
@@ -90,9 +91,8 @@ Con `PUBLIC_GA_ID` el sitio muestra un aviso discreto y carga Google Analytics *
 
 ## Antes de publicar — checklist
 
-- [ ] **Dominio**: definirlo y cargar `PUBLIC_SITE_URL`.
-- [ ] **Formulario**: crear el endpoint y cargar `PUBLIC_FORM_ENDPOINT`. Hacer un envío de prueba.
-- [ ] **Instagram**: confirmar que `https://www.instagram.com/thewedbrand/` es el perfil oficial (`src/config/site.ts`).
+- [ ] **Dominio**: cargar `PUBLIC_SITE_URL` con el dominio propio.
+- [ ] **Formulario**: hacer un envío de prueba y confirmar el mail de activación de FormSubmit.
 - [ ] **WhatsApp** (opcional): el brand book muestra 11 6514 4751. Para mostrarlo, cargar `PUBLIC_WHATSAPP=5491165144751`.
 - [ ] **Tipografía Garet**: hoy se usa *Urbanist* como reemplazo (muy similar). Si tienen licencia web de Garet, agregar los archivos `.woff2` en `public/fonts/` y declarar `@font-face { font-family: 'Garet'; … }` en `src/styles/global.css`: se toma automáticamente porque ya es la primera opción de `--font-display`.
 - [ ] **Tipografía Vintage Goods** (nombres en script): reemplazada por *Mrs Saint Delafield*. Mismo procedimiento con `font-family: 'Vintage Goods'`.

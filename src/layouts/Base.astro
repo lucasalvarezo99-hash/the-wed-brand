@@ -34,19 +34,18 @@ const {
   jsonLd,
 } = Astro.props;
 
-const base = Astro.site ?? new URL(site.url);
+// Sin dominio configurado (PUBLIC_SITE_URL) se omiten las URL absolutas.
+const base = Astro.site;
 const fullTitle = title ? `${title} · ${site.name}` : `${site.name} — Branding e identidad para casamientos`;
-const canonical = new URL(Astro.url.pathname, base).href;
-const ogImage = new URL(image, base).href;
+const canonical = base ? new URL(Astro.url.pathname, base).href : undefined;
+const ogImage = base ? new URL(image, base).href : image;
 
 const organization = {
   '@context': 'https://schema.org',
   '@type': 'ProfessionalService',
-  '@id': `${base.origin}/#organizacion`,
+  '@id': '#organizacion',
   name: site.name,
-  url: base.origin,
-  logo: new URL('/brand/isotipo-vino.png', base).href,
-  image: ogImage,
+  ...(base ? { url: base.origin, logo: new URL('/brand/isotipo-vino.png', base).href, image: ogImage } : {}),
   description: site.description,
   email: site.contact.email,
   sameAs: [site.contact.instagram.url],
@@ -63,7 +62,7 @@ const structured = [organization, ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd :
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={canonical} />
+    {canonical && <link rel="canonical" href={canonical} />}
     {noindex && <meta name="robots" content="noindex" />}
 
     <meta name="theme-color" content="#50080E" />
@@ -71,7 +70,7 @@ const structured = [organization, ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd :
     <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
     <link rel="manifest" href="/site.webmanifest" />
-    <link rel="sitemap" href="/sitemap-index.xml" />
+    {base && <link rel="sitemap" href="/sitemap-index.xml" />}
 
     <!-- Open Graph / redes -->
     <meta property="og:type" content={type} />
@@ -79,7 +78,7 @@ const structured = [organization, ...(jsonLd ? (Array.isArray(jsonLd) ? jsonLd :
     <meta property="og:locale" content={site.locale} />
     <meta property="og:title" content={fullTitle} />
     <meta property="og:description" content={description} />
-    <meta property="og:url" content={canonical} />
+    {canonical && <meta property="og:url" content={canonical} />}
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:alt" content={imageAlt} />
     <meta name="twitter:card" content="summary_large_image" />

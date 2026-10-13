@@ -26,14 +26,14 @@ const fecha = p.date
       .replace(/^./, (c) => c.toUpperCase())
   : undefined;
 
-const base = Astro.site ?? new URL(site.url);
+const base = Astro.site;
 const ld = {
   '@context': 'https://schema.org',
   '@type': 'CreativeWork',
   name: `${p.title} — ${p.concept}`,
   description: p.excerpt,
-  creator: { '@id': `${base.origin}/#organizacion` },
-  url: new URL(Astro.url.pathname, base).href,
+  creator: { '@id': '#organizacion' },
+  ...(base ? { url: new URL(Astro.url.pathname, base).href } : {}),
   ...(p.date ? { dateCreated: p.date.toISOString().slice(0, 10) } : {}),
 };
 ---
