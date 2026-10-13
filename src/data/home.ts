@@ -30,6 +30,10 @@ import reelFosforos from '../assets/reel/fosforos.jpg';
 import reelBarra from '../assets/reel/barra.jpg';
 import reelMenu from '../assets/reel/menu-rayado.jpg';
 import reelSello from '../assets/reel/sello-lacre.jpg';
+import reelPizza from '../assets/reel/caja-pizza.jpg';
+import reelAbanico from '../assets/reel/abanico-silla.jpg';
+import reelTiramisu from '../assets/reel/tiramisu.jpg';
+import reelMesa from '../assets/reel/numero-mesa.jpg';
 
 type Photo = { src: ImageMetadata; alt: string };
 
@@ -54,10 +58,10 @@ export const heroReel: { src: ImageMetadata | null; alt: string }[] = [
   { src: reelBarra, alt: 'Cartel de tela «La barra» con los tragos de los novios colgado sobre la barra.' },
   { src: reelMenu, alt: 'Menús con borde ondulado y rayas verdes.' },
   { src: reelSello, alt: 'Menú cerrado con sello de lacre bordó sobre un plato: «Rompe el sello para ver el menú».' },
-  { src: null, alt: '' },
-  { src: null, alt: '' },
-  { src: null, alt: '' },
-  { src: null, alt: '' },
+  { src: reelPizza, alt: 'Caja de pizza ilustrada con los novios brindando: «Cande & Diego, 16.02.26, Punta del Este».' },
+  { src: reelAbanico, alt: 'Abanico blanco con «Los Alvarez» en caligrafía bordó sobre una silla de esterilla.' },
+  { src: reelTiramisu, alt: 'Tiramisú con las iniciales L y C dentro de dos corazones y la fecha 06/06/26.' },
+  { src: reelMesa, alt: 'Número de mesa «Table 2» sostenido entre dos piedras, con velas y copas.' },
 ];
 
 /* ------------------------------------------------------------------ CÓMO PENSAMOS */
