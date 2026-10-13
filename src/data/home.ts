@@ -25,7 +25,11 @@ import servilletas from '../assets/aplicaciones/servilletas.jpg';
 import cintaRamo from '../assets/aplicaciones/cinta-ramo.jpg';
 import encendedores from '../assets/aplicaciones/encendedores.jpg';
 import invitacionFrente from '../assets/proyectos/casu-y-lucas/invitacion-frente.jpg';
-import invitacionDigital from '../assets/proyectos/casu-y-lucas/invitacion-digital.jpg';
+import reelEnvoltorio from '../assets/reel/envoltorio-sello.jpg';
+import reelFosforos from '../assets/reel/fosforos.jpg';
+import reelBarra from '../assets/reel/barra.jpg';
+import reelMenu from '../assets/reel/menu-rayado.jpg';
+import reelSello from '../assets/reel/sello-lacre.jpg';
 
 type Photo = { src: ImageMetadata; alt: string };
 
@@ -39,20 +43,21 @@ export const hero = {
 };
 
 /**
- * Tira de fotos que se desliza de derecha a izquierda.
- * `tag` va arriba a la izquierda entre corchetes; `note` arriba a la derecha.
+ * Tira de fotos del inicio (se desliza de derecha a izquierda). Van 10 fotos.
+ * Las que tienen `src: null` son lugares reservados: se muestran como un
+ * recuadro vacío hasta cargar la foto (importarla arriba y ponerla en `src`).
  */
-export const heroReel: (Photo & { tag: string; note: string })[] = [
-  { src: invitacionFrente, alt: 'Invitación ilustrada a mano del casamiento de Casu y Lucas.', tag: 'Invitación', note: 'Casu & Lucas' },
-  { src: menuLetterpress, alt: 'Menú impreso en letterpress con ilustración botánica verde.', tag: 'Papelería', note: 'Menú' },
-  { src: veloColor, alt: 'Novios abrazados bajo el velo, ella sonríe con un ramo de colores.', tag: 'Wedding content', note: 'El gran día' },
-  { src: servilletas, alt: 'Servilleta con monograma y fecha.', tag: 'Cotillón', note: 'Monograma' },
-  { src: invitacionDigital, alt: 'Invitación digital con el recorrido del día, regalos y confirmación de asistencia.', tag: 'Web para invitados', note: 'RSVP' },
-  { src: portadaBotanica, alt: 'Portada vino con marco botánico ilustrado.', tag: 'Dirección de arte', note: 'Portada' },
-  { src: abanicos, alt: 'Novia con un abanico bordado.', tag: 'Merch', note: 'Abanicos' },
-  { src: parejaCampo, alt: 'Novios caminando en un campo verde con el velo al viento.', tag: 'Wedding content', note: 'Retrato' },
-  { src: menuPincel, alt: 'Menú con títulos escritos a pincel.', tag: 'Papelería', note: 'Minuta' },
-  { src: cintaRamo, alt: 'Cinta bordada con la fecha atada al ramo.', tag: 'Detalles', note: 'Ramo' },
+export const heroReel: { src: ImageMetadata | null; alt: string }[] = [
+  { src: invitacionFrente, alt: 'Invitación ilustrada a mano del casamiento de Casu y Lucas, con un auto antiguo y un moño.' },
+  { src: reelEnvoltorio, alt: 'Envoltorios de papel con sello bordó y la leyenda [THE WED BRAND] sobre una bandeja plateada.' },
+  { src: reelFosforos, alt: 'Cajas de fósforos bordó con el isotipo de The Wed Brand en una bandeja de tres pisos.' },
+  { src: reelBarra, alt: 'Cartel de tela «La barra» con los tragos de los novios colgado sobre la barra.' },
+  { src: reelMenu, alt: 'Menús con borde ondulado y rayas verdes.' },
+  { src: reelSello, alt: 'Menú cerrado con sello de lacre bordó sobre un plato: «Rompe el sello para ver el menú».' },
+  { src: null, alt: '' },
+  { src: null, alt: '' },
+  { src: null, alt: '' },
+  { src: null, alt: '' },
 ];
 
 /* ------------------------------------------------------------------ CÓMO PENSAMOS */

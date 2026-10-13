@@ -219,3 +219,6 @@
 
 /* Primera sección de cada página: menos aire arriba */
 main > .section:first-child { padding-top: clamp(3rem, 6vw, 6rem); }
+
+/* Lugar reservado para una foto que todavía no está cargada */
+.reel__img--empty { background: color-mix(in srgb, var(--grafito) 7%, var(--base)); }

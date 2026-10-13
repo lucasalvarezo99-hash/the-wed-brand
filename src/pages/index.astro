@@ -22,29 +22,23 @@ const wordmark = [...'THE WED BRAND'];
         </span>
       </h1>
       <p class="hero__manifesto justify">{hero.manifesto}</p>
-      <div class="hero__actions">
-        <a class="bracket-link" href="/servicios">{hero.primary.label.toLowerCase()}</a>
-        <a class="bracket-link" href="/contacto">{hero.secondary.label.toLowerCase()}</a>
-      </div>
     </div>
 
     <div class="reel" aria-label="Algunos trabajos y aplicaciones">
       <ul class="reel__track">
         {[0, 1].map((copy) =>
           heroReel.map((item, i) => (
-            <li class="reel__item" aria-hidden={copy === 1 ? 'true' : undefined}>
-              <p class="reel__meta tracked">
-                <span>[ {item.tag}</span>
-                <span>{String(i + 1).padStart(2, '0')} ]</span>
-              </p>
-              <div class="reel__img">
-                <Image
-                  src={item.src}
-                  alt={copy === 1 ? '' : item.alt}
-                  widths={[220, 340, 460]}
-                  sizes="(min-width: 900px) 16vw, 42vw"
-                  loading={copy === 0 && i < 6 ? 'eager' : 'lazy'}
-                />
+            <li class="reel__item" aria-hidden={copy === 1 || !item.src ? 'true' : undefined}>
+              <div class:list={['reel__img', { 'reel__img--empty': !item.src }]}>
+                {item.src && (
+                  <Image
+                    src={item.src}
+                    alt={copy === 1 ? '' : item.alt}
+                    widths={[220, 340, 460]}
+                    sizes="(min-width: 900px) 16vw, 42vw"
+                    loading={copy === 0 && i < 6 ? 'eager' : 'lazy'}
+                  />
+                )}
               </div>
             </li>
           )),
