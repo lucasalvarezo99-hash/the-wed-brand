@@ -1,0 +1,108 @@
+---
+import { Image } from 'astro:assets';
+import type { CollectionEntry } from 'astro:content';
+import ArrowIcon from './ArrowIcon.astro';
+
+interface Props {
+  project: CollectionEntry<'proyectos'>;
+  featured?: boolean;
+}
+const { project, featured = false } = Astro.props;
+const p = project.data;
+const href = `/proyectos/${project.id}`;
+const year = p.date ? p.date.getUTCFullYear() : undefined;
+const second = p.gallery.find((g) => g.src.src !== p.cover.src);
+---
+<article class:list={['project-card', { 'project-card--featured': featured }]} data-categories={p.categories.join('|')}>
+  <a class="project-card__media" href={href} tabindex="-1" aria-hidden="true">
+    <figure class="project-card__frame project-card__frame--a">
+      <Image src={p.cover} alt="" widths={[420, 680, 900]} sizes="(min-width: 900px) 30vw, 70vw" />
+    </figure>
+    {featured && second && (
+      <figure class="project-card__frame project-card__frame--b">
+        <Image src={second.src} alt="" widths={[360, 560]} sizes="(min-width: 900px) 22vw, 50vw" />
+      </figure>
+    )}
+  </a>
+
+  <div class="project-card__body">
+    <p class="mono-sm project-card__meta">
+      {[p.location, year].filter(Boolean).join(' · ')}
+    </p>
+    <h3 class="project-card__title">
+      <a href={href}>
+        {p.couple ? <span class="script">{p.couple}</span> : p.title}
+      </a>
+    </h3>
+    <p class="project-card__concept">{p.concept}</p>
+    <p class="project-card__excerpt">{p.excerpt}</p>
+    {p.applications.length > 0 && (
+      <ul class="tag-list" aria-label="Aplicaciones">
+        {p.applications.slice(0, featured ? 6 : 3).map((a) => <li>{a}</li>)}
+      </ul>
+    )}
+    <a class="project-card__link" href={href}>
+      <span class="arrow-dot"><ArrowIcon /></span>
+      <span>Ver el caso completo<span class="visually-hidden">: {p.title}</span></span>
+    </a>
+  </div>
+</article>
+
+<style>
+  .project-card {
+    display: grid;
+    gap: 2rem;
+    align-items: center;
+  }
+  .project-card__media {
+    position: relative;
+    display: block;
+    aspect-ratio: 5 / 4;
+    background: var(--crema-200);
+    border: 1px solid var(--line);
+    overflow: hidden;
+  }
+  .project-card__frame {
+    position: absolute;
+    margin: 0;
+    background: #fff;
+    padding: clamp(6px, 0.8vw, 10px);
+    box-shadow: 0 1px 0 rgb(0 0 0 / 0.04);
+    transition: transform 0.7s var(--ease);
+  }
+  .project-card__frame :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .project-card__frame--a { width: 46%; aspect-ratio: 609 / 840; left: 12%; top: 8%; transform: rotate(-3deg); }
+  .project-card__frame--b { width: 38%; aspect-ratio: 584 / 840; right: 10%; top: 18%; transform: rotate(4deg); }
+  .project-card:not(.project-card--featured) .project-card__frame--a { left: 50%; translate: -50% 0; transform: rotate(-2deg); width: 52%; }
+  .project-card__media:hover .project-card__frame--a { transform: rotate(-5deg) translateY(-6px); }
+  .project-card__media:hover .project-card__frame--b { transform: rotate(6deg) translateY(-4px); }
+
+  .project-card__body { display: grid; gap: 1rem; justify-items: start; }
+  .project-card__title { font-size: var(--step-3); color: var(--vino); line-height: 1; }
+  .project-card__title a { text-decoration: none; }
+  .project-card__title .script { font-size: 1.5em; display: inline-block; padding-block: 0.1em; }
+  .project-card__concept {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    text-transform: uppercase;
+    line-height: 1.1;
+    color: var(--vino);
+  }
+  .project-card__link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    margin-top: 0.5rem;
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: var(--step--1);
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .project-card__link:hover span:last-child { text-decoration: underline; }
+
+  @media (min-width: 900px) {
+    .project-card--featured { grid-template-columns: 1.25fr 1fr; gap: clamp(2rem, 5vw, 6rem); }
+    .project-card--featured .project-card__media { aspect-ratio: 6 / 5; }
+  }
+</style>

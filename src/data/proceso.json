@@ -1,0 +1,10 @@
+{
+  "note": "Las etapas se adaptan según el servicio que contraten.",
+  "steps": [
+    { "title": "Nos conocemos", "text": "Conversamos sobre ustedes, el casamiento y lo que necesitan." },
+    { "title": "Encontramos el concepto", "text": "Exploramos su historia, sus referencias, su personalidad y lo que quieren lograr." },
+    { "title": "Diseñamos la propuesta", "text": "Desarrollamos la identidad y las piezas acordadas." },
+    { "title": "Damos vida al universo", "text": "Aplicamos el concepto a los puntos de contacto incluidos en el proyecto." },
+    { "title": "Acompañamos el proceso", "text": "Trabajamos en equipo con ustedes hasta la entrega o cobertura acordada." }
+  ]
+}

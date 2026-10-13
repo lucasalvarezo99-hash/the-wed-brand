@@ -1,0 +1,195 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import { site } from '../../config/site';
+
+export const getStaticPaths = (async () => {
+  const proyectos = (await getCollection('proyectos', ({ data }) => data.published)).sort(
+    (a, b) => a.data.order - b.data.order,
+  );
+  return proyectos.map((proyecto, i) => ({
+    params: { slug: proyecto.id },
+    props: { proyecto, next: proyectos.length > 1 ? proyectos[(i + 1) % proyectos.length] : undefined },
+  }));
+}) satisfies GetStaticPaths;
+
+const { proyecto, next } = Astro.props;
+const { Content } = await render(proyecto);
+const p = proyecto.data;
+const servicios = await getCollection('servicios');
+const usados = servicios.filter((s) => p.services.includes(s.id));
+const fecha = p.date
+  ? new Intl.DateTimeFormat('es-AR', { month: 'long', year: 'numeric', timeZone: 'UTC' })
+      .format(p.date)
+      .replace(/^./, (c) => c.toUpperCase())
+  : undefined;
+
+const base = Astro.site ?? new URL(site.url);
+const ld = {
+  '@context': 'https://schema.org',
+  '@type': 'CreativeWork',
+  name: `${p.title} — ${p.concept}`,
+  description: p.excerpt,
+  creator: { '@id': `${base.origin}/#organizacion` },
+  url: new URL(Astro.url.pathname, base).href,
+  ...(p.date ? { dateCreated: p.date.toISOString().slice(0, 10) } : {}),
+};
+---
+<Base
+  title={`${p.title} · Proyecto`}
+  description={p.excerpt}
+  image={p.cover.src}
+  imageAlt={p.coverAlt}
+  type="article"
+  jsonLd={ld}
+>
+  <article class="case">
+    <header class="case-hero">
+      <div class="container">
+        <nav class="crumbs mono-sm" aria-label="Ruta">
+          <a href="/">Inicio</a> <span aria-hidden="true">/</span>
+          <a href="/#portfolio">Portfolio</a> <span aria-hidden="true">/</span>
+          <span aria-current="page">{p.title}</span>
+        </nav>
+
+        <div class="case-hero__grid">
+          <div class="case-hero__text">
+            <h1>
+              {p.couple ? <span class="script case-hero__names">{p.couple}</span> : p.title}
+              <span class="visually-hidden"> — </span>
+              <span class="case-hero__concept">{p.concept}</span>
+            </h1>
+            <p class="lead">{p.excerpt}</p>
+          </div>
+          <figure class="case-hero__cover">
+            <Image src={p.cover} alt={p.coverAlt} widths={[480, 720, 960]} sizes="(min-width: 900px) 40vw, 90vw" loading="eager" />
+          </figure>
+        </div>
+
+        <dl class="facts">
+          {fecha && <div><dt class="label">Fecha</dt><dd>{fecha}</dd></div>}
+          {p.location && <div><dt class="label">Lugar</dt><dd>{p.location}</dd></div>}
+          {usados.length > 0 && (
+            <div>
+              <dt class="label">Servicio</dt>
+              <dd>{usados.map((s, i) => <>{i > 0 && ', '}<a href={`/servicios/${s.id}`}>{s.data.title}</a></>)}</dd>
+            </div>
+          )}
+          {p.applications.length > 0 && <div><dt class="label">Aplicaciones</dt><dd>{p.applications.join(' · ')}</dd></div>}
+        </dl>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="container case-chapters">
+        <div class="chapter">
+          <p class="mono-sm">01</p>
+          <h2>Concepto</h2>
+          <p class="lead">{p.concept}</p>
+        </div>
+        {p.story && (
+          <div class="chapter">
+            <p class="mono-sm">02</p>
+            <h2>La pareja</h2>
+            <p>{p.story}</p>
+          </div>
+        )}
+        {p.solution && (
+          <div class="chapter">
+            <p class="mono-sm">03</p>
+            <h2>La solución</h2>
+            <p>{p.solution}</p>
+          </div>
+        )}
+      </div>
+      <div class="container prose case-prose"><Content /></div>
+    </section>
+
+    {p.gallery.length > 0 && (
+      <section class="section tone-celeste" aria-label="Galería del proyecto">
+        <div class="container gallery">
+          {p.gallery.map((g) => (
+            <figure class:list={['gallery__item', { 'gallery__item--wide': g.size === 'wide' }]}>
+              <div class="gallery__frame">
+                <Image src={g.src} alt={g.alt} widths={[480, 800, 1100]} sizes={g.size === 'wide' ? '(min-width: 900px) 80vw, 95vw' : '(min-width: 900px) 40vw, 95vw'} />
+              </div>
+              {g.caption && <figcaption class="mono-sm">{g.caption}</figcaption>}
+            </figure>
+          ))}
+        </div>
+      </section>
+    )}
+
+    {p.testimonial && (
+      <section class="section">
+        <figure class="container case-quote">
+          <blockquote><p>«{p.testimonial.quote}»</p></blockquote>
+          <figcaption class="mono-sm">— {p.testimonial.author}</figcaption>
+        </figure>
+      </section>
+    )}
+
+    <section class="section tone-vino on-dark case-cta">
+      <div class="container case-cta__inner">
+        <p class="case-cta__title">¿Se imaginan algo así para su casamiento?</p>
+        <div class="case-cta__actions">
+          <a class="btn btn--solid" href="/#contacto">Hablemos de su casamiento</a>
+          {next
+            ? <a class="paren-link" href={`/proyectos/${next.id}`}>siguiente proyecto: {next.data.title}</a>
+            : <a class="paren-link" href="/#servicios">ver servicios</a>}
+        </div>
+      </div>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .case-hero { padding-block: clamp(2rem, 4vw, 3rem) 0; }
+  .crumbs { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+  .crumbs a { text-decoration: none; }
+  .crumbs a:hover { text-decoration: underline; }
+  .case-hero__grid { display: grid; gap: clamp(2rem, 5vw, 5rem); align-items: center; margin-top: clamp(2rem, 5vw, 4rem); }
+  .case-hero__text { display: grid; gap: 1.5rem; }
+  .case-hero h1 { display: grid; gap: 1rem; font-size: inherit; }
+  .case-hero__names { font-size: clamp(3.6rem, 2rem + 7vw, 8rem); color: var(--vino); padding-block: 0.1em; }
+  .case-hero__concept { font-size: var(--step-4); color: var(--vino); line-height: 1; }
+  .case-hero__cover { margin: 0; background: #fff; padding: clamp(8px, 1vw, 14px); transform: rotate(2deg); max-width: 520px; justify-self: center; }
+  @media (min-width: 900px) { .case-hero__grid { grid-template-columns: 1.15fr 1fr; } }
+
+  .facts {
+    display: grid;
+    gap: 0;
+    margin-top: clamp(3rem, 6vw, 5rem);
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+  .facts > div { padding: 1.1rem 1.2rem; border-right: 1px solid var(--line); border-bottom: 1px solid var(--line); display: grid; gap: 0.4rem; }
+  .facts dd { margin: 0; }
+  @media (min-width: 640px) { .facts { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) { .facts { grid-template-columns: repeat(4, 1fr); } }
+
+  .case-chapters { display: grid; gap: 2.5rem; }
+  .chapter { display: grid; gap: 0.8rem; align-content: start; }
+  .chapter h2 { font-size: var(--step-2); color: var(--vino); }
+  @media (min-width: 900px) { .case-chapters { grid-template-columns: repeat(3, 1fr); } }
+  .case-prose { margin-top: clamp(3rem, 5vw, 4.5rem); max-width: 68ch; margin-left: auto; margin-right: auto; font-size: var(--step-1); }
+
+  .gallery { display: grid; gap: clamp(2rem, 4vw, 4rem); align-items: start; }
+  @media (min-width: 900px) {
+    .gallery { grid-template-columns: repeat(2, 1fr); }
+    .gallery__item:nth-child(even) { margin-top: 5rem; }
+    .gallery__item--wide { grid-column: 1 / -1; }
+  }
+  .gallery__item { margin: 0; display: grid; gap: 0.8rem; }
+  .gallery__frame { background: #fff; padding: clamp(8px, 1vw, 14px); }
+  .gallery__frame :global(img) { width: 100%; }
+
+  .case-quote blockquote p { font-family: var(--font-display); font-size: var(--step-3); text-transform: uppercase; color: var(--vino); max-width: 26ch; }
+  .case-quote figcaption { margin-top: 1rem; }
+
+  .case-cta__inner { display: grid; gap: 2rem; }
+  .case-cta__title { font-family: var(--font-display); font-size: var(--step-4); text-transform: uppercase; line-height: 1; max-width: 18ch; }
+  .case-cta__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; }
+</style>

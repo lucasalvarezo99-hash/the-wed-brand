@@ -1,0 +1,27 @@
+{
+  "name": "the-wed-brand",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sitio web oficial de The Wed Brand — branding e identidad para casamientos.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "dependencies": {
+    "@astrojs/sitemap": "3.7.4",
+    "@fontsource-variable/urbanist": "5.3.0",
+    "@fontsource/courier-prime": "5.3.0",
+    "@fontsource/mrs-saint-delafield": "5.3.0",
+    "astro": "7.3.5"
+  },
+  "devDependencies": {
+    "@astrojs/check": "0.9.10",
+    "typescript": "5.9.3"
+  }
+}

@@ -1,0 +1,41 @@
+---
+/** Logotipo horizontal (Brand Book: uso en web). Isotipo + THE WED BRAND en Garet. */
+import Isotipo from './Isotipo.astro';
+import { site } from '../config/site';
+
+interface Props {
+  class?: string;
+  href?: string;
+  showSymbol?: boolean;
+}
+const { class: className, href = '/', showSymbol = true } = Astro.props;
+---
+<a href={href} class:list={['logo', className]} aria-label={`${site.name} — inicio`}>
+  {showSymbol && <Isotipo class="logo__symbol" />}
+  <span class="logo__word" aria-hidden="true">The Wed Brand</span>
+</a>
+
+<style>
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.85rem;
+    color: var(--vino);
+    text-decoration: none;
+  }
+  :global(.on-dark) .logo { color: var(--crema); }
+  .logo__symbol { width: 2.6rem; height: auto; flex: none; }
+  .logo__word {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: 0.95rem;
+    letter-spacing: 0.42em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    /* compensa el tracking del último caracter */
+    margin-right: -0.42em;
+  }
+  @media (max-width: 380px) {
+    .logo__word { letter-spacing: 0.3em; font-size: 0.85rem; }
+  }
+</style>

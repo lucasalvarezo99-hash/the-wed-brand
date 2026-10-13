@@ -1,0 +1,26 @@
+---
+/**
+ * Isotipo de The Wed Brand: dos círculos dibujados a mano que se cruzan.
+ * Hereda el color del texto (currentColor). Fuente: public/brand/isotipo.svg
+ */
+import raw from '../../public/brand/isotipo.svg?raw';
+
+interface Props {
+  class?: string;
+  /** Texto alternativo. Si se omite, el isotipo es decorativo. */
+  title?: string;
+}
+const { class: className, title } = Astro.props;
+const path = raw.match(/<path[\s\S]*?\/>/)?.[0] ?? '';
+const viewBox = raw.match(/viewBox="([^"]+)"/)?.[1] ?? '0 0 838 527';
+---
+<svg
+  class:list={['isotipo', className]}
+  xmlns="http://www.w3.org/2000/svg"
+  viewBox={viewBox}
+  role={title ? 'img' : undefined}
+  aria-hidden={title ? undefined : 'true'}
+  aria-label={title}
+  focusable="false"
+  set:html={path}
+/>

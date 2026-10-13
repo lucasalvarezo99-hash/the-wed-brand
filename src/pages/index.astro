@@ -1,0 +1,734 @@
+---
+import { Image } from 'astro:assets';
+import { getCollection } from 'astro:content';
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import Isotipo from '../components/Isotipo.astro';
+import ArrowIcon from '../components/ArrowIcon.astro';
+import ProjectCard from '../components/ProjectCard.astro';
+import ContactForm from '../components/ContactForm.astro';
+import { site } from '../config/site';
+import {
+  hero,
+  heroTiles,
+  philosophy,
+  servicesIntro,
+  serviceGuide,
+  portfolioIntro,
+  contactIntro,
+} from '../data/home';
+import faq from '../data/faq.json';
+import proceso from '../data/proceso.json';
+import equipo from '../data/equipo.json';
+import testimonios from '../data/testimonios.json';
+import fotoEquipo from '../assets/nosotras/cande-y-casu.jpg';
+
+const servicios = (await getCollection('servicios')).sort((a, b) => a.data.order - b.data.order);
+const serviceTitle = (slug: string) => servicios.find((s) => s.id === slug)?.data.title ?? slug;
+
+const proyectos = (await getCollection('proyectos', ({ data }) => data.published)).sort(
+  (a, b) => Number(b.data.featured) - Number(a.data.featured) || a.data.order - b.data.order,
+);
+const featured = proyectos.filter((p) => p.data.featured);
+const rest = proyectos.filter((p) => !p.data.featured);
+// Filtros solo cuando hay suficientes proyectos para que sean útiles.
+const categories = [...new Set(proyectos.flatMap((p) => p.data.categories))];
+const showFilters = proyectos.length >= 4 && categories.length > 1;
+
+type Testimonio = { quote: string; author: string; project?: string };
+const quotes = testimonios as Testimonio[];
+
+// Numeración editorial de secciones (se ajusta si alguna se oculta).
+let n = 0;
+const num = () => String(++n).padStart(2, '0');
+
+const faqLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faq.map((f) => ({
+    '@type': 'Question',
+    name: f.q,
+    acceptedAnswer: { '@type': 'Answer', text: f.a },
+  })),
+};
+---
+<Base jsonLd={faqLd}>
+  <!-- ============================================================ HERO -->
+  <section class="hero" id="inicio" aria-labelledby="hero-title">
+    <div class="container">
+      <div class="hero__meta mono-sm">
+        <span>{hero.eyebrow}</span>
+        <span aria-hidden="true">Est. {site.foundingYear}</span>
+      </div>
+
+      <h1 class="hero__title" id="hero-title">{hero.title}</h1>
+
+      <div class="hero__intro">
+        <p class="lead">{hero.lead}</p>
+        <div class="hero__actions">
+          <a class="btn btn--solid" href={hero.primary.href}>{hero.primary.label}</a>
+          <a class="paren-link" href={hero.secondary.href}>{hero.secondary.label.toLowerCase()}</a>
+        </div>
+      </div>
+    </div>
+
+    <ul class="cascade" aria-label="Puntos de contacto de una identidad">
+      {heroTiles.map((tile, i) => (
+        <li class:list={['cascade__item', `cascade__item--${i + 1}`]}>
+          {tile.type === 'image' ? (
+            <a class="cascade__photo" href={tile.href ?? '#portfolio'}>
+              <Image src={tile.src} alt={tile.alt} widths={[240, 360, 480]} sizes="(min-width: 900px) 17vw, 46vw" loading={i < 3 ? 'eager' : 'lazy'} />
+            </a>
+          ) : (
+            <div class:list={['cascade__plate', `plate--${tile.tone}`]}>
+              <Isotipo class="cascade__iso" />
+              <span class="cascade__word">{tile.word}</span>
+            </div>
+          )}
+          <span class="cascade__label mono-sm">{tile.label}</span>
+        </li>
+      ))}
+    </ul>
+  </section>
+
+  <!-- ============================================================ FILOSOFÍA -->
+  <section class="section philosophy" id="filosofia" aria-labelledby="filosofia-title">
+    <div class="container">
+      <SectionHead number={num()} label={philosophy.label} title={philosophy.problem} id="filosofia-title" />
+
+      <ul class="cells cells--4">
+        {philosophy.problems.map((p, i) => (
+          <li class="cell reveal" style={`--delay:${i * 0.08}s`}>
+            <h3 class="cell__title">{p.title}</h3>
+            <p>{p.text}</p>
+          </li>
+        ))}
+      </ul>
+
+      <div class="philosophy__answer">
+        <div class="philosophy__symbol reveal" aria-hidden="true">
+          <Isotipo />
+        </div>
+        <div class="philosophy__text">
+          <h3 class="philosophy__answer-title reveal">{philosophy.answerTitle}</h3>
+          <p class="lead reveal">{philosophy.answer}</p>
+          <dl class="symbol-list">
+            {philosophy.symbol.map((s) => (
+              <div class="symbol-list__row reveal">
+                <span class="arrow-dot"><ArrowIcon /></span>
+                <dt>{s.title}</dt>
+                <dd>{s.text}</dd>
+              </div>
+            ))}
+          </dl>
+        </div>
+      </div>
+
+      <figure class="quote reveal">
+        <figcaption class="label">{philosophy.quoteLabel}</figcaption>
+        <blockquote><p>«{philosophy.quote}»</p></blockquote>
+      </figure>
+    </div>
+  </section>
+
+  <!-- ============================================================ SERVICIOS -->
+  <section class="section tone-vino on-dark services" id="servicios" aria-labelledby="servicios-title">
+    <div class="container">
+      <SectionHead number={num()} label={servicesIntro.label} title={servicesIntro.title} id="servicios-title" split>
+        <p class="lead">{servicesIntro.lead}</p>
+      </SectionHead>
+
+      <ol class="service-list">
+        {servicios.map((s, i) => (
+          <li class="service reveal" id={`servicio-${s.id}`}>
+            <div class="service__head">
+              <span class="service__num mono-sm">{String(i + 1).padStart(2, '0')}</span>
+              <h3 class="service__title">{s.data.title}</h3>
+              <p class="service__tagline">{s.data.tagline}</p>
+            </div>
+            <div class="service__body">
+              <p>{s.data.summary}</p>
+              <p class="label service__sub">Puede incluir</p>
+              <ul class="arrow-list">
+                {s.data.includes.map((item) => <li>{item}</li>)}
+              </ul>
+            </div>
+            <div class="service__side">
+              <p class="label service__sub">Para ustedes si…</p>
+              <ul class="arrow-list">
+                {s.data.idealFor.map((item) => <li>{item}</li>)}
+              </ul>
+              {s.data.note && <p class="service__note">{s.data.note}</p>}
+              <div class="service__links">
+                <a class="paren-link" href={`/servicios/${s.id}`}>ver el servicio<span class="visually-hidden"> {s.data.title}</span></a>
+                <a class="paren-link" href={`/?servicio=${s.id}#contacto`} data-preselect={s.id}>consultar</a>
+              </div>
+            </div>
+          </li>
+        ))}
+        <li class="service service--custom reveal">
+          <div class="service__head">
+            <span class="service__num mono-sm">+</span>
+            <h3 class="service__title">{servicesIntro.custom.title}</h3>
+          </div>
+          <div class="service__body"><p>{servicesIntro.custom.text}</p></div>
+          <div class="service__side">
+            <div class="service__links">
+              <a class="paren-link" href="/?servicio=a-medida#contacto" data-preselect="a-medida">cuéntennos su idea</a>
+            </div>
+          </div>
+        </li>
+      </ol>
+
+      <div class="guide reveal">
+        <h3 class="guide__title">{serviceGuide.title}</h3>
+        <ul class="guide__list">
+          {serviceGuide.items.map((g) => (
+            <li>
+              <span>{g.situation}</span>
+              <a href={`#servicio-${g.service}`}>
+                <span class="arrow-dot"><ArrowIcon /></span>
+                {serviceTitle(g.service)}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ PORTFOLIO -->
+  <section class="section portfolio" id="portfolio" aria-labelledby="portfolio-title">
+    <div class="container">
+      <SectionHead number={num()} label={portfolioIntro.label} title={portfolioIntro.title} id="portfolio-title" split>
+        <p class="lead">{portfolioIntro.lead}</p>
+      </SectionHead>
+
+      {showFilters && (
+        <div class="filters" role="group" aria-label="Filtrar proyectos" data-filters>
+          <button type="button" class="bracket-link" aria-pressed="true" data-filter="*">todos</button>
+          {categories.map((c) => (
+            <button type="button" class="bracket-link" aria-pressed="false" data-filter={c}>{c.toLowerCase()}</button>
+          ))}
+        </div>
+      )}
+
+      <div class="portfolio__featured">
+        {featured.map((p) => <div class="reveal"><ProjectCard project={p} featured /></div>)}
+      </div>
+
+      {rest.length > 0 && (
+        <div class="portfolio__grid">
+          {rest.map((p) => <div class="reveal"><ProjectCard project={p} /></div>)}
+        </div>
+      )}
+
+      <p class="portfolio__more reveal">
+        {portfolioIntro.more}{' '}
+        <a class="paren-link" href={site.contact.instagram.url} target="_blank" rel="noopener">{site.contact.instagram.handle}</a>
+      </p>
+    </div>
+  </section>
+
+  <!-- ============================================================ NOSOTRAS -->
+  <section class="section tone-celeste about" id="nosotras" aria-labelledby="nosotras-title">
+    <div class="container">
+      <SectionHead number={num()} label="Nosotras" title={equipo.title} id="nosotras-title" />
+
+      <div class="about__grid">
+        <figure class="about__photo reveal">
+          <Image src={fotoEquipo} alt={equipo.photoAlt} widths={[420, 640]} sizes="(min-width: 900px) 40vw, 90vw" />
+        </figure>
+        <div class="about__text">
+          <p class="lead reveal">{equipo.intro}</p>
+          <p class="reveal">{equipo.together}</p>
+        </div>
+      </div>
+
+      <div class="venn reveal" aria-label="Cómo se complementan">
+        <div class="venn__figure" aria-hidden="true"><Isotipo /></div>
+        <div class="venn__people">
+          {equipo.people.map((person, i) => (
+            <div class:list={['venn__person', `venn__person--${i === 0 ? 'left' : 'right'}`]}>
+              <p class="venn__name">{person.name}</p>
+              <p class="mono-sm venn__full">{person.fullName}</p>
+              <p class="venn__role">{person.role}</p>
+              <p class="venn__desc">{person.text}</p>
+              {person.links.length > 0 && (
+                <ul class="venn__links">
+                  {(person.links as { label: string; href: string }[]).map((l) => (
+                    <li><a class="paren-link" href={l.href} target="_blank" rel="noopener">{l.label}</a></li>
+                  ))}
+                </ul>
+              )}
+            </div>
+          ))}
+        </div>
+        <p class="venn__center label"><span aria-hidden="true">∩ </span>{equipo.intersection}</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ PROCESO -->
+  <section class="section process" id="proceso" aria-labelledby="proceso-title">
+    <div class="container">
+      <SectionHead number={num()} label="Proceso" title="Cómo trabajamos" id="proceso-title" split>
+        <p class="lead">{proceso.note}</p>
+      </SectionHead>
+      <ol class="cells cells--5">
+        {proceso.steps.map((s, i) => (
+          <li class="cell reveal" style={`--delay:${i * 0.07}s`}>
+            <span class="mono-sm">{String(i + 1).padStart(2, '0')}</span>
+            <h3 class="cell__title">{s.title}</h3>
+            <p>{s.text}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ============================================================ TESTIMONIOS (se oculta si no hay) -->
+  {quotes.length > 0 && (
+    <section class="section testimonials" id="testimonios" aria-labelledby="testimonios-title">
+      <div class="container">
+        <SectionHead number={num()} label="Testimonios" title="Lo que dicen las parejas" id="testimonios-title" />
+        <ul class="testimonials__list">
+          {quotes.map((t) => (
+            <li class="reveal">
+              <figure>
+                <blockquote><p>«{t.quote}»</p></blockquote>
+                <figcaption class="mono-sm">— {t.author}</figcaption>
+              </figure>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  )}
+
+  <!-- ============================================================ FAQ -->
+  <section class="section faq" id="preguntas" aria-labelledby="preguntas-title">
+    <div class="container faq__grid">
+      <SectionHead number={num()} label="Preguntas frecuentes" title="Antes de escribirnos" id="preguntas-title">
+        <p>¿Les queda alguna duda? <a class="paren-link" href="#contacto">pregúntennos</a></p>
+      </SectionHead>
+      <div class="faq__list">
+        {faq.map((f) => (
+          <details class="faq__item">
+            <summary>
+              <span>{f.q}</span>
+              <span class="faq__icon" aria-hidden="true"></span>
+            </summary>
+            <div class="faq__answer"><p>{f.a}</p></div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ============================================================ CONTACTO -->
+  <section class="section tone-vino on-dark contact" id="contacto" aria-labelledby="contacto-title">
+    <div class="container contact__grid">
+      <div class="contact__intro">
+        <SectionHead number={num()} label={contactIntro.label} title={contactIntro.title} id="contacto-title">
+          <p class="lead">{contactIntro.lead}</p>
+        </SectionHead>
+        <div class="contact__channels">
+          <p class="label">O directamente</p>
+          <ul>
+            <li>
+              <a href={`mailto:${site.contact.email}`}>
+                <span class="arrow-dot"><ArrowIcon /></span>{site.contact.email}
+              </a>
+            </li>
+            <li>
+              <a href={site.contact.instagram.url} target="_blank" rel="noopener">
+                <span class="arrow-dot"><ArrowIcon /></span>Instagram {site.contact.instagram.handle}
+              </a>
+            </li>
+            {site.contact.whatsapp && (
+              <li>
+                <a href={`https://wa.me/${site.contact.whatsapp}`} target="_blank" rel="noopener">
+                  <span class="arrow-dot"><ArrowIcon /></span>WhatsApp
+                </a>
+              </li>
+            )}
+          </ul>
+        </div>
+      </div>
+      <ContactForm services={servicios.map((s) => ({ slug: s.id, title: s.data.title }))} />
+    </div>
+  </section>
+</Base>
+
+{showFilters && (
+  <script>
+    const group = document.querySelector('[data-filters]');
+    const buttons = [...(group?.querySelectorAll<HTMLButtonElement>('[data-filter]') ?? [])];
+    const cards = [...document.querySelectorAll<HTMLElement>('#portfolio [data-categories]')];
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        const f = b.dataset.filter!;
+        buttons.forEach((o) => o.setAttribute('aria-pressed', String(o === b)));
+        cards.forEach((c) => {
+          const show = f === '*' || c.dataset.categories!.split('|').includes(f);
+          c.parentElement!.hidden = !show;
+        });
+      }),
+    );
+  </script>
+)}
+
+<style>
+  /* ------------------------------------------------ hero */
+  .hero { padding-top: clamp(1.5rem, 3vw, 3rem); overflow: hidden; }
+  .hero__meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding-bottom: 0.9rem;
+    border-bottom: 1px solid var(--line);
+  }
+  .hero__title {
+    margin: clamp(2rem, 5vw, 4.5rem) auto 0;
+    max-width: 15ch;
+    text-align: center;
+    color: var(--vino);
+    font-size: clamp(2.35rem, 1.2rem + 5.4vw, 6.6rem);
+    line-height: 1;
+  }
+  .hero__intro {
+    display: grid;
+    justify-items: center;
+    gap: 1.6rem;
+    margin: clamp(1.5rem, 3vw, 2.5rem) auto 0;
+    text-align: center;
+  }
+  .hero__intro .lead { max-width: 46ch; }
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem 1.75rem;
+  }
+
+  .cascade {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    align-items: start;
+    gap: clamp(0.75rem, 1.6vw, 1.75rem);
+    width: min(100% - 2 * var(--gutter), 1180px);
+    margin: clamp(3rem, 6vw, 5rem) auto 0;
+    padding: 0 0 clamp(1rem, 3vw, 2.5rem);
+  }
+  .cascade__item { display: grid; gap: 0.6rem; animation: rise 1s var(--ease) both; }
+  .cascade__item--1 { margin-top: 2.5rem; animation-delay: 0.05s; }
+  .cascade__item--2 { margin-top: 4.5rem; animation-delay: 0.15s; }
+  .cascade__item--3 { margin-top: 0.5rem; animation-delay: 0.25s; }
+  .cascade__item--4 { margin-top: 5.5rem; animation-delay: 0.35s; }
+  .cascade__item--5 { margin-top: 2rem; animation-delay: 0.45s; }
+  @keyframes rise { from { opacity: 0; transform: translateY(24px); } }
+
+  .cascade__photo,
+  .cascade__plate {
+    position: relative;
+    display: block;
+    aspect-ratio: 3 / 4;
+    overflow: hidden;
+  }
+  .cascade__photo {
+    background: #fff;
+    padding: clamp(5px, 0.6vw, 9px);
+    transition: transform 0.6s var(--ease);
+  }
+  .cascade__photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
+  .cascade__item--2 .cascade__photo { transform: rotate(-1.5deg); }
+  .cascade__item--4 .cascade__photo { transform: rotate(1.5deg); }
+  .cascade__photo:hover { transform: rotate(0) translateY(-6px) !important; }
+
+  .cascade__plate {
+    display: grid;
+    align-content: space-between;
+    padding: clamp(0.8rem, 1.4vw, 1.3rem);
+  }
+  .plate--vino { background: var(--vino); color: var(--crema); }
+  .plate--celeste { background: var(--celeste); color: var(--grafito); }
+  .plate--oliva { background: var(--oliva); color: var(--crema); }
+  .plate--grafito { background: var(--grafito); color: var(--crema); }
+  .cascade__iso { width: 46%; }
+  .cascade__word {
+    font-family: var(--font-display);
+    font-size: clamp(0.95rem, 0.6rem + 1vw, 1.6rem);
+    text-transform: uppercase;
+    line-height: 1.05;
+  }
+  .cascade__label { color: var(--grafito-500); color: color-mix(in srgb, var(--grafito) 80%, transparent); }
+
+  @media (max-width: 760px) {
+    .hero__title { text-align: left; margin-left: 0; }
+    .hero__intro { justify-items: start; text-align: left; }
+    .hero__actions { justify-content: flex-start; }
+    .cascade {
+      grid-template-columns: none;
+      grid-auto-flow: column;
+      grid-auto-columns: 44%;
+      width: 100%;
+      padding-inline: var(--gutter);
+      overflow-x: auto;
+      scroll-snap-type: x mandatory;
+      scroll-padding-inline: var(--gutter);
+      scrollbar-width: none;
+    }
+    .cascade::-webkit-scrollbar { display: none; }
+    .cascade__item { scroll-snap-align: start; }
+    .cascade__item--1, .cascade__item--3, .cascade__item--5 { margin-top: 0; }
+    .cascade__item--2, .cascade__item--4 { margin-top: 1.5rem; }
+  }
+
+  /* ------------------------------------------------ celdas (grilla del brand book) */
+  .cells {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    border-top: 1px solid var(--line);
+    border-left: 1px solid var(--line);
+  }
+  .cell {
+    display: grid;
+    align-content: start;
+    gap: 0.7rem;
+    padding: clamp(1.2rem, 2vw, 1.8rem);
+    border-right: 1px solid var(--line);
+    border-bottom: 1px solid var(--line);
+  }
+  .cell__title { font-size: var(--step-1); color: var(--accent); }
+  @media (min-width: 640px) { .cells--4, .cells--5 { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1000px) {
+    .cells--4 { grid-template-columns: repeat(4, 1fr); }
+    .cells--5 { grid-template-columns: repeat(5, 1fr); }
+  }
+
+  /* ------------------------------------------------ filosofía */
+  .philosophy__answer {
+    display: grid;
+    gap: clamp(2rem, 5vw, 5rem);
+    align-items: center;
+    margin-top: var(--section-y);
+  }
+  .philosophy__symbol {
+    display: grid;
+    place-items: center;
+    aspect-ratio: 5 / 6;
+    background: var(--vino);
+    color: var(--crema);
+    max-width: 520px;
+    width: 100%;
+  }
+  .philosophy__symbol :global(svg) { width: 62%; }
+  .philosophy__text { display: grid; gap: 1.4rem; }
+  .philosophy__answer-title { font-size: var(--step-3); color: var(--vino); max-width: 16ch; }
+  .symbol-list { display: grid; margin-top: 0.5rem; border-top: 1px solid var(--line-soft); }
+  .symbol-list__row {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 1rem;
+    padding: 0.9rem 0;
+    border-bottom: 1px solid var(--line-soft);
+  }
+  .symbol-list__row .arrow-dot { grid-row: span 2; margin-top: 0.15rem; }
+  .symbol-list dt { font-family: var(--font-display); text-transform: uppercase; color: var(--vino); font-size: var(--step-1); line-height: 1.2; }
+  .symbol-list dd { margin: 0.2rem 0 0; }
+  @media (min-width: 900px) {
+    .philosophy__answer { grid-template-columns: 0.9fr 1fr; }
+  }
+
+  .quote {
+    margin-top: var(--section-y);
+    display: grid;
+    justify-items: center;
+    gap: 1.2rem;
+    text-align: center;
+  }
+  .quote blockquote p {
+    max-width: none;
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(2.2rem, 1rem + 6vw, 7rem);
+    line-height: 1;
+    text-transform: uppercase;
+    color: var(--vino);
+  }
+
+  /* ------------------------------------------------ servicios */
+  .service-list { list-style: none; padding: 0; border-top: 1px solid var(--line); }
+  .service {
+    display: grid;
+    gap: 1.5rem;
+    padding-block: clamp(2rem, 4vw, 3.5rem);
+    border-bottom: 1px solid var(--line);
+    scroll-margin-top: calc(var(--header-h) + 1rem);
+  }
+  .service__head { display: grid; gap: 0.6rem; align-content: start; }
+  .service__num { opacity: 0.85; }
+  .service__title { font-size: var(--step-3); line-height: 1; }
+  .service__tagline { font-size: var(--step-1); }
+  .service__body, .service__side { display: grid; gap: 1rem; align-content: start; }
+  .service__sub { margin-top: 0.4rem; opacity: 0.9; }
+  .service__note {
+    font-size: var(--step--1);
+    padding: 0.8rem 1rem;
+    border: 1px solid var(--line);
+  }
+  .service__links { display: flex; flex-wrap: wrap; gap: 0.25rem 1.4rem; }
+  @media (min-width: 1000px) {
+    .service { grid-template-columns: 1fr 1.15fr 0.95fr; column-gap: clamp(2rem, 3vw, 3.5rem); }
+  }
+  .service--custom .service__title { font-size: var(--step-2); }
+
+  .guide {
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding: clamp(1.4rem, 3vw, 2.5rem);
+    background: var(--vino-900);
+  }
+  .guide__title { font-size: var(--step-2); margin-bottom: 1.5rem; }
+  .guide__list { list-style: none; padding: 0; }
+  .guide__list li {
+    display: grid;
+    gap: 0.4rem 2rem;
+    padding: 0.9rem 0;
+    border-top: 1px solid var(--line-soft);
+  }
+  .guide__list a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-display);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    text-decoration: none;
+  }
+  .guide__list a:hover { text-decoration: underline; }
+  @media (min-width: 800px) {
+    .guide__list li { grid-template-columns: 1.4fr 1fr; align-items: center; }
+  }
+
+  /* ------------------------------------------------ portfolio */
+  .filters { display: flex; flex-wrap: wrap; gap: 0.5rem 1.2rem; margin-bottom: 2.5rem; }
+  .filters button { background: none; border: 0; padding: 0.4rem 0; min-height: 44px; }
+  .filters [aria-pressed='true'] { color: var(--vino); text-decoration: underline; text-underline-offset: 0.3em; }
+  .portfolio__featured { display: grid; gap: clamp(3rem, 6vw, 6rem); }
+  .portfolio__grid {
+    display: grid;
+    gap: 3rem var(--gutter);
+    margin-top: clamp(3rem, 6vw, 6rem);
+  }
+  @media (min-width: 760px) { .portfolio__grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1100px) { .portfolio__grid { grid-template-columns: repeat(3, 1fr); } }
+  .portfolio__more {
+    margin-top: clamp(3rem, 6vw, 5rem);
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--line);
+    max-width: none;
+  }
+
+  /* ------------------------------------------------ nosotras */
+  .about__grid { display: grid; gap: clamp(2rem, 5vw, 5rem); align-items: center; }
+  .about__photo { margin: 0; background: #fff; padding: clamp(6px, 0.8vw, 12px); transform: rotate(-1.2deg); max-width: 640px; }
+  .about__photo :global(img) { width: 100%; filter: grayscale(1); }
+  .about__text { display: grid; gap: 1.2rem; }
+  @media (min-width: 900px) { .about__grid { grid-template-columns: 1fr 1fr; } }
+
+  .venn {
+    position: relative;
+    margin-top: clamp(4rem, 8vw, 7rem);
+    display: grid;
+    justify-items: center;
+    gap: 2rem;
+  }
+  .venn__figure { width: 100%; max-width: 920px; color: var(--vino); }
+  .venn__people { display: grid; gap: 2rem; width: 100%; }
+  .venn__person { display: grid; gap: 0.35rem; }
+  .venn__name { font-family: var(--font-display); font-size: var(--step-3); text-transform: uppercase; color: var(--vino); line-height: 1; }
+  .venn__full { opacity: 0.85; }
+  .venn__role { font-family: var(--font-display); text-transform: uppercase; letter-spacing: 0.08em; }
+  .venn__desc { font-size: var(--step--1); }
+  .venn__links { list-style: none; padding: 0; display: flex; gap: 1rem; }
+  .venn__center { color: var(--vino); text-align: center; }
+
+  /* En pantallas grandes, cada persona vive dentro de su círculo. */
+  @media (min-width: 960px) {
+    .venn { display: block; max-width: 920px; margin-inline: auto; }
+    .venn__figure { position: relative; }
+    .venn__people {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      aspect-ratio: 838 / 527;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .venn__person {
+      align-content: center;
+      text-align: center;
+      justify-items: center;
+      padding: 0 23% 0 9%;
+    }
+    .venn__person--right { padding: 0 9% 0 23%; }
+    .venn__desc { max-width: 24ch; }
+    .venn__center { margin-top: 1.5rem; }
+  }
+
+  /* ------------------------------------------------ testimonios */
+  .testimonials__list { list-style: none; padding: 0; display: grid; gap: 2rem; }
+  .testimonials__list blockquote p { font-size: var(--step-2); font-family: var(--font-display); text-transform: uppercase; color: var(--vino); line-height: 1.15; }
+  .testimonials__list figcaption { margin-top: 1rem; }
+  @media (min-width: 900px) { .testimonials__list { grid-template-columns: repeat(2, 1fr); } }
+
+  /* ------------------------------------------------ faq */
+  .faq__grid { display: grid; gap: 2rem; }
+  @media (min-width: 1000px) {
+    .faq__grid { grid-template-columns: 0.8fr 1.2fr; gap: clamp(2rem, 5vw, 6rem); align-items: start; }
+    .faq__grid :global(.section-head) { position: sticky; top: calc(var(--header-h) + 2rem); }
+  }
+  .faq__list { border-top: 1px solid var(--line); }
+  .faq__item { border-bottom: 1px solid var(--line); }
+  .faq__item summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1.5rem;
+    min-height: 44px;
+    padding: 1.3rem 0;
+    cursor: pointer;
+    list-style: none;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    line-height: 1.3;
+    color: var(--vino);
+  }
+  .faq__item summary::-webkit-details-marker { display: none; }
+  .faq__item summary:hover span:first-child { text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 0.25em; }
+  .faq__icon { position: relative; flex: none; width: 1.1rem; height: 1.1rem; }
+  .faq__icon::before, .faq__icon::after {
+    content: '';
+    position: absolute;
+    inset: 50% 0 auto;
+    height: 1px;
+    background: currentColor;
+    transition: transform 0.3s var(--ease);
+  }
+  .faq__icon::after { transform: rotate(90deg); }
+  .faq__item[open] .faq__icon::after { transform: rotate(0); }
+  .faq__answer { padding: 0 2.5rem 1.6rem 0; }
+
+  /* ------------------------------------------------ contacto */
+  .contact__grid { display: grid; gap: clamp(3rem, 6vw, 6rem); }
+  @media (min-width: 1000px) { .contact__grid { grid-template-columns: 1fr 1.1fr; } }
+  .contact__intro :global(.section-head__title) { color: var(--crema); }
+  .contact__channels ul { list-style: none; padding: 0; display: grid; gap: 0.8rem; margin-top: 1rem; }
+  .contact__channels a { display: inline-flex; align-items: center; gap: 0.75rem; text-decoration: none; font-size: var(--step-1); }
+  .contact__channels a:hover { text-decoration: underline; }
+</style>

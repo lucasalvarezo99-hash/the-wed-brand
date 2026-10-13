@@ -1,0 +1,68 @@
+---
+/**
+ * Analítica con consentimiento.
+ * No renderiza nada si PUBLIC_GA_ID está vacío.
+ * Si está configurado, muestra un aviso discreto y carga Google Analytics
+ * solo después de que la persona acepta. La elección se guarda en el navegador.
+ */
+import { site } from '../config/site';
+const id = site.analyticsId;
+---
+{id && (
+  <>
+    <div class="consent" role="region" aria-label="Aviso de cookies" hidden data-consent>
+      <p>Usamos cookies de analítica para entender cómo se usa el sitio. Solo se activan si aceptan.</p>
+      <div class="consent__actions">
+        <button type="button" class="btn btn--solid" data-consent-accept>Aceptar</button>
+        <button type="button" class="btn" data-consent-reject>Rechazar</button>
+        <a href="/privacidad" class="mono-sm">Más info</a>
+      </div>
+    </div>
+    <script is:inline define:vars={{ id }}>
+      (function () {
+        var KEY = 'twb-consent';
+        var box = document.querySelector('[data-consent]');
+        function load() {
+          var s = document.createElement('script');
+          s.async = true;
+          s.src = 'https://www.googletagmanager.com/gtag/js?id=' + id;
+          document.head.appendChild(s);
+          window.dataLayer = window.dataLayer || [];
+          window.gtag = function () { window.dataLayer.push(arguments); };
+          window.gtag('js', new Date());
+          window.gtag('config', id, { anonymize_ip: true });
+        }
+        var choice = null;
+        try { choice = localStorage.getItem(KEY); } catch (e) {}
+        if (choice === 'granted') return load();
+        if (choice === 'denied' || !box) return;
+        box.hidden = false;
+        function decide(value) {
+          try { localStorage.setItem(KEY, value); } catch (e) {}
+          box.hidden = true;
+          if (value === 'granted') load();
+        }
+        box.querySelector('[data-consent-accept]').addEventListener('click', function () { decide('granted'); });
+        box.querySelector('[data-consent-reject]').addEventListener('click', function () { decide('denied'); });
+      })();
+    </script>
+  </>
+)}
+
+<style>
+  .consent {
+    position: fixed;
+    left: var(--gutter);
+    right: var(--gutter);
+    bottom: 1rem;
+    z-index: 60;
+    max-width: 30rem;
+    padding: 1.1rem 1.2rem;
+    background: var(--crema-100);
+    border: 1px solid var(--grafito);
+    font-size: var(--step--1);
+  }
+  .consent[hidden] { display: none; }
+  .consent__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-top: 0.8rem; }
+  .consent .btn { min-height: 40px; padding: 0.4rem 0.9rem; }
+</style>

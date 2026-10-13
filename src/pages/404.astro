@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import Isotipo from '../components/Isotipo.astro';
+---
+<Base title="Página no encontrada" noindex>
+  <section class="section">
+    <div class="container nf">
+      <Isotipo class="nf__iso" />
+      <p class="mono-sm">Error 404</p>
+      <h1>Esta página no existe.</h1>
+      <p class="lead">Puede que el enlace haya cambiado. Sigamos por acá:</p>
+      <div class="nf__links">
+        <a class="btn btn--solid" href="/">Volver al inicio</a>
+        <a class="paren-link" href="/#servicios">servicios</a>
+        <a class="paren-link" href="/#portfolio">portfolio</a>
+        <a class="paren-link" href="/#contacto">contacto</a>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .nf { display: grid; gap: 1.4rem; justify-items: start; min-height: 50vh; align-content: center; }
+  .nf__iso { width: 7rem; color: var(--vino); }
+  .nf h1 { font-size: var(--step-4); color: var(--vino); }
+  .nf__links { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 1.5rem; }
+</style>

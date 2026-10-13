@@ -1,0 +1,38 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../config/site';
+---
+<Base title="Privacidad" description="Cómo usamos los datos que nos envían a través del sitio de The Wed Brand.">
+  <section class="section">
+    <div class="container legal">
+      <p class="mono-sm">Última actualización: {new Date().getFullYear()}</p>
+      <h1>Privacidad</h1>
+      <div class="prose">
+        <p>
+          Cuando nos escriben a través del formulario, por email o por Instagram, usamos sus datos (nombre, email,
+          fecha y lugar del casamiento, servicios de interés y su mensaje) únicamente para responder su consulta y,
+          si avanzamos juntas, para trabajar en su proyecto.
+        </p>
+        <p>No vendemos ni compartimos sus datos con terceros para fines comerciales.</p>
+        <p>
+          El formulario puede funcionar a través de un servicio externo de recepción de mensajes, que procesa los
+          datos solo para hacerlos llegar a nuestra casilla.
+        </p>
+        <p>
+          {site.analyticsId
+            ? 'Este sitio usa Google Analytics solo si aceptan las cookies de analítica en el aviso. Pueden cambiar su elección borrando los datos del sitio en su navegador.'
+            : 'Este sitio no usa cookies de analítica ni de publicidad.'}
+        </p>
+        <p>
+          Pueden pedirnos acceder, corregir o eliminar sus datos cuando quieran escribiendo a
+          <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .legal { max-width: 760px; display: grid; gap: 1.5rem; }
+  .legal h1 { font-size: var(--step-4); color: var(--vino); }
+</style>

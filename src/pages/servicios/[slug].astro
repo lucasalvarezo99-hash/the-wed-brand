@@ -1,0 +1,175 @@
+---
+import { getCollection, render } from 'astro:content';
+import type { GetStaticPaths } from 'astro';
+import Base from '../../layouts/Base.astro';
+import ArrowIcon from '../../components/ArrowIcon.astro';
+import Isotipo from '../../components/Isotipo.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { site } from '../../config/site';
+import proceso from '../../data/proceso.json';
+
+export const getStaticPaths = (async () => {
+  const servicios = (await getCollection('servicios')).sort((a, b) => a.data.order - b.data.order);
+  return servicios.map((servicio, i) => ({
+    params: { slug: servicio.id },
+    props: { servicio, index: i, all: servicios },
+  }));
+}) satisfies GetStaticPaths;
+
+const { servicio, index, all } = Astro.props;
+const { Content } = await render(servicio);
+const s = servicio.data;
+const others = all.filter((o) => o.id !== servicio.id);
+const proyectos = await getCollection('proyectos', ({ data }) => data.published && data.services.includes(servicio.id));
+
+const base = Astro.site ?? new URL(site.url);
+const ld = [
+  {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: s.title,
+    description: s.summary,
+    serviceType: s.seoTitle ?? s.title,
+    provider: { '@id': `${base.origin}/#organizacion` },
+    areaServed: site.areaServed,
+    url: new URL(Astro.url.pathname, base).href,
+  },
+  {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: [
+      { '@type': 'ListItem', position: 1, name: 'Inicio', item: base.origin + '/' },
+      { '@type': 'ListItem', position: 2, name: 'Servicios', item: base.origin + '/#servicios' },
+      { '@type': 'ListItem', position: 3, name: s.title },
+    ],
+  },
+];
+---
+<Base title={s.seoTitle ?? s.title} description={s.seoDescription ?? s.summary} jsonLd={ld}>
+  <article>
+    <header class="svc-hero tone-vino on-dark">
+      <div class="container">
+        <nav class="crumbs mono-sm" aria-label="Ruta">
+          <a href="/">Inicio</a> <span aria-hidden="true">/</span>
+          <a href="/#servicios">Servicios</a> <span aria-hidden="true">/</span>
+          <span aria-current="page">{s.title}</span>
+        </nav>
+        <div class="svc-hero__grid">
+          <div>
+            <p class="mono-sm">Servicio {String(index + 1).padStart(2, '0')}</p>
+            <h1 class="svc-hero__title">{s.title}</h1>
+            <p class="lead">{s.tagline}</p>
+          </div>
+          <Isotipo class="svc-hero__iso" />
+        </div>
+      </div>
+    </header>
+
+    <section class="section">
+      <div class="container svc-body">
+        <div class="svc-body__main">
+          <p class="lead svc-summary">{s.summary}</p>
+          <div class="prose"><Content /></div>
+        </div>
+        <aside class="svc-body__aside">
+          <div class="box">
+            <h2 class="label">Puede incluir</h2>
+            <ul class="arrow-list">{s.includes.map((i) => <li>{i}</li>)}</ul>
+          </div>
+          <div class="box">
+            <h2 class="label">Para ustedes si…</h2>
+            <ul class="arrow-list">{s.idealFor.map((i) => <li>{i}</li>)}</ul>
+          </div>
+          {s.note && <p class="note">{s.note}</p>}
+          <a class="btn btn--solid" href={`/?servicio=${servicio.id}#contacto`}>Consultar por {s.title}</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head__meta mono-sm"><span>Cómo trabajamos</span><span>{proceso.note}</span></div>
+        <ol class="steps">
+          {proceso.steps.map((step, i) => (
+            <li><span class="mono-sm">{String(i + 1).padStart(2, '0')}</span><strong>{step.title}</strong><span>{step.text}</span></li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    {proyectos.length > 0 && (
+      <section class="section">
+        <div class="container">
+          <div class="section-head__meta mono-sm"><span>Proyectos con este servicio</span></div>
+          <div class="related">{proyectos.map((p) => <ProjectCard project={p} />)}</div>
+        </div>
+      </section>
+    )}
+
+    <section class="section">
+      <div class="container">
+        <div class="section-head__meta mono-sm"><span>Otros servicios</span><span>Se pueden combinar</span></div>
+        <ul class="others">
+          {others.map((o) => (
+            <li>
+              <a href={`/servicios/${o.id}`}>
+                <span class="others__title">{o.data.title}</span>
+                <span class="others__tag">{o.data.tagline}</span>
+                <span class="arrow-dot"><ArrowIcon /></span>
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .svc-hero { padding-block: clamp(2rem, 4vw, 3rem) clamp(3.5rem, 7vw, 6rem); }
+  .crumbs { display: flex; flex-wrap: wrap; gap: 0.5rem; opacity: 0.9; }
+  .crumbs a { text-decoration: none; }
+  .crumbs a:hover { text-decoration: underline; }
+  .svc-hero__grid { display: grid; gap: 2rem; align-items: end; margin-top: clamp(2.5rem, 6vw, 5rem); }
+  .svc-hero__grid > div { display: grid; gap: 1.2rem; }
+  .svc-hero__title { font-size: var(--step-5); max-width: 12ch; }
+  .svc-hero__iso { width: clamp(6rem, 18vw, 16rem); justify-self: end; }
+  @media (min-width: 800px) { .svc-hero__grid { grid-template-columns: 1fr auto; } }
+
+  .svc-body { display: grid; gap: clamp(2.5rem, 5vw, 5rem); }
+  .svc-body__main { display: grid; gap: 2rem; align-content: start; }
+  .svc-summary { font-size: var(--step-2); line-height: 1.45; color: var(--vino); }
+  .svc-body__aside { display: grid; gap: 1.2rem; align-content: start; justify-items: start; }
+  .box { width: 100%; padding: 1.4rem; border: 1px solid var(--line); display: grid; gap: 1rem; }
+  .box h2 { color: var(--vino); }
+  .note { font-size: var(--step--1); }
+  @media (min-width: 960px) {
+    .svc-body { grid-template-columns: 1.2fr 1fr; }
+    .svc-body__aside { position: sticky; top: calc(var(--header-h) + 2rem); }
+  }
+
+  .section-head__meta { display: flex; justify-content: space-between; gap: 1rem; padding-bottom: 0.9rem; border-bottom: 1px solid var(--line); margin-bottom: 2rem; }
+  .steps { list-style: none; padding: 0; display: grid; gap: 1.5rem; }
+  .steps li { display: grid; gap: 0.3rem; }
+  .steps strong { font-family: var(--font-display); font-weight: 400; text-transform: uppercase; color: var(--vino); font-size: var(--step-1); }
+  @media (min-width: 900px) { .steps { grid-template-columns: repeat(5, 1fr); } }
+
+  .related { display: grid; gap: 3rem; }
+  @media (min-width: 800px) { .related { grid-template-columns: repeat(2, 1fr); } }
+
+  .others { list-style: none; padding: 0; }
+  .others li { border-bottom: 1px solid var(--line); }
+  .others a {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 0.3rem 1.5rem;
+    align-items: center;
+    padding: 1.4rem 0;
+    text-decoration: none;
+  }
+  .others__title { font-family: var(--font-display); font-size: var(--step-2); text-transform: uppercase; color: var(--vino); line-height: 1.1; }
+  .others__tag { grid-column: 1; }
+  .others .arrow-dot { grid-column: 2; grid-row: 1 / span 2; font-size: 1.4rem; transition: transform 0.3s var(--ease); }
+  .others a:hover .arrow-dot { transform: rotate(-45deg); }
+  .others a:hover .others__title { text-decoration: underline; text-decoration-thickness: 1px; }
+</style>
