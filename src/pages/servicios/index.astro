@@ -24,13 +24,13 @@ const serviceTitle = (slug: string) => servicios.find((s) => s.id === slug)?.dat
             <a class="svc__card" href={`/servicios/${s.id}`}>
               {servicePhotos[s.id] && (
                 <figure class="svc__photo">
-                  <Image src={servicePhotos[s.id].src} alt={servicePhotos[s.id].alt} widths={[300, 460, 600]} sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 90vw" loading="eager" />
+                  <Image src={servicePhotos[s.id].src} alt={servicePhotos[s.id].alt} widths={[160, 320]} sizes="160px" loading="eager" />
                 </figure>
               )}
               <span class="tracked svc__num">{String(i + 1).padStart(2, '0')}</span>
               <h2 class="svc__title tracked-title">{s.data.title}</h2>
               <p class="svc__tagline">{s.data.tagline}</p>
-              <span class="svc__more-link bracket-link">ver el servicio</span>
+              <span class="go-link">ver el servicio</span>
             </a>
           </li>
         ))}
@@ -40,7 +40,7 @@ const serviceTitle = (slug: string) => servicios.find((s) => s.id === slug)?.dat
         <div class="custom reveal">
           <h2 class="tracked-title">{servicesIntro.custom.title}</h2>
           <p>{servicesIntro.custom.text}</p>
-          <a class="bracket-link" href="/contacto#servicio-no-se">cuéntennos su idea</a>
+          <a class="go-link" href="/contacto#servicio-no-se">cuéntennos su idea</a>
         </div>
         <div class="guide reveal">
           <h2 class="tracked-title">{serviceGuide.title}</h2>

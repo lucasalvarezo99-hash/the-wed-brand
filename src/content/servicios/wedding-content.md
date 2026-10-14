@@ -6,8 +6,8 @@ kicker: El casamiento visto desde adentro
 summary: Registramos el día de forma espontánea y vertical, pensado para que tengan contenido para revivir y compartir casi inmediatamente.
 intro: El gran día, con su identidad.
 highlight:
-  value: 48 – 72 hs
-  label: entrega del video
+  value: 48 hs
+  label: entrega del contenido
 includes:
   - Cobertura de hasta 5 horas
   - Clips verticales espontáneos
@@ -16,6 +16,7 @@ includes:
   - Selección de contenido editado
   - Reels / videos resumen
   - Material listo para stories
+  - Dinámicas y trends con los invitados durante la fiesta (tarjetas con consignas, desafíos y momentos para grabar)
   - Entrega digital completa
 callout:
   title: Entrega en 48 hs

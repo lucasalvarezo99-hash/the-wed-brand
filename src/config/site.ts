@@ -20,7 +20,7 @@ export const site = {
   tagline: 'Un casamiento con identidad propia.',
   description:
     'Estudio creativo de branding para casamientos. Diseñamos la identidad visual de su casamiento a partir de quiénes son como pareja y la llevamos a cada detalle: invitaciones, papelería, web, redes y el contenido del gran día.',
-  founders: ['Casiana Epper', 'Cande Peña'],
+  founders: ['Casiana Epper', 'Candelaria Peña'],
   foundingYear: 2026,
   areaServed: 'Argentina',
 

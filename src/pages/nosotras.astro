@@ -20,7 +20,6 @@ import '../styles/sections.css';
           {equipo.people.map((person) => (
             <div>
               <dt class="tracked">{person.name} · {person.fullName}</dt>
-              <dd>{person.role}</dd>
               {person.links.length > 0 && (
                 <dd>{(person.links as { label: string; href: string }[]).map((l) => <a class="bracket-link" href={l.href} target="_blank" rel="noopener">{l.label}</a>)}</dd>
               )}

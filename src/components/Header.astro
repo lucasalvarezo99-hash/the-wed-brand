@@ -49,6 +49,7 @@ const isCurrent = (href: string) => href === current;
     </div>
   </nav>
 
+  <div class="menu-backdrop" hidden data-menu-backdrop></div>
   <div class="menu on-dark" id="menu" hidden data-menu>
     <ul class="menu__list">
       {full.map((item, i) => (
@@ -61,7 +62,7 @@ const isCurrent = (href: string) => href === current;
       ))}
     </ul>
     <div class="menu__foot">
-      <a class="btn btn--solid" href={primaryCta.href} data-menu-link>{primaryCta.label}</a>
+      <a class="btn btn--light" href={primaryCta.href} data-menu-link>{primaryCta.label}</a>
       <p class="mono-sm">
         <a href={gmailCompose} target="_blank" rel="noopener">{site.contact.email}</a><br />
         <a href={site.contact.instagram.url} target="_blank" rel="noopener">{site.contact.instagram.handle}</a>
@@ -75,11 +76,14 @@ const isCurrent = (href: string) => href === current;
   const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
   const menu = document.querySelector<HTMLElement>('[data-menu]');
   const label = document.querySelector<HTMLElement>('[data-menu-label]');
+  const backdrop = document.querySelector<HTMLElement>('[data-menu-backdrop]');
+  backdrop?.addEventListener('click', () => setOpen(false));
 
   function setOpen(open: boolean) {
     if (!toggle || !menu || !label) return;
     toggle.setAttribute('aria-expanded', String(open));
     menu.hidden = !open;
+    if (backdrop) backdrop.hidden = !open;
     label.textContent = open ? 'cerrar' : 'menú';
     document.documentElement.classList.toggle('menu-open', open);
     if (open) menu.querySelector<HTMLElement>('a')?.focus();
@@ -144,38 +148,52 @@ const isCurrent = (href: string) => href === current;
     .bar__brand-short { display: inline; }
   }
 
-  .menu {
+  /* Menú lateral: se abre desde la izquierda y deja ver la página al costado */
+  .menu-backdrop {
     position: fixed;
     inset: var(--header-h) 0 0;
+    z-index: 48;
+    background: color-mix(in srgb, var(--grafito) 35%, transparent);
+    animation: fade 0.35s var(--ease);
+  }
+  .menu-backdrop[hidden] { display: none; }
+  .menu {
+    position: fixed;
+    top: var(--header-h);
+    bottom: 0;
+    left: 0;
     z-index: 49;
+    width: min(360px, 86vw);
     display: flex;
     flex-direction: column;
     justify-content: space-between;
     gap: 2rem;
-    padding: 2rem var(--gutter) calc(2rem + env(safe-area-inset-bottom));
+    padding: 2rem 1.8rem calc(2rem + env(safe-area-inset-bottom));
     background: var(--vino);
     color: var(--base);
     overflow-y: auto;
-    animation: menu-in 0.4s var(--ease);
+    animation: menu-in 0.45s var(--ease);
   }
   .menu[hidden] { display: none; }
-  .menu__list { list-style: none; padding: 0; max-width: var(--max); width: 100%; margin-inline: auto; }
-  .menu__list li { border-bottom: 1px solid color-mix(in srgb, var(--base) 25%, transparent); }
+  .menu__list { list-style: none; padding: 0; }
+  .menu__list li { border-bottom: 1px solid color-mix(in srgb, var(--base) 22%, transparent); }
   .menu__list a {
     display: flex;
     align-items: baseline;
-    gap: 1.2rem;
-    padding: 0.8rem 0;
+    gap: 1rem;
+    padding: 0.85rem 0;
     font-family: var(--font-display);
-    font-size: clamp(1.6rem, 5vw, 3.2rem);
+    font-size: 0.95rem;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     text-decoration: none;
-    line-height: 1.1;
-    transition: padding-left 0.35s var(--ease);
+    transition: padding-left 0.3s var(--ease);
   }
-  .menu__list a:hover { padding-left: 0.6rem; }
-  .menu__foot { display: grid; gap: 1.5rem; max-width: var(--max); width: 100%; margin-inline: auto; justify-items: start; }
+  .menu__list a:hover { padding-left: 0.4rem; }
+  .menu__foot { display: grid; gap: 1.2rem; justify-items: start; font-size: 0.8rem; }
+  .menu__foot .btn { min-height: 42px; padding: 0.5rem 1rem; font-size: 0.7rem; }
   .menu__foot a:not(.btn) { text-decoration: none; }
   :global(html.menu-open) { overflow: hidden; }
-  @keyframes menu-in { from { opacity: 0; transform: translateY(-10px); } }
+  @keyframes menu-in { from { transform: translateX(-100%); } }
+  @keyframes fade { from { opacity: 0; } }
 </style>

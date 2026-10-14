@@ -97,9 +97,9 @@ export const servicesIntro = {
 
 /** Foto de cada servicio (slug → foto). */
 export const servicePhotos: Record<string, Photo> = {
-  'branding-wedding-design': { src: menuLetterpress, alt: 'Menú impreso en letterpress con ilustración botánica verde.' },
-  'comunicacion-comunidad': { src: ramoVestido, alt: 'Detalle de la novia sosteniendo el ramo junto al vestido.' },
-  'wedding-content': { src: novia, alt: 'Novia corriendo sobre el pasto, foto movida.' },
+  'branding-wedding-design': { src: reelSello, alt: 'Menú cerrado con sello de lacre bordó sobre un plato.' },
+  'comunicacion-comunidad': { src: reelPizza, alt: 'Caja de pizza ilustrada con los novios brindando y la fecha del casamiento.' },
+  'wedding-content': { src: reelFosforos, alt: 'Invitada toma una caja de fósforos con el isotipo de The Wed Brand durante la fiesta.' },
 };
 
 /** Ayuda para elegir: situación → servicio sugerido (slug). */
@@ -109,7 +109,7 @@ export const serviceGuide = {
     { situation: 'Tienen referencias guardadas, pero no una idea que las una.', service: 'branding-wedding-design' },
     { situation: 'Necesitan invitaciones, papelería o una web para invitados.', service: 'branding-wedding-design' },
     { situation: 'Quieren contar la previa y sumar a sus invitados en redes.', service: 'comunicacion-comunidad' },
-    { situation: 'Les importa cómo se va a ver y compartir el gran día.', service: 'wedding-content' },
+    { situation: 'No se aguantan a que el fotógrafo les mande el contenido.', service: 'wedding-content' },
   ],
 };
 

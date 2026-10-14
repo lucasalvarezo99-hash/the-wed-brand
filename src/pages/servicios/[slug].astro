@@ -57,7 +57,7 @@ const ld = [
       <div class="svc-page__grid">
         {photo && (
           <figure class="svc-page__photo reveal">
-            <Image src={photo.src} alt={photo.alt} widths={[360, 560, 760]} sizes="(min-width: 900px) 34vw, 90vw" loading="eager" />
+            <Image src={photo.src} alt={photo.alt} widths={[200, 400]} sizes="200px" loading="eager" />
           </figure>
         )}
 
@@ -77,13 +77,13 @@ const ld = [
 
           <div class="svc-page__list">
             <h2 class="tracked">{s.includesLabel}</h2>
-            <ul class="arrow-list">{s.includes.map((i) => <li>{i}</li>)}</ul>
+            <ul>{s.includes.map((i) => <li>{i}</li>)}</ul>
           </div>
 
           {s.choices.length > 0 && (
             <div class="svc-page__list">
               <h2 class="tracked">{s.choicesLabel}</h2>
-              <ul class="arrow-list">{s.choices.map((i) => <li>{i}</li>)}</ul>
+              <ul>{s.choices.map((i) => <li>{i}</li>)}</ul>
             </div>
           )}
 
@@ -98,13 +98,13 @@ const ld = [
 
           <div class="svc-page__actions">
             <a class="btn btn--solid" href={`/contacto#servicio-${servicio.id}`}>Consultar</a>
-            <a class="bracket-link" href="/servicios">volver a servicios</a>
+            <a class="go-link" href="/servicios">volver a servicios</a>
           </div>
         </div>
       </div>
 
       <div class="svc-page__others">
-        <p class="tracked">Otros servicios · se pueden contratar juntos o por separado</p>
+        <p class="tracked">Otros servicios</p>
         <ul>
           {others.map((o) => (
             <li>
@@ -126,10 +126,10 @@ const ld = [
   .crumbs a { text-decoration: none; }
   .crumbs a:hover { color: var(--vino); }
 
-  .svc-page__grid { display: grid; gap: clamp(2.5rem, 5vw, 5rem); align-items: start; }
-  .svc-page__photo { margin: 0; aspect-ratio: 4 / 5; overflow: hidden; max-width: 520px; }
+  .svc-page__grid { display: grid; gap: 2rem clamp(2.5rem, 5vw, 5rem); align-items: start; }
+  .svc-page__photo { margin: 0; width: clamp(140px, 16vw, 200px); aspect-ratio: 4 / 5; overflow: hidden; }
   .svc-page__photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
-  .svc-page__text { display: grid; gap: 1.4rem; max-width: 520px; align-content: start; }
+  .svc-page__text { display: grid; gap: 1.4rem; max-width: 640px; align-content: start; }
   .svc-page__text .head__title { color: var(--vino); }
   .svc-page__kicker { color: var(--vino); }
   .svc-page__summary { font-size: var(--step-1); line-height: 1.7; }
@@ -137,18 +137,39 @@ const ld = [
   .svc-page__highlight { display: grid; gap: 0.2rem; padding-block: 1.2rem; border-block: 1px solid var(--line-soft); }
   .svc-page__highlight-value { font-family: var(--font-display); font-size: clamp(2.2rem, 1.6rem + 2.5vw, 3.6rem); line-height: 1; color: var(--vino); text-transform: uppercase; }
 
-  .svc-page__list { display: grid; gap: 0.9rem; }
-  .svc-page__list h2 { font-weight: 400; color: var(--vino); }
-  .svc-page__list .arrow-list { gap: 0.45rem; font-size: 0.92rem; }
+  /* Listas: título destacado (como el nombre del servicio) y renglones separados */
+  .svc-page__list { display: grid; gap: 0.2rem; margin-top: 0.8rem; }
+  .svc-page__list h2 {
+    font-family: var(--font-display);
+    font-weight: 600;
+    font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.35rem);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--vino);
+    padding-bottom: 0.7rem;
+    border-bottom: 1px solid var(--vino);
+  }
+  .svc-page__list ul { list-style: none; padding: 0; display: grid; }
+  .svc-page__list li {
+    display: flex;
+    gap: 0.8rem;
+    align-items: baseline;
+    padding: 0.7rem 0;
+    border-bottom: 1px solid var(--line-soft);
+    font-size: 0.95rem;
+  }
+  .svc-page__list li::before { content: '↘'; color: var(--vino); flex: none; }
+  @media (min-width: 700px) {
+    .svc-page__list ul { grid-template-columns: 1fr 1fr; column-gap: 2rem; }
+  }
 
   .svc-page__callout { padding: 1.2rem 1.4rem; background: var(--vino); color: var(--base); display: grid; gap: 0.5rem; }
   .svc-page__note { font-size: 0.82rem; padding-top: 1rem; border-top: 1px solid var(--line-soft); }
   .svc-page__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; margin-top: 0.5rem; }
 
   @media (min-width: 900px) {
-    .svc-page__grid { grid-template-columns: 1fr 1fr; }
+    .svc-page__grid { grid-template-columns: auto 1fr; }
     .svc-page__photo { position: sticky; top: calc(var(--header-h) + 2rem); }
-    .svc-page__text { justify-self: end; margin-right: 4vw; }
   }
 
   .svc-page__others { margin-top: var(--section-y); display: grid; gap: 1rem; }
@@ -159,5 +180,5 @@ const ld = [
   .svc-page__others-tag { grid-column: 1; font-size: 0.88rem; }
   .svc-page__others :global(.svc-page__arrow) { grid-column: 2; grid-row: 1 / span 2; width: 1.3rem; color: var(--vino); transition: transform 0.3s var(--ease); }
   .svc-page__others a:hover :global(.svc-page__arrow) { transform: rotate(-45deg); }
-  .svc-page__others a:hover .tracked-title { color: var(--vino); }
+  .svc-page__others .tracked-title { color: var(--vino); text-decoration: underline; text-underline-offset: 0.3em; text-decoration-thickness: 1px; }
 </style>
