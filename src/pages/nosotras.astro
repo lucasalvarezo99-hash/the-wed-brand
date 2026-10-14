@@ -63,3 +63,29 @@ import '../styles/sections.css';
     </div>
   </section>
 </Base>
+
+<script>
+  // Alinea el borde superior de la foto con la línea «la identidad de marca, así que creamos The Wed Brand».
+  const photo = document.querySelector<HTMLElement>('.about__photo');
+  const grid = document.querySelector<HTMLElement>('.about__grid');
+  function align() {
+    if (!photo || !grid) return;
+    if (!matchMedia('(min-width: 900px)').matches) return photo.style.removeProperty('--photo-offset');
+    const walker = document.createTreeWalker(grid, NodeFilter.SHOW_TEXT);
+    let node: Node | null;
+    while ((node = walker.nextNode())) {
+      const i = node.textContent?.indexOf('identidad de marca') ?? -1;
+      if (i < 0) continue;
+      const range = document.createRange();
+      range.setStart(node, i);
+      range.setEnd(node, i + 1);
+      const top = range.getBoundingClientRect().top - grid.getBoundingClientRect().top;
+      photo.style.setProperty('--photo-offset', `${Math.max(0, top)}px`);
+      return;
+    }
+  }
+  align();
+  addEventListener('resize', align);
+  document.fonts?.ready.then(align);
+  setTimeout(align, 1200); // tras la animación de aparición
+</script>

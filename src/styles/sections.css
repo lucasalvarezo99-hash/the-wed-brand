@@ -266,6 +266,7 @@ main > .section:first-child { padding-top: clamp(3rem, 6vw, 6rem); }
 /* Nosotras: la foto es solo un detalle chico */
 .about__photo { width: clamp(220px, 26vw, 340px) !important; justify-self: start; margin-top: 1rem !important; }
 @media (min-width: 900px) {
-  .about__grid { grid-template-columns: 1fr !important; }
-  .about__photo { margin-left: 6vw !important; }
+  .about__grid { grid-template-columns: 1fr auto !important; align-items: start !important; }
+  /* La foto arranca a la altura de «la identidad de marca, así que creamos…» (ajuste fino por script) */
+  .about__photo { margin: var(--photo-offset, 10rem) 6vw 0 0 !important; }
 }
