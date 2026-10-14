@@ -6,6 +6,7 @@
  * Mobile:  [menú]                                            [TWB]
  */
 import { site, primaryCta, gmailCompose } from '../config/site';
+import Isotipo from './Isotipo.astro';
 
 const left = [
   { label: 'nosotras', href: '/nosotras' },
@@ -40,6 +41,7 @@ const isCurrent = (href: string) => href === current;
     </div>
 
     <a class="bar__brand" href="/" aria-label={`${site.name}, inicio`}>
+      <Isotipo class="bar__iso" />
       <span class="bar__brand-full" aria-hidden="true">[The Wed Brand]</span>
       <span class="bar__brand-short" aria-hidden="true">[TWB]</span>
     </a>
@@ -137,6 +139,8 @@ const isCurrent = (href: string) => href === current;
     text-transform: uppercase;
     white-space: nowrap;
   }
+  .bar__brand { display: inline-flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+  .bar__iso { width: 1.6rem; height: auto; }
   .bar__brand-full { font-size: 1.05rem; letter-spacing: 0.24em; margin-right: -0.24em; }
   .bar__brand-short { display: none; font-size: 1rem; letter-spacing: 0.12em; }
 

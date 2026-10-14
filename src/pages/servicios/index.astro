@@ -24,7 +24,7 @@ const serviceTitle = (slug: string) => servicios.find((s) => s.id === slug)?.dat
             <a class="svc__card" href={`/servicios/${s.id}`}>
               {servicePhotos[s.id] && (
                 <figure class="svc__photo">
-                  <Image src={servicePhotos[s.id].src} alt={servicePhotos[s.id].alt} widths={[160, 320]} sizes="160px" loading="eager" />
+                  <Image src={servicePhotos[s.id].src} alt={servicePhotos[s.id].alt} widths={[360, 560, 760]} sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 90vw" loading="eager" quality={90} />
                 </figure>
               )}
               <span class="tracked svc__num">{String(i + 1).padStart(2, '0')}</span>

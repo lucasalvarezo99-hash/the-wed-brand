@@ -257,15 +257,15 @@ main > .section:first-child { padding-top: clamp(3rem, 6vw, 6rem); }
 .faq__write:hover { text-decoration-thickness: 2px; }
 
 /* Servicios: la foto es un detalle chico; lo principal es el servicio */
-.svc__photo { width: clamp(110px, 12vw, 160px) !important; aspect-ratio: 4 / 5; margin: 0 0 0.4rem !important; }
+.svc__photo { width: 100% !important; aspect-ratio: 4 / 3; margin: 0 0 0.4rem !important; }
 .svc__card .svc__title { font-size: clamp(1.05rem, 0.95rem + 0.5vw, 1.3rem); font-weight: 600; color: var(--vino); }
 .svc__card .go-link { margin-top: 0.3rem; }
 .svc-grid { row-gap: 3.5rem !important; }
 .guide__list a { text-decoration: underline; text-underline-offset: 0.3em; text-decoration-thickness: 1px; }
 
 /* Nosotras: la foto es solo un detalle chico */
-.about__photo { width: clamp(220px, 26vw, 340px) !important; justify-self: start; }
+.about__photo { width: clamp(220px, 26vw, 340px) !important; justify-self: start; margin-top: 1rem !important; }
 @media (min-width: 900px) {
-  .about__grid { grid-template-columns: 1fr auto !important; }
-  .about__photo { justify-self: end; margin-right: 6vw !important; }
+  .about__grid { grid-template-columns: 1fr !important; }
+  .about__photo { margin-left: 6vw !important; }
 }

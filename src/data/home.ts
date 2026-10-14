@@ -39,7 +39,7 @@ type Photo = { src: ImageMetadata; alt: string };
 export const hero = {
   /** Texto en mayúsculas debajo de la marca (como Solamente). */
   manifesto:
-    'Un casamiento que se sienta tan suyo como su historia. Diseñamos la identidad de su casamiento a partir de quiénes son como pareja y la llevamos a cada detalle: invitaciones, papelería, cotillón, web, redes y el contenido del gran día. Nada parte de una plantilla: parte de ustedes. Ya estuvimos del otro lado, las dos organizamos nuestro propio casamiento. Que cuando alguien vea el suyo, piense: «esto es muy ellos».',
+    'Somos un estudio de branding y comunicación para casamientos. Convertimos su historia en una identidad visual completa a partir de quiénes son como pareja y la llevamos a cada detalle del casamiento. Como ya estuvimos del otro lado, nos quedamos con las ganas de acompañarlos a ustedes.',
   primary: { label: 'Conozcan nuestros servicios', href: '#servicios' },
   secondary: { label: 'Hablemos de su casamiento', href: '#contacto' },
 };
@@ -97,9 +97,9 @@ export const servicesIntro = {
 
 /** Foto de cada servicio (slug → foto). */
 export const servicePhotos: Record<string, Photo> = {
-  'branding-wedding-design': { src: reelSello, alt: 'Menú cerrado con sello de lacre bordó sobre un plato.' },
-  'comunicacion-comunidad': { src: reelPizza, alt: 'Caja de pizza ilustrada con los novios brindando y la fecha del casamiento.' },
-  'wedding-content': { src: reelFosforos, alt: 'Invitada toma una caja de fósforos con el isotipo de The Wed Brand durante la fiesta.' },
+  'branding-wedding-design': { src: veloColor, alt: 'Novios abrazados bajo el velo, ella sonríe con un ramo de flores de colores.' },
+  'comunicacion-comunidad': { src: fiestaBn, alt: 'Novios bailando en la fiesta rodeados de invitados, blanco y negro.' },
+  'wedding-content': { src: novia, alt: 'Novia corriendo sobre el pasto, foto movida.' },
 };
 
 /** Ayuda para elegir: situación → servicio sugerido (slug). */

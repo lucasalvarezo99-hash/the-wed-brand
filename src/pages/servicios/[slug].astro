@@ -57,7 +57,7 @@ const ld = [
       <div class="svc-page__grid">
         {photo && (
           <figure class="svc-page__photo reveal">
-            <Image src={photo.src} alt={photo.alt} widths={[200, 400]} sizes="200px" loading="eager" />
+            <Image src={photo.src} alt={photo.alt} widths={[480, 760, 1100]} sizes="(min-width: 900px) 40vw, 92vw" quality={90} loading="eager" />
           </figure>
         )}
 
@@ -127,7 +127,7 @@ const ld = [
   .crumbs a:hover { color: var(--vino); }
 
   .svc-page__grid { display: grid; gap: 2rem clamp(2.5rem, 5vw, 5rem); align-items: start; }
-  .svc-page__photo { margin: 0; width: clamp(140px, 16vw, 200px); aspect-ratio: 4 / 5; overflow: hidden; }
+  .svc-page__photo { margin: 0; aspect-ratio: 4 / 5; overflow: hidden; max-width: 560px; }
   .svc-page__photo :global(img) { width: 100%; height: 100%; object-fit: cover; }
   .svc-page__text { display: grid; gap: 1.4rem; max-width: 640px; align-content: start; }
   .svc-page__text .head__title { color: var(--vino); }
@@ -149,7 +149,7 @@ const ld = [
     padding-bottom: 0.7rem;
     border-bottom: 1px solid var(--vino);
   }
-  .svc-page__list ul { list-style: none; padding: 0; display: grid; }
+  .svc-page__list ul { list-style: none; padding: 0; }
   .svc-page__list li {
     display: flex;
     gap: 0.8rem;
@@ -157,10 +157,11 @@ const ld = [
     padding: 0.7rem 0;
     border-bottom: 1px solid var(--line-soft);
     font-size: 0.95rem;
+    break-inside: avoid;
   }
-  .svc-page__list li::before { content: '↘'; color: var(--vino); flex: none; }
+  .svc-page__list li::before { content: '↗'; color: var(--vino); flex: none; }
   @media (min-width: 700px) {
-    .svc-page__list ul { grid-template-columns: 1fr 1fr; column-gap: 2rem; }
+    .svc-page__list ul { columns: 2; column-gap: 2rem; }
   }
 
   .svc-page__callout { padding: 1.2rem 1.4rem; background: var(--vino); color: var(--base); display: grid; gap: 0.5rem; }
@@ -168,7 +169,8 @@ const ld = [
   .svc-page__actions { display: flex; flex-wrap: wrap; align-items: center; gap: 1rem 2rem; margin-top: 0.5rem; }
 
   @media (min-width: 900px) {
-    .svc-page__grid { grid-template-columns: auto 1fr; }
+    .svc-page__grid { grid-template-columns: 1fr 1fr; }
+    .svc-page__text { justify-self: end; margin-right: 2vw; }
     .svc-page__photo { position: sticky; top: calc(var(--header-h) + 2rem); }
   }
 
@@ -179,6 +181,6 @@ const ld = [
   .svc-page__others a { display: grid; grid-template-columns: 1fr auto; gap: 0.3rem 1.5rem; align-items: center; padding: 1.3rem 0; text-decoration: none; }
   .svc-page__others-tag { grid-column: 1; font-size: 0.88rem; }
   .svc-page__others :global(.svc-page__arrow) { grid-column: 2; grid-row: 1 / span 2; width: 1.3rem; color: var(--vino); transition: transform 0.3s var(--ease); }
-  .svc-page__others a:hover :global(.svc-page__arrow) { transform: rotate(-45deg); }
+  .svc-page__others a:hover :global(.svc-page__arrow) { transform: translate(3px, -3px); }
   .svc-page__others .tracked-title { color: var(--vino); text-decoration: underline; text-underline-offset: 0.3em; text-decoration-thickness: 1px; }
 </style>

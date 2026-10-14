@@ -17,7 +17,7 @@ includes:
   - Reels / videos resumen
   - Material listo para stories
   - Dinámicas y trends con los invitados durante la fiesta (tarjetas con consignas, desafíos y momentos para grabar)
-  - Entrega digital completa
+  - Entrega digital curada
 callout:
   title: Entrega en 48 hs
   text: Todo el contenido seleccionado y editado se entrega dentro de las 48 horas posteriores al evento.
