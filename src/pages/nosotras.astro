@@ -65,7 +65,7 @@ import '../styles/sections.css';
 </Base>
 
 <script>
-  // Alinea el borde superior de la foto con la línea «la identidad de marca, así que creamos The Wed Brand».
+  // Alinea el borde superior de la foto con la línea «Trabajamos hace muchos años en proyectos creativos».
   const photo = document.querySelector<HTMLElement>('.about__photo');
   const grid = document.querySelector<HTMLElement>('.about__grid');
   function align() {
@@ -74,7 +74,7 @@ import '../styles/sections.css';
     const walker = document.createTreeWalker(grid, NodeFilter.SHOW_TEXT);
     let node: Node | null;
     while ((node = walker.nextNode())) {
-      const i = node.textContent?.indexOf('identidad de marca') ?? -1;
+      const i = node.textContent?.indexOf('Trabajamos hace muchos años') ?? -1;
       if (i < 0) continue;
       const range = document.createRange();
       range.setStart(node, i);

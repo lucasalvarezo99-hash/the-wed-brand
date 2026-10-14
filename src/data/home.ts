@@ -33,6 +33,10 @@ import reelAbanico from '../assets/reel/abanico-silla.jpg';
 import reelTiramisu from '../assets/reel/tiramisu.jpg';
 import reelMesa from '../assets/reel/numero-mesa.jpg';
 
+import fotoBranding from '../assets/servicios/branding.jpg';
+import fotoComunicacion from '../assets/servicios/comunicacion.jpg';
+import fotoContent from '../assets/servicios/content.jpg';
+
 type Photo = { src: ImageMetadata; alt: string };
 
 /* ------------------------------------------------------------------ INICIO */
@@ -97,9 +101,9 @@ export const servicesIntro = {
 
 /** Foto de cada servicio (slug → foto). */
 export const servicePhotos: Record<string, Photo> = {
-  'branding-wedding-design': { src: veloColor, alt: 'Novios abrazados bajo el velo, ella sonríe con un ramo de flores de colores.' },
-  'comunicacion-comunidad': { src: fiestaBn, alt: 'Novios bailando en la fiesta rodeados de invitados, blanco y negro.' },
-  'wedding-content': { src: novia, alt: 'Novia corriendo sobre el pasto, foto movida.' },
+  'branding-wedding-design': { src: fotoBranding, alt: 'Manos de los novios sobre la mesa, junto al ramo de calas y una tarjeta con el nombre del invitado.' },
+  'comunicacion-comunidad': { src: fotoComunicacion, alt: 'Novios riéndose dentro de una cabina de fotos con cortina roja.' },
+  'wedding-content': { src: fotoContent, alt: 'Novio carga a la novia en la calle de noche, ella con anteojos de sol y velo.' },
 };
 
 /** Ayuda para elegir: situación → servicio sugerido (slug). */
