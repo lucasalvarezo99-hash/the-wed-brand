@@ -262,3 +262,10 @@ main > .section:first-child { padding-top: clamp(3rem, 6vw, 6rem); }
 .svc__card .go-link { margin-top: 0.3rem; }
 .svc-grid { row-gap: 3.5rem !important; }
 .guide__list a { text-decoration: underline; text-underline-offset: 0.3em; text-decoration-thickness: 1px; }
+
+/* Nosotras: la foto es solo un detalle chico */
+.about__photo { width: clamp(130px, 14vw, 190px) !important; justify-self: start; }
+@media (min-width: 900px) {
+  .about__grid { grid-template-columns: 1fr auto !important; }
+  .about__photo { justify-self: end; margin-right: 6vw !important; }
+}
