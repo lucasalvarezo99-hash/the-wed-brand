@@ -66,10 +66,13 @@ export const nav: NavItem[] = [
   { label: 'inicio', href: '/' },
   { label: 'nosotras', href: '/nosotras' },
   { label: 'servicios', href: '/servicios' },
-  { label: 'portfolio', href: '/portfolio' },
+  { label: 'inspiración', href: '/inspiracion' },
   { label: 'proceso', href: '/proceso' },
   { label: 'preguntas', href: '/proceso#preguntas' },
   { label: 'contacto', href: '/contacto' },
 ];
+
+/** Abre Gmail en una pestaña nueva para escribirnos (en lugar de mailto:). */
+export const gmailCompose = `https://mail.google.com/mail/?view=cm&fs=1&to=${site.contact.email}`;
 
 export const primaryCta = { label: 'Hablemos de su casamiento', href: '/contacto' };

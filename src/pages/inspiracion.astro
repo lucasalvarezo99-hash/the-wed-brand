@@ -1,0 +1,50 @@
+---
+/**
+ * Inspiración: ideas de aplicaciones de identidad (las mismas fotos del inicio).
+ * Para sumar fotos, agregarlas a `heroReel` en src/data/home.ts con su `tag`.
+ */
+import { Image } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import SectionHead from '../components/SectionHead.astro';
+import { site } from '../config/site';
+import { portfolioIntro, heroReel } from '../data/home';
+import '../styles/sections.css';
+
+const items = heroReel.filter((i) => i.src);
+---
+<Base title="Inspiración" description="Ideas de cómo llevar la identidad de su casamiento a cada detalle: papelería, cartelería, packaging, merch, cotillón y más.">
+  <section class="section inspiration" aria-labelledby="inspiracion-title">
+    <div class="container">
+      <div class="split-head">
+        <SectionHead title={portfolioIntro.title} id="inspiracion-title" as="h1" />
+        <p class="reveal">{portfolioIntro.lead}</p>
+      </div>
+      <ul class="insp">
+        {items.map((it, i) => (
+          <li class="insp__item reveal" style={`--delay:${(i % 3) * 0.07}s`}>
+            <figure>
+              <figcaption class="tracked">[ {it.tag} ]</figcaption>
+              <div class="insp__img">
+                <Image src={it.src!} alt={it.alt} widths={[320, 480, 680]} sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 90vw" loading={i < 3 ? 'eager' : 'lazy'} />
+              </div>
+            </figure>
+          </li>
+        ))}
+      </ul>
+      <p class="insp__more">
+        Más en Instagram <a class="bracket-link" href={site.contact.instagram.url} target="_blank" rel="noopener">{site.contact.instagram.handle}</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .insp { list-style: none; padding: 0; display: grid; gap: clamp(2rem, 4vw, 3rem) var(--gutter); grid-template-columns: repeat(auto-fill, minmax(min(100%, 260px), 1fr)); }
+  @media (min-width: 1000px) { .insp { grid-template-columns: repeat(3, 1fr); } .insp__item:nth-child(3n+2) { margin-top: 4rem; } }
+  .insp figure { margin: 0; display: grid; gap: 0.7rem; }
+  .insp figcaption { font-size: 0.7rem; }
+  .insp__img { aspect-ratio: 4 / 5; overflow: hidden; }
+  .insp__img :global(img) { width: 100%; height: 100%; object-fit: cover; transition: transform 1.2s var(--ease); }
+  .insp__item:hover .insp__img :global(img) { transform: scale(1.03); }
+  .insp__more { margin-top: clamp(3rem, 6vw, 5rem); font-size: 0.86rem; max-width: none; }
+</style>

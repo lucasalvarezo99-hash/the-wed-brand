@@ -1,6 +1,6 @@
 ---
 import Base from '../layouts/Base.astro';
-import { site } from '../config/site';
+import { site, gmailCompose } from '../config/site';
 ---
 <Base title="Privacidad" description="Cómo usamos los datos que nos envían a través del sitio de The Wed Brand.">
   <section class="section">
@@ -24,8 +24,7 @@ import { site } from '../config/site';
             : 'Este sitio no usa cookies de analítica ni de publicidad.'}
         </p>
         <p>
-          Pueden pedirnos acceder, corregir o eliminar sus datos cuando quieran escribiendo a
-          <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>.
+          Pueden pedirnos acceder, corregir o eliminar sus datos cuando quieran escribiendo a{' '}<a href={gmailCompose} target="_blank" rel="noopener">{site.contact.email}</a>.
         </p>
       </div>
     </div>

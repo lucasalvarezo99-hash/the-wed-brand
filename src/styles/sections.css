@@ -161,7 +161,7 @@
   .about__people { display: grid; gap: 1rem; }
   .about__people dd { margin: 0.2rem 0 0; font-size: 0.86rem; }
   .about__photo { margin: 0; }
-  .about__photo img { width: 100%; filter: grayscale(1); }
+  .about__photo img { width: 100%; }
   @media (min-width: 900px) {
     .about__grid { grid-template-columns: 1fr 1.1fr; align-items: end; }
     .about__text { margin-left: 6vw; }
@@ -246,3 +246,12 @@ main > .section:first-child { padding-top: clamp(3rem, 6vw, 6rem); }
 .concept__logo { color: var(--base); max-width: 460px; width: 100%; justify-self: center; }
 .concept__text { display: grid; gap: 1.3rem; max-width: 460px; }
 @media (min-width: 900px) { .concept__grid { grid-template-columns: 1.1fr 1fr; } .concept__text { justify-self: end; margin-right: 4vw; } }
+
+/* Nosotras: foto arriba, alineada con el título */
+@media (min-width: 900px) {
+  .about__grid { align-items: start !important; }
+  .about__text { align-content: start !important; }
+}
+
+.faq__write { color: var(--vino); text-decoration: underline; text-underline-offset: 0.25em; text-decoration-thickness: 1px; }
+.faq__write:hover { text-decoration-thickness: 2px; }

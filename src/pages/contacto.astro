@@ -2,7 +2,7 @@
 import { getCollection } from 'astro:content';
 import Base from '../layouts/Base.astro';
 import ContactForm from '../components/ContactForm.astro';
-import { site } from '../config/site';
+import { site, gmailCompose } from '../config/site';
 import { contactIntro } from '../data/home';
 import '../styles/sections.css';
 
@@ -16,7 +16,7 @@ const servicios = (await getCollection('servicios')).sort((a, b) => a.data.order
       <ContactForm services={servicios.map((s) => ({ slug: s.id, title: s.data.title }))} />
       <p class="contact__direct">
         <span class="tracked">O directamente</span>
-        <a class="bracket-link" href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+        <a class="bracket-link" href={gmailCompose} target="_blank" rel="noopener">{site.contact.email}</a>
         <a class="bracket-link" href={site.contact.instagram.url} target="_blank" rel="noopener">instagram {site.contact.instagram.handle}</a>
         {site.contact.whatsapp && <a class="bracket-link" href={`https://wa.me/${site.contact.whatsapp}`} target="_blank" rel="noopener">whatsapp</a>}
       </p>

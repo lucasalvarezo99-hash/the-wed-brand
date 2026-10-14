@@ -15,7 +15,6 @@ const endpoint = site.formEndpoint;
 
 const options = [
   ...services.map((s) => ({ value: s.title, key: s.slug })),
-  { value: 'Branding para marcas', key: 'marcas' },
   { value: 'Reunión inicial', key: 'reunion' },
   { value: 'Todavía no sabemos', key: 'no-se' },
 ];
@@ -54,8 +53,8 @@ const options = [
   </div>
 
   <div class="field">
-    <label for="cf-whatsapp">WhatsApp *</label>
-    <input id="cf-whatsapp" name="whatsapp" type="tel" autocomplete="tel" inputmode="tel" placeholder="+54 9 11 0000 0000" required aria-describedby="cf-whatsapp-error" />
+    <label for="cf-whatsapp">WhatsApp <span class="optional">(opcional)</span></label>
+    <input id="cf-whatsapp" name="whatsapp" type="tel" autocomplete="tel" inputmode="tel" placeholder="+54 9 11 0000 0000" aria-describedby="cf-whatsapp-error" />
     <p class="field__error" id="cf-whatsapp-error" data-error-for="whatsapp"></p>
   </div>
 
@@ -130,7 +129,6 @@ const options = [
       apellido: 'Escriban su apellido.',
       pareja: 'Escriban el nombre de su pareja.',
       email: 'Necesitamos un email para responderles.',
-      whatsapp: 'Déjennos un WhatsApp para contactarlos.',
       fecha: 'Cuéntennos la fecha, aunque sea aproximada.',
       lugar: 'Cuéntennos dónde será el casamiento.',
       ciudad: 'Cuéntennos dónde se encuentran.',
@@ -229,7 +227,7 @@ const options = [
       if (!endpoint) {
         const body = Object.entries(payload).map(([k, v]) => `${k}: ${v}`).join('\n');
         window.location.href = `mailto:${email}?subject=${encodeURIComponent(`Consulta desde la web — ${payload.Nombre}`)}&body=${encodeURIComponent(body)}`;
-        showStatus('info', `Abrimos su programa de correo con el mensaje listo. Si no se abrió, escríbannos a <a href="mailto:${email}">${email}</a>.`);
+        showStatus('info', `Abrimos su programa de correo con el mensaje listo. Si no se abrió, escríbannos a <a href="https://mail.google.com/mail/?view=cm&fs=1&to=${email}" target="_blank" rel="noopener">${email}</a>.`);
         return;
       }
 
@@ -257,7 +255,7 @@ const options = [
         showStatus('success', '¡Gracias! Recibimos su consulta y les vamos a responder pronto.');
         status.focus();
       } catch {
-        showStatus('error', `No pudimos enviar el mensaje. Prueben de nuevo en un momento o escríbannos a <a href="mailto:${email}">${email}</a>.`);
+        showStatus('error', `No pudimos enviar el mensaje. Prueben de nuevo en un momento o escríbannos a <a href="https://mail.google.com/mail/?view=cm&fs=1&to=${email}" target="_blank" rel="noopener">${email}</a>.`);
       } finally {
         submit.disabled = false;
         submit.removeAttribute('aria-busy');
@@ -290,6 +288,7 @@ const options = [
   input::placeholder, textarea::placeholder { color: color-mix(in srgb, var(--grafito) 50%, transparent); }
   input:focus-visible, textarea:focus-visible { outline: none; border-bottom-color: var(--vino); box-shadow: 0 1px 0 var(--vino); }
   [aria-invalid='true'] { border-bottom-color: var(--vino) !important; }
+  .optional { opacity: 0.7; }
   .field__hint { font-size: 0.8rem; color: color-mix(in srgb, var(--grafito) 75%, transparent); }
   .field__error { font-size: 0.8rem; color: var(--vino); }
   .field__error:empty { display: none; }

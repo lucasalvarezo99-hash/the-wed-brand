@@ -15,8 +15,8 @@ const faqLd = {
 };
 ---
 <Base title="Proceso" description="Cómo trabajamos en The Wed Brand: nos conocemos, encontramos el concepto, diseñamos la propuesta y le damos vida a la identidad de su casamiento. Preguntas frecuentes." jsonLd={faqLd}>
-  <!-- Cómo trabajamos (lámina gris) -->
-  <section class="section tone-grafito on-dark process" aria-labelledby="proceso-title">
+  <!-- Cómo trabajamos -->
+  <section class="section process" aria-labelledby="proceso-title">
     <div class="container">
       <div class="split-head">
         <SectionHead title={['Cómo', 'trabajamos']} id="proceso-title" as="h1" />
@@ -49,7 +49,7 @@ const faqLd = {
   <section class="section faq" id="preguntas" aria-labelledby="preguntas-title">
     <div class="container faq__grid">
       <SectionHead title={['Preguntas', 'frecuentes']} id="preguntas-title">
-        <p>¿Les queda alguna duda? <a class="bracket-link" href="/contacto">escríbannos</a></p>
+        <p>¿Les queda alguna duda? <a class="faq__write" href="/contacto">escríbannos</a></p>
       </SectionHead>
       <div class="faq__list">
         {faq.map((f) => (

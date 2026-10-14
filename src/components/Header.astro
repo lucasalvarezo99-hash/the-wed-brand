@@ -5,14 +5,14 @@
  * Desktop: [menú] [nosotras] [servicios]   [THE WED BRAND]   [portfolio] [proceso] [contacto]
  * Mobile:  [menú]                                            [TWB]
  */
-import { site, primaryCta } from '../config/site';
+import { site, primaryCta, gmailCompose } from '../config/site';
 
 const left = [
   { label: 'nosotras', href: '/nosotras' },
   { label: 'servicios', href: '/servicios' },
 ];
 const right = [
-  { label: 'portfolio', href: '/portfolio' },
+  { label: 'inspiración', href: '/inspiracion' },
   { label: 'proceso', href: '/proceso' },
   { label: 'contacto', href: '/contacto' },
 ];
@@ -21,7 +21,7 @@ const full = [
   { label: 'Inicio', href: '/' },
   { label: 'Nosotras', href: '/nosotras' },
   { label: 'Servicios', href: '/servicios' },
-  { label: 'Portfolio', href: '/portfolio' },
+  { label: 'Inspiración', href: '/inspiracion' },
   { label: 'Proceso', href: '/proceso' },
   { label: 'Preguntas frecuentes', href: '/proceso#preguntas' },
   { label: 'Contacto', href: '/contacto' },
@@ -63,7 +63,7 @@ const isCurrent = (href: string) => href === current;
     <div class="menu__foot">
       <a class="btn btn--solid" href={primaryCta.href} data-menu-link>{primaryCta.label}</a>
       <p class="mono-sm">
-        <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a><br />
+        <a href={gmailCompose} target="_blank" rel="noopener">{site.contact.email}</a><br />
         <a href={site.contact.instagram.url} target="_blank" rel="noopener">{site.contact.instagram.handle}</a>
       </p>
     </div>

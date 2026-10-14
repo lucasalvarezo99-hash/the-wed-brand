@@ -49,16 +49,16 @@ export const hero = {
  * Las que tienen `src: null` son lugares reservados: se muestran como un
  * recuadro vacío hasta cargar la foto (importarla arriba y ponerla en `src`).
  */
-export const heroReel: { src: ImageMetadata | null; alt: string }[] = [
-  { src: reelEnvoltorio, alt: 'Envoltorios de papel con sello bordó y la leyenda [THE WED BRAND] sobre una bandeja plateada.' },
-  { src: reelFosforos, alt: 'Cajas de fósforos bordó con el isotipo de The Wed Brand en una bandeja de tres pisos.' },
-  { src: reelBarra, alt: 'Cartel de tela «La barra» con los tragos de los novios colgado sobre la barra.' },
-  { src: reelMenu, alt: 'Menús con borde ondulado y rayas verdes.' },
-  { src: reelSello, alt: 'Menú cerrado con sello de lacre bordó sobre un plato: «Rompe el sello para ver el menú».' },
-  { src: reelPizza, alt: 'Caja de pizza ilustrada con los novios brindando: «Cande & Diego, 16.02.26, Punta del Este».' },
-  { src: reelAbanico, alt: 'Abanico blanco con «Los Alvarez» en caligrafía bordó sobre una silla de esterilla.' },
-  { src: reelTiramisu, alt: 'Tiramisú con las iniciales L y C dentro de dos corazones y la fecha 06/06/26.' },
-  { src: reelMesa, alt: 'Número de mesa «Table 2» sostenido entre dos piedras, con velas y copas.' },
+export const heroReel: { src: ImageMetadata | null; tag?: string; alt: string }[] = [
+  { src: reelEnvoltorio, tag: 'Packaging', alt: 'Envoltorios de papel con sello bordó y la leyenda [THE WED BRAND] sobre una bandeja plateada.' },
+  { src: reelFosforos, tag: 'Fósforos', alt: 'Cajas de fósforos bordó con el isotipo de The Wed Brand en una bandeja de tres pisos.' },
+  { src: reelBarra, tag: 'Cartelería', alt: 'Cartel de tela «La barra» con los tragos de los novios colgado sobre la barra.' },
+  { src: reelMenu, tag: 'Papelería · menú', alt: 'Menús con borde ondulado y rayas verdes.' },
+  { src: reelSello, tag: 'Papelería · menú con sello', alt: 'Menú cerrado con sello de lacre bordó sobre un plato: «Rompe el sello para ver el menú».' },
+  { src: reelPizza, tag: 'Packaging · caja de pizza', alt: 'Caja de pizza ilustrada con los novios brindando: «Cande & Diego, 16.02.26, Punta del Este».' },
+  { src: reelAbanico, tag: 'Merch · abanicos', alt: 'Abanico blanco con «Los Alvarez» en caligrafía bordó sobre una silla de esterilla.' },
+  { src: reelTiramisu, tag: 'Logo en la torta', alt: 'Tiramisú con las iniciales L y C dentro de dos corazones y la fecha 06/06/26.' },
+  { src: reelMesa, tag: 'Papelería · número de mesa', alt: 'Número de mesa «Table 2» sostenido entre dos piedras, con velas y copas.' },
 ];
 
 /* ------------------------------------------------------------------ CÓMO PENSAMOS */
@@ -113,18 +113,6 @@ export const serviceGuide = {
   ],
 };
 
-/* ------------------------------------------------------------------ MARCAS */
-export const brands = {
-  title: ['Branding y eventos', 'para marcas'],
-  photo: { src: encendedores, alt: 'Encendedores personalizados sobre un plato de puntilla.' } as Photo,
-  photo2: { src: cuelloBordado, alt: 'Invitado con el cuello de la camisa bordado con fecha e iniciales.' } as Photo,
-  paragraphs: [
-    'También trabajamos con marcas: salones de eventos, bodegas, hoteles, restaurantes y proyectos del mundo de los casamientos que buscan diferenciarse con una estética cuidada, sensible y con carácter.',
-    'Desde la identidad visual completa de un espacio o de un evento hasta piezas puntuales —tarjetas de bienvenida, menús, cartelería, packaging, merch o contenido para redes—, diseñamos cada pieza a medida.',
-  ],
-  cta: { label: 'Pedir presupuesto', service: 'marcas' },
-};
-
 /* ------------------------------------------------------------------ APLICACIONES */
 export const applications = {
   title: ['Cada pieza lleva', 'la identidad de la pareja'],
@@ -152,9 +140,8 @@ export const strip: Photo[] = [
 
 /* ------------------------------------------------------------------ PORTFOLIO */
 export const portfolioIntro = {
-  title: ['Proyectos', 'y casamientos'],
-  lead: 'Cada proyecto empieza por conocer a la pareja. Acá mostramos cómo una historia se vuelve identidad.',
-  more: 'Estamos sumando nuevos casamientos. Mientras tanto, en Instagram compartimos procesos y detalles.',
+  title: ['Inspiración', 'para su casamiento'],
+  lead: 'Algunas ideas de cómo puede vivir una identidad en cada detalle del casamiento.',
 };
 
 /* ------------------------------------------------------------------ REUNIÓN INICIAL */
@@ -170,6 +157,6 @@ export const meeting = {
 
 /* ------------------------------------------------------------------ CONTACTO */
 export const contactIntro = {
-  title: 'Cuéntennos qué están imaginando.',
+  title: 'Cuéntennos qué se están imaginando.',
   lead: 'Cuéntennos un poco sobre ustedes y su casamiento completando este formulario. Con lo que nos compartan vamos a poder enviarles una propuesta pensada para ustedes y mantenernos en contacto para lo que necesiten.',
 };

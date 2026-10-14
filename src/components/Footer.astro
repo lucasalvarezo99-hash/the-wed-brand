@@ -1,6 +1,6 @@
 ---
 /** Pie liviano: una línea con marca, contacto y privacidad. */
-import { site } from '../config/site';
+import { site, gmailCompose } from '../config/site';
 const year = new Date().getFullYear();
 const wa = site.contact.whatsapp;
 ---
@@ -8,7 +8,7 @@ const wa = site.contact.whatsapp;
   <div class="container site-footer__inner tracked">
     <span>© {year} [The Wed Brand]</span>
     <span class="site-footer__links">
-      <a href={`mailto:${site.contact.email}`}>{site.contact.email}</a>
+      <a href={gmailCompose} target="_blank" rel="noopener">{site.contact.email}</a>
       <a href={site.contact.instagram.url} target="_blank" rel="noopener">{site.contact.instagram.handle}</a>
       {wa && <a href={`https://wa.me/${wa}`} target="_blank" rel="noopener">WhatsApp</a>}
       <a href="/privacidad">Privacidad</a>

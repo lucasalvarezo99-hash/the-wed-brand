@@ -2,14 +2,11 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import SectionHead from '../components/SectionHead.astro';
-import { getCollection } from 'astro:content';
 import Isotipo from '../components/Isotipo.astro';
 import { philosophy, concept } from '../data/home';
 import equipo from '../data/equipo.json';
 import fotoEquipo from '../assets/nosotras/cande-y-casu.jpg';
 import '../styles/sections.css';
-
-const servicios = (await getCollection('servicios')).sort((a, b) => a.data.order - b.data.order);
 ---
 <Base title="Nosotras" description="Somos Casu y Cande, las dos personas detrás de The Wed Brand: comunicación, estrategia y contenido, y diseño y dirección visual para casamientos.">
   <!-- Quiénes están detrás (lámina celeste) -->
@@ -32,7 +29,7 @@ const servicios = (await getCollection('servicios')).sort((a, b) => a.data.order
         </dl>
       </div>
       <figure class="about__photo reveal">
-        <Image src={fotoEquipo} alt={equipo.photoAlt} widths={[420, 640]} sizes="(min-width: 900px) 45vw, 90vw" loading="eager" />
+        <Image src={fotoEquipo} alt={equipo.photoAlt} widths={[480, 760, 1100]} sizes="(min-width: 900px) 48vw, 92vw" loading="eager" />
       </figure>
     </div>
   </section>
@@ -47,19 +44,6 @@ const servicios = (await getCollection('servicios')).sort((a, b) => a.data.order
         <SectionHead title={philosophy.title} id="filosofia-title">
           {philosophy.paragraphs.map((p) => <p class="justify">{p}</p>)}
         </SectionHead>
-        <div class="why-services reveal">
-          <p class="tracked">{philosophy.servicesTitle}</p>
-          <ol>
-            {servicios.map((s, i) => (
-              <li>
-                <a href={`/servicios/${s.id}`}>
-                  <span class="tracked">{String(i + 1).padStart(2, '0')}</span>
-                  <span class="tracked-title">{s.data.title}</span>
-                </a>
-              </li>
-            ))}
-          </ol>
-        </div>
       </div>
     </div>
     <figure class="quote reveal">
