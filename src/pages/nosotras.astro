@@ -2,10 +2,14 @@
 import { Image } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import SectionHead from '../components/SectionHead.astro';
-import { philosophy } from '../data/home';
+import { getCollection } from 'astro:content';
+import Isotipo from '../components/Isotipo.astro';
+import { philosophy, concept } from '../data/home';
 import equipo from '../data/equipo.json';
 import fotoEquipo from '../assets/nosotras/cande-y-casu.jpg';
 import '../styles/sections.css';
+
+const servicios = (await getCollection('servicios')).sort((a, b) => a.data.order - b.data.order);
 ---
 <Base title="Nosotras" description="Somos Casu y Cande, las dos personas detrás de The Wed Brand: comunicación, estrategia y contenido, y diseño y dirección visual para casamientos.">
   <!-- Quiénes están detrás (lámina celeste) -->
@@ -33,7 +37,7 @@ import '../styles/sections.css';
     </div>
   </section>
 
-  <!-- Cómo pensamos -->
+  <!-- Por qué creamos este proyecto -->
   <section class="section note" aria-labelledby="filosofia-title">
     <div class="container note__grid">
       <figure class="note__photo reveal">
@@ -43,11 +47,36 @@ import '../styles/sections.css';
         <SectionHead title={philosophy.title} id="filosofia-title">
           {philosophy.paragraphs.map((p) => <p class="justify">{p}</p>)}
         </SectionHead>
+        <div class="why-services reveal">
+          <p class="tracked">{philosophy.servicesTitle}</p>
+          <ol>
+            {servicios.map((s, i) => (
+              <li>
+                <a href={`/servicios/${s.id}`}>
+                  <span class="tracked">{String(i + 1).padStart(2, '0')}</span>
+                  <span class="tracked-title">{s.data.title}</span>
+                </a>
+              </li>
+            ))}
+          </ol>
+        </div>
       </div>
     </div>
     <figure class="quote reveal">
       <figcaption class="tracked">{philosophy.quoteLabel}</figcaption>
       <blockquote><p class="script">«{philosophy.quote}»</p></blockquote>
     </figure>
+  </section>
+
+  <!-- Concepto creativo (lámina bordó) -->
+  <section class="section tone-vino on-dark concept" aria-labelledby="concepto-title">
+    <div class="container concept__grid">
+      <div class="concept__logo reveal" aria-hidden="true"><Isotipo /></div>
+      <div class="concept__text">
+        <p class="tracked">{concept.label}</p>
+        <h2 class="head__title reveal" id="concepto-title"><span>{concept.title}</span></h2>
+        {concept.paragraphs.map((p) => <p class="justify reveal">{p}</p>)}
+      </div>
+    </div>
   </section>
 </Base>

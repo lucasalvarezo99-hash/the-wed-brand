@@ -10,36 +10,28 @@ import '../../styles/sections.css';
 const servicios = (await getCollection('servicios')).sort((a, b) => a.data.order - b.data.order);
 const serviceTitle = (slug: string) => servicios.find((s) => s.id === slug)?.data.title ?? slug;
 ---
-<Base title="Servicios" description="Branding & Wedding Design, Comunicación & Comunidad, Wedding Content y Full Experience: identidad, comunicación y contenido para su casamiento, juntos o por separado.">
+<Base title="Servicios" description="Tres servicios que pueden contratarse juntos o por separado: Branding & Wedding Design, Comunicación & Comunidad y Wedding Content.">
   <section class="section services" aria-labelledby="servicios-title">
     <div class="container">
       <div class="split-head">
         <SectionHead title={servicesIntro.title} id="servicios-title" as="h1" />
-        <p class="reveal">{servicesIntro.lead}</p>
+        {servicesIntro.lead && <p class="reveal">{servicesIntro.lead}</p>}
       </div>
 
       <ul class="svc-grid">
         {servicios.map((s, i) => (
           <li class="svc reveal" id={`servicio-${s.id}`} style={`--delay:${i * 0.08}s`}>
-            {servicePhotos[s.id] && (
-              <figure class="svc__photo">
-                <Image src={servicePhotos[s.id].src} alt={servicePhotos[s.id].alt} widths={[300, 460, 600]} sizes="(min-width: 1100px) 22vw, (min-width: 640px) 45vw, 90vw" loading="eager" />
-              </figure>
-            )}
-            <h2 class="svc__title tracked-title">{s.data.title}</h2>
-            <p class="svc__tagline">{s.data.tagline}</p>
-            <p class="svc__summary justify">{s.data.summary}</p>
-            <details class="svc__more">
-              <summary>(qué puede incluir)</summary>
-              <ul class="arrow-list">{s.data.includes.map((item) => <li>{item}</li>)}</ul>
-              <p class="tracked svc__sub">Para ustedes si…</p>
-              <ul class="arrow-list">{s.data.idealFor.map((item) => <li>{item}</li>)}</ul>
-              {s.data.note && <p class="svc__note">{s.data.note}</p>}
-            </details>
-            <div class="svc__links">
-              <a class="bracket-link" href={`/servicios/${s.id}`}>ver más</a>
-              <a class="bracket-link" href={`/contacto#servicio-${s.id}`}>consultar</a>
-            </div>
+            <a class="svc__card" href={`/servicios/${s.id}`}>
+              {servicePhotos[s.id] && (
+                <figure class="svc__photo">
+                  <Image src={servicePhotos[s.id].src} alt={servicePhotos[s.id].alt} widths={[300, 460, 600]} sizes="(min-width: 1000px) 30vw, (min-width: 640px) 45vw, 90vw" loading="eager" />
+                </figure>
+              )}
+              <span class="tracked svc__num">{String(i + 1).padStart(2, '0')}</span>
+              <h2 class="svc__title tracked-title">{s.data.title}</h2>
+              <p class="svc__tagline">{s.data.tagline}</p>
+              <span class="svc__more-link bracket-link">ver el servicio</span>
+            </a>
           </li>
         ))}
       </ul>

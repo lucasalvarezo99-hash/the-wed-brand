@@ -11,17 +11,26 @@ const servicios = defineCollection({
   schema: z.object({
     order: z.number(),
     title: z.string(),
-    /** Frase corta que acompaña al nombre. */
+    /** Frase corta de la tarjeta en /servicios. */
     tagline: z.string(),
-    /** Descripción breve (home + meta description). */
+    /** Bajada de la página del servicio. */
     summary: z.string(),
-    /** Qué puede incluir. */
+    /** Subtítulo en mayúsculas (ej. «Redes para sus invitados»). */
+    kicker: z.string().optional(),
+    /** Texto de presentación del servicio. */
+    intro: z.string().optional(),
+    /** Dato destacado (ej. «48 – 72 hs» / «entrega del video»). */
+    highlight: z.object({ value: z.string(), label: z.string() }).optional(),
+    /** Lista principal: qué incluye. */
+    includesLabel: z.string().default('Incluye'),
     includes: z.array(z.string()),
-    /** Para quién puede ser adecuado. */
-    idealFor: z.array(z.string()),
-    /** Aclaración visible (alcance, límites del servicio). */
+    /** Lista secundaria opcional (ej. «+ 3 piezas a elección»). */
+    choicesLabel: z.string().optional(),
+    choices: z.array(z.string()).default([]),
+    /** Bloque destacado al final (ej. «Entrega en 48 hs»). */
+    callout: z.object({ title: z.string(), text: z.string() }).optional(),
+    /** Aclaración: qué no incluye o qué no reemplaza. */
     note: z.string().optional(),
-    /** Título y descripción para buscadores (opcional). */
     seoTitle: z.string().optional(),
     seoDescription: z.string().optional(),
   }),

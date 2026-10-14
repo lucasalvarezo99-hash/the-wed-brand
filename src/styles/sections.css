@@ -222,3 +222,27 @@ main > .section:first-child { padding-top: clamp(3rem, 6vw, 6rem); }
 
 /* Lugar reservado para una foto que todavía no está cargada */
 .reel__img--empty { background: color-mix(in srgb, var(--grafito) 7%, var(--base)); }
+
+/* Servicios: tarjetas que abren la página de cada servicio */
+@media (min-width: 1000px) { .svc-grid { grid-template-columns: repeat(3, minmax(0, 1fr)) !important; } }
+.svc__card { display: grid; gap: 0.8rem; align-content: start; text-decoration: none; color: inherit; }
+.svc__num { color: var(--vino); }
+.svc__title { min-height: 0 !important; }
+.svc__tagline { color: inherit !important; }
+.svc__more-link { margin-top: 0.4rem; font-size: 0.86rem; color: var(--vino); }
+.svc__card:hover .svc__photo img { transform: scale(1.04); }
+.svc__card:hover .svc__title { color: var(--vino); }
+
+/* Nosotras: servicios dentro de «Por qué creamos este proyecto» */
+.why-services { display: grid; gap: 0.8rem; margin-top: 2.5rem; }
+.why-services ol { list-style: none; padding: 0; border-top: 1px solid var(--line-soft); }
+.why-services li { border-bottom: 1px solid var(--line-soft); }
+.why-services a { display: flex; gap: 1rem; align-items: baseline; padding: 0.8rem 0; text-decoration: none; }
+.why-services a:hover .tracked-title { color: var(--vino); }
+.tracked-title { font-family: var(--font-display); font-weight: 400; font-size: 1rem; line-height: 1.5; letter-spacing: 0.2em; text-transform: uppercase; }
+
+/* Concepto creativo: logo al costado del texto */
+.concept__grid { display: grid; gap: clamp(2.5rem, 5vw, 5rem); align-items: center; }
+.concept__logo { color: var(--base); max-width: 460px; width: 100%; justify-self: center; }
+.concept__text { display: grid; gap: 1.3rem; max-width: 460px; }
+@media (min-width: 900px) { .concept__grid { grid-template-columns: 1.1fr 1fr; } .concept__text { justify-self: end; margin-right: 4vw; } }

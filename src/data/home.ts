@@ -6,7 +6,6 @@ import type { ImageMetadata } from 'astro';
 import veloColor from '../assets/fotos/velo-color.jpg';
 import veloRisaBn from '../assets/fotos/velo-risa-bn.jpg';
 import parejaCampo from '../assets/fotos/pareja-campo.jpg';
-import parejaAerea from '../assets/fotos/pareja-aerea.jpg';
 import besoBn from '../assets/fotos/beso-bn.jpg';
 import ramoCielo from '../assets/fotos/ramo-cielo.jpg';
 import ramoVestido from '../assets/fotos/ramo-vestido.jpg';
@@ -24,7 +23,6 @@ import gorras from '../assets/aplicaciones/gorras.jpg';
 import servilletas from '../assets/aplicaciones/servilletas.jpg';
 import cintaRamo from '../assets/aplicaciones/cinta-ramo.jpg';
 import encendedores from '../assets/aplicaciones/encendedores.jpg';
-import invitacionFrente from '../assets/proyectos/casu-y-lucas/invitacion-frente.jpg';
 import reelEnvoltorio from '../assets/reel/envoltorio-sello.jpg';
 import reelFosforos from '../assets/reel/fosforos.jpg';
 import reelBarra from '../assets/reel/barra.jpg';
@@ -47,12 +45,11 @@ export const hero = {
 };
 
 /**
- * Tira de fotos del inicio (se desliza de derecha a izquierda). Van 10 fotos.
+ * Tira de fotos del inicio (se desliza de derecha a izquierda). 
  * Las que tienen `src: null` son lugares reservados: se muestran como un
  * recuadro vacío hasta cargar la foto (importarla arriba y ponerla en `src`).
  */
 export const heroReel: { src: ImageMetadata | null; alt: string }[] = [
-  { src: invitacionFrente, alt: 'Invitación ilustrada a mano del casamiento de Casu y Lucas, con un auto antiguo y un moño.' },
   { src: reelEnvoltorio, alt: 'Envoltorios de papel con sello bordó y la leyenda [THE WED BRAND] sobre una bandeja plateada.' },
   { src: reelFosforos, alt: 'Cajas de fósforos bordó con el isotipo de The Wed Brand en una bandeja de tres pisos.' },
   { src: reelBarra, alt: 'Cartel de tela «La barra» con los tragos de los novios colgado sobre la barra.' },
@@ -67,20 +64,31 @@ export const heroReel: { src: ImageMetadata | null; alt: string }[] = [
 /* ------------------------------------------------------------------ CÓMO PENSAMOS */
 export const philosophy = {
   photo: { src: veloRisaBn, alt: 'Novios bajo el velo, en blanco y negro, riéndose.' } as Photo,
-  title: ['Una nota sobre', 'cómo pensamos'],
+  title: ['Por qué creamos', 'este proyecto'],
   paragraphs: [
-    'Muchos casamientos responden a tendencias, no a la pareja. Las invitaciones, la paleta, la papelería, la cartelería, las fotos y las redes se resuelven por separado, y el punto de partida suele ser una estética de Pinterest adaptada. El casamiento puede verse bien y aun así no contar quiénes son.',
-    'Nosotras empezamos al revés: por ustedes. Cada pareja tiene una historia, una personalidad y una manera propia de celebrar. Nuestro trabajo es traducir eso en una sola idea, y llevarla a cada pieza, del save the date al último video.',
-    'Nuestro logo lo cuenta: dos círculos dibujados a mano. Cada uno es una persona; donde se cruzan aparece lo que es de los dos. Eso es lo que diseñamos.',
+    'The Wed Brand diseña la identidad visual de cada casamiento a partir de quiénes son los novios: su historia, su personalidad, su estilo.',
+    'Esa identidad se aplica a todo lo que el casamiento necesita: invitaciones, papelería, cartelería, cotillón y web. También los podemos acompañar en redes antes de la fecha y con el contenido del gran día.',
+    'Lo creamos para las parejas que quieren que su casamiento se sienta suyo: convertimos su historia en una identidad visual completa y la llevamos hasta el contenido del gran día.',
   ],
-  quoteLabel: 'Lo que queremos que piensen sus invitados',
+  servicesTitle: 'Tres servicios que pueden contratarse juntos o por separado',
+  quoteLabel: 'Que cuando alguien vea su casamiento, piense',
   quote: 'Esto es muy ellos.',
+};
+
+/** Concepto creativo del logo (página Nosotras). */
+export const concept = {
+  label: 'Concepto creativo',
+  title: 'Dos personas, una identidad. Hecha a mano.',
+  paragraphs: [
+    'Cada círculo es una persona. Donde se cruzan aparece lo que es de los dos, y eso es lo que diseñamos.',
+    'El trazo de tinta, imperfecto y con pulso, dice que cada identidad se hace a mano, a medida, y no sale de una plantilla.',
+  ],
 };
 
 /* ------------------------------------------------------------------ SERVICIOS */
 export const servicesIntro = {
-  title: ['Servicios', 'para su casamiento'],
-  lead: 'Se pueden contratar juntos o por separado. No hace falta tomar todo: se arma según lo que necesiten.',
+  title: ['Tres servicios que pueden', 'contratarse juntos o por separado'],
+  lead: '',
   custom: {
     title: 'Propuesta a medida',
     text: 'Si lo que imaginan no entra en ninguno de estos formatos, lo pensamos juntas. Partimos de un «¿qué quieren hacer?» y lo llevamos a la identidad.',
@@ -92,14 +100,12 @@ export const servicePhotos: Record<string, Photo> = {
   'branding-wedding-design': { src: menuLetterpress, alt: 'Menú impreso en letterpress con ilustración botánica verde.' },
   'comunicacion-comunidad': { src: ramoVestido, alt: 'Detalle de la novia sosteniendo el ramo junto al vestido.' },
   'wedding-content': { src: novia, alt: 'Novia corriendo sobre el pasto, foto movida.' },
-  'full-experience': { src: parejaAerea, alt: 'Vista aérea de los novios corriendo de la mano sobre el pasto.' },
 };
 
 /** Ayuda para elegir: situación → servicio sugerido (slug). */
 export const serviceGuide = {
   title: '¿No saben por dónde empezar?',
   items: [
-    { situation: 'Recién empiezan a organizar y quieren que todo tenga coherencia.', service: 'full-experience' },
     { situation: 'Tienen referencias guardadas, pero no una idea que las una.', service: 'branding-wedding-design' },
     { situation: 'Necesitan invitaciones, papelería o una web para invitados.', service: 'branding-wedding-design' },
     { situation: 'Quieren contar la previa y sumar a sus invitados en redes.', service: 'comunicacion-comunidad' },

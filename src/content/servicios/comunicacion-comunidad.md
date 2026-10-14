@@ -1,23 +1,22 @@
 ---
 order: 2
 title: Comunicación & Comunidad
-tagline: Redes y comunidad antes de la fecha.
-summary: Estrategia y comunicación digital para acompañar el casamiento antes del gran día, con la misma identidad y el mismo tono.
+tagline: La comunidad empieza mucho antes del gran día.
+kicker: Redes para sus invitados
+summary: Durante las 8 semanas previas al casamiento, una cuenta con la identidad del casamiento para generar expectativa y mantener a los invitados conectados antes de la fecha.
+intro: Novedades, cuenta regresiva y detalles del día.
+highlight:
+  value: 2 meses
+  label: antes del casamiento arranca la cuenta
 includes:
-  - Estrategia de comunicación para la previa
-  - Planificación de contenidos
-  - Gestión de Instagram del casamiento
-  - Narrativa de la pareja
-  - Construcción de una comunidad alrededor del evento
-idealFor:
-  - Quieren que la previa también se viva y se cuente.
-  - Les gustaría compartir novedades con sus invitados de una forma propia.
-  - Ya tienen identidad visual y buscan llevarla a las redes.
-note: Qué incluye exactamente depende del alcance que acordemos con cada pareja.
+  - Estrategia de comunicación
+  - Calendario de contenidos
+  - Diseño y redacción
+  - 2 publicaciones semanales
+  - Countdown y recordatorios
+  - Información útil para invitados
+  - Cobertura de hitos previos al casamiento
+note: No incluye moderación (atención individual de consultas de invitados por DM o WhatsApp).
 seoTitle: Comunicación y redes para casamientos
-seoDescription: Estrategia, contenidos y gestión de Instagram para acompañar su casamiento antes del gran día, con una narrativa y una identidad coherentes.
+seoDescription: Una cuenta con la identidad de su casamiento durante las 8 semanas previas, para generar expectativa y mantener a los invitados conectados.
 ---
-
-Un casamiento empieza mucho antes de la fecha. Hay noticias que dar, invitados que se suman, detalles que se van definiendo. Acompañamos esa etapa con una estrategia de comunicación pensada para ustedes.
-
-Nos dedicamos a las redes y a la identidad de marca, y usamos esas mismas herramientas en cada casamiento: planificación, narrativa y contenido con un tono reconocible, para que la previa se sienta parte de la misma historia.

@@ -10,7 +10,7 @@ title: Nombre & Nombre
 couple: Nombre & Nombre            # opcional, se muestra en tipografía script
 date: 2027-01-01                   # opcional
 location: Ciudad, Provincia        # opcional
-services: [branding-wedding-design] # slugs: branding-wedding-design, comunicacion-comunidad, wedding-content, full-experience
+services: [branding-wedding-design] # slugs: branding-wedding-design, comunicacion-comunidad, wedding-content
 categories: [Identidad, Papelería]
 concept: El concepto creativo en una frase.
 excerpt: Bajada de dos líneas para la tarjeta del portfolio y Google.
